@@ -1,0 +1,395 @@
+[02-Oct-2024 10:54:00 UTC] PHP Fatal error:  Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_06_143410_create_settings_table.php on line 7
+[02-Oct-2024 11:34:14 UTC] PHP Fatal error:  Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_03_192315_create_categories_table.php on line 7
+[02-Oct-2024 11:36:48 UTC] PHP Fatal error:  Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2014_10_12_100000_create_password_resets_table.php on line 7
+[02-Oct-2024 11:39:05 UTC] PHP Fatal error:  Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_30_175937_add_neww_colss_in_orders_table.php on line 7
+[02-Oct-2024 13:32:53 UTC] PHP Fatal error:  Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_081441_create_order_histories_table.php on line 7
+[02-Oct-2024 14:33:37 UTC] PHP Fatal error:  Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2019_08_19_000000_create_failed_jobs_table.php on line 7
+[02-Oct-2024 15:41:48 UTC] PHP Fatal error:  Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_06_27_180824_create_roles_table.php on line 7
+[02-Oct-2024 16:09:38 UTC] PHP Fatal error:  Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_06_28_182554_create_orders_table.php on line 7
+[02-Oct-2024 16:45:04 UTC] PHP Fatal error:  Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_080337_add_neww_collls_in_orders_table.php on line 7
+[02-Oct-2024 16:46:31 UTC] PHP Fatal error:  Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2014_10_12_000000_create_users_table.php on line 7
+[02-Oct-2024 18:39:16 UTC] PHP Fatal error:  Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_24_185445_create_order_payments_table.php on line 7
+[02-Oct-2024 18:39:33 UTC] PHP Fatal error:  Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_081501_create_order_numbers_table.php on line 7
+[02-Oct-2024 18:49:58 UTC] PHP Fatal error:  Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_06_28_191059_create_order_details_table.php on line 7
+[02-Oct-2024 19:22:57 UTC] PHP Fatal error:  Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_04_192054_create_products_table.php on line 7
+[02-Oct-2024 21:26:05 UTC] PHP Fatal error:  Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_06_27_190040_create_sizes_table.php on line 7
+[02-Oct-2024 22:12:49 UTC] PHP Fatal error:  Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_14_104215_add_new_colsss_in_orders_table.php on line 7
+[03-Oct-2024 00:08:51 UTC] PHP Fatal error:  Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_09_173803_create_countries_table.php on line 7
+[03-Oct-2024 00:36:22 UTC] PHP Fatal error:  Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_25_171946_create_order_small_rates_table.php on line 7
+[04-Oct-2024 15:50:03 UTC] PHP Fatal error:  Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_14_104215_add_new_colsss_in_orders_table.php on line 7
+[04-Oct-2024 19:58:22 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_03_192315_create_categories_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_03_192315_create_categories_table.php on line 7
+[31-Oct-2024 18:06:45 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_25_171946_create_order_small_rates_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_25_171946_create_order_small_rates_table.php on line 7
+[07-Nov-2024 02:25:35 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_14_104215_add_new_colsss_in_orders_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_08_14_104215_add_new_colsss_in_orders_table.php on line 7
+[07-Nov-2024 03:03:10 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_30_175937_add_neww_colss_in_orders_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_30_175937_add_neww_colss_in_orders_table.php on line 7
+[07-Nov-2024 03:03:12 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_081441_create_order_histories_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_081441_create_order_histories_table.php on line 7
+[07-Nov-2024 04:51:44 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_06_28_182554_create_orders_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_06_28_182554_create_orders_table.php on line 7
+[07-Nov-2024 15:42:51 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_06_143410_create_settings_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_06_143410_create_settings_table.php on line 7
+[07-Nov-2024 22:10:08 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_03_192315_create_categories_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_03_192315_create_categories_table.php on line 7
+[08-Nov-2024 10:27:01 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_080337_add_neww_collls_in_orders_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_080337_add_neww_collls_in_orders_table.php on line 7
+[08-Nov-2024 21:43:15 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2019_08_19_000000_create_failed_jobs_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2019_08_19_000000_create_failed_jobs_table.php on line 7
+[09-Nov-2024 01:08:49 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_06_27_180824_create_roles_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_06_27_180824_create_roles_table.php on line 7
+[09-Nov-2024 02:50:48 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_25_171946_create_order_small_rates_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_25_171946_create_order_small_rates_table.php on line 7
+[09-Nov-2024 03:41:14 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_24_185445_create_order_payments_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_08_24_185445_create_order_payments_table.php on line 7
+[10-Nov-2024 12:37:01 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_04_192054_create_products_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_04_192054_create_products_table.php on line 7
+[10-Nov-2024 18:12:04 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2014_10_12_000000_create_users_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2014_10_12_000000_create_users_table.php on line 7
+[10-Nov-2024 18:12:05 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_09_173803_create_countries_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_09_173803_create_countries_table.php on line 7
+[11-Nov-2024 06:33:21 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_14_104215_add_new_colsss_in_orders_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_08_14_104215_add_new_colsss_in_orders_table.php on line 7
+[11-Nov-2024 09:10:58 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_06_27_180824_create_roles_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_06_27_180824_create_roles_table.php on line 7
+[11-Nov-2024 09:30:26 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_24_185445_create_order_payments_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_08_24_185445_create_order_payments_table.php on line 7
+[11-Nov-2024 09:34:44 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_080337_add_neww_collls_in_orders_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_080337_add_neww_collls_in_orders_table.php on line 7
+[11-Nov-2024 11:00:15 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2014_10_12_100000_create_password_resets_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2014_10_12_100000_create_password_resets_table.php on line 7
+[11-Nov-2024 11:14:45 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_04_192054_create_products_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_04_192054_create_products_table.php on line 7
+[11-Nov-2024 11:19:22 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_06_28_182554_create_orders_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_06_28_182554_create_orders_table.php on line 7
+[11-Nov-2024 13:07:35 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2014_10_12_000000_create_users_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2014_10_12_000000_create_users_table.php on line 7
+[11-Nov-2024 13:12:36 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_081501_create_order_numbers_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_081501_create_order_numbers_table.php on line 7
+[11-Nov-2024 13:56:22 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_25_171946_create_order_small_rates_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_25_171946_create_order_small_rates_table.php on line 7
+[11-Nov-2024 14:58:19 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_03_192315_create_categories_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_03_192315_create_categories_table.php on line 7
+[11-Nov-2024 15:38:30 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_06_27_190040_create_sizes_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_06_27_190040_create_sizes_table.php on line 7
+[11-Nov-2024 17:40:19 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_06_28_191059_create_order_details_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_06_28_191059_create_order_details_table.php on line 7
+[11-Nov-2024 17:43:48 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2019_08_19_000000_create_failed_jobs_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2019_08_19_000000_create_failed_jobs_table.php on line 7
+[11-Nov-2024 19:45:35 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_30_175937_add_neww_colss_in_orders_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_30_175937_add_neww_colss_in_orders_table.php on line 7
+[11-Nov-2024 20:40:27 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_06_143410_create_settings_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_06_143410_create_settings_table.php on line 7
+[11-Nov-2024 20:43:25 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_09_173803_create_countries_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_09_173803_create_countries_table.php on line 7
+[11-Nov-2024 22:17:59 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_081441_create_order_histories_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_081441_create_order_histories_table.php on line 7
+[12-Nov-2024 22:43:36 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_06_27_180824_create_roles_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_06_27_180824_create_roles_table.php on line 7
+[13-Nov-2024 00:27:43 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_25_171946_create_order_small_rates_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_25_171946_create_order_small_rates_table.php on line 7
+[19-Nov-2024 20:39:48 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_06_27_180824_create_roles_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_06_27_180824_create_roles_table.php on line 7
+[19-Nov-2024 20:40:39 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_06_28_182554_create_orders_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_06_28_182554_create_orders_table.php on line 7
+[19-Nov-2024 20:40:59 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_04_192054_create_products_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_04_192054_create_products_table.php on line 7
+[19-Nov-2024 20:41:08 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_06_27_190040_create_sizes_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_06_27_190040_create_sizes_table.php on line 7
+[19-Nov-2024 20:41:28 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_09_173803_create_countries_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_09_173803_create_countries_table.php on line 7
+[19-Nov-2024 20:41:35 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2014_10_12_100000_create_password_resets_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2014_10_12_100000_create_password_resets_table.php on line 7
+[19-Nov-2024 20:41:49 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_081441_create_order_histories_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_081441_create_order_histories_table.php on line 7
+[19-Nov-2024 20:42:02 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2014_10_12_000000_create_users_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2014_10_12_000000_create_users_table.php on line 7
+[19-Nov-2024 20:42:13 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2019_08_19_000000_create_failed_jobs_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2019_08_19_000000_create_failed_jobs_table.php on line 7
+[19-Nov-2024 20:43:29 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_06_143410_create_settings_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_06_143410_create_settings_table.php on line 7
+[19-Nov-2024 20:44:25 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_03_192315_create_categories_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_03_192315_create_categories_table.php on line 7
+[19-Nov-2024 20:45:27 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_25_171946_create_order_small_rates_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_25_171946_create_order_small_rates_table.php on line 7
+[19-Nov-2024 20:48:06 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_080337_add_neww_collls_in_orders_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_080337_add_neww_collls_in_orders_table.php on line 7
+[19-Nov-2024 20:50:06 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_081501_create_order_numbers_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_081501_create_order_numbers_table.php on line 7
+[19-Nov-2024 20:51:39 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_30_175937_add_neww_colss_in_orders_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_30_175937_add_neww_colss_in_orders_table.php on line 7
+[19-Nov-2024 20:55:29 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_06_28_191059_create_order_details_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_06_28_191059_create_order_details_table.php on line 7
+[19-Nov-2024 21:10:39 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_14_104215_add_new_colsss_in_orders_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_08_14_104215_add_new_colsss_in_orders_table.php on line 7
+[19-Nov-2024 21:49:15 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_24_185445_create_order_payments_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_08_24_185445_create_order_payments_table.php on line 7
+[21-Nov-2024 23:24:52 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_14_104215_add_new_colsss_in_orders_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_08_14_104215_add_new_colsss_in_orders_table.php on line 7
+[22-Nov-2024 10:34:43 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_06_27_180824_create_roles_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_06_27_180824_create_roles_table.php on line 7
+[23-Nov-2024 19:32:29 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_06_28_191059_create_order_details_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_06_28_191059_create_order_details_table.php on line 7
+[02-Dec-2024 20:54:30 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2014_10_12_000000_create_users_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2014_10_12_000000_create_users_table.php on line 7
+[02-Dec-2024 20:54:32 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2014_10_12_100000_create_password_resets_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2014_10_12_100000_create_password_resets_table.php on line 7
+[02-Dec-2024 20:54:34 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2019_08_19_000000_create_failed_jobs_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2019_08_19_000000_create_failed_jobs_table.php on line 7
+[02-Dec-2024 20:54:38 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_06_27_180824_create_roles_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_06_27_180824_create_roles_table.php on line 7
+[02-Dec-2024 20:54:40 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_06_27_190040_create_sizes_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_06_27_190040_create_sizes_table.php on line 7
+[02-Dec-2024 20:54:41 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_06_28_182554_create_orders_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_06_28_182554_create_orders_table.php on line 7
+[02-Dec-2024 20:54:44 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_06_28_191059_create_order_details_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_06_28_191059_create_order_details_table.php on line 7
+[02-Dec-2024 20:54:46 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_03_192315_create_categories_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_03_192315_create_categories_table.php on line 7
+[02-Dec-2024 20:54:49 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_04_192054_create_products_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_04_192054_create_products_table.php on line 7
+[02-Dec-2024 20:54:50 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_06_143410_create_settings_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_06_143410_create_settings_table.php on line 7
+[02-Dec-2024 20:54:54 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_09_173803_create_countries_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_09_173803_create_countries_table.php on line 7
+[02-Dec-2024 20:54:57 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_25_171946_create_order_small_rates_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_25_171946_create_order_small_rates_table.php on line 7
+[02-Dec-2024 20:54:59 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_30_175937_add_neww_colss_in_orders_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_30_175937_add_neww_colss_in_orders_table.php on line 7
+[02-Dec-2024 20:55:02 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_080337_add_neww_collls_in_orders_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_080337_add_neww_collls_in_orders_table.php on line 7
+[02-Dec-2024 20:55:05 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_081441_create_order_histories_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_081441_create_order_histories_table.php on line 7
+[02-Dec-2024 20:55:07 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_081501_create_order_numbers_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_081501_create_order_numbers_table.php on line 7
+[02-Dec-2024 20:55:11 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_14_104215_add_new_colsss_in_orders_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_08_14_104215_add_new_colsss_in_orders_table.php on line 7
+[02-Dec-2024 20:55:14 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_24_185445_create_order_payments_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_08_24_185445_create_order_payments_table.php on line 7
+[09-Dec-2024 09:52:17 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2014_10_12_000000_create_users_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2014_10_12_000000_create_users_table.php on line 7
+[16-Dec-2024 00:24:39 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_080337_add_neww_collls_in_orders_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_080337_add_neww_collls_in_orders_table.php on line 7
+[16-Dec-2024 02:40:37 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2019_08_19_000000_create_failed_jobs_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2019_08_19_000000_create_failed_jobs_table.php on line 7
+[16-Dec-2024 03:09:03 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_06_28_191059_create_order_details_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_06_28_191059_create_order_details_table.php on line 7
+[16-Dec-2024 05:09:56 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_06_27_180824_create_roles_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_06_27_180824_create_roles_table.php on line 7
+[16-Dec-2024 05:26:34 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_081501_create_order_numbers_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_081501_create_order_numbers_table.php on line 7
+[16-Dec-2024 05:27:59 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_30_175937_add_neww_colss_in_orders_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_30_175937_add_neww_colss_in_orders_table.php on line 7
+[16-Dec-2024 05:59:25 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_081441_create_order_histories_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_08_10_081441_create_order_histories_table.php on line 7
+[16-Dec-2024 06:05:33 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_09_173803_create_countries_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_09_173803_create_countries_table.php on line 7
+[16-Dec-2024 08:27:39 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_03_192315_create_categories_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_03_192315_create_categories_table.php on line 7
+[16-Dec-2024 08:29:14 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_06_143410_create_settings_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_06_143410_create_settings_table.php on line 7
+[16-Dec-2024 08:57:45 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_14_104215_add_new_colsss_in_orders_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_08_14_104215_add_new_colsss_in_orders_table.php on line 7
+[16-Dec-2024 09:04:07 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_08_24_185445_create_order_payments_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_08_24_185445_create_order_payments_table.php on line 7
+[16-Dec-2024 09:40:20 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_06_28_182554_create_orders_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_06_28_182554_create_orders_table.php on line 7
+[16-Dec-2024 10:02:31 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2014_10_12_000000_create_users_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2014_10_12_000000_create_users_table.php on line 7
+[16-Dec-2024 11:30:48 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2014_10_12_100000_create_password_resets_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2014_10_12_100000_create_password_resets_table.php on line 7
+[16-Dec-2024 12:04:12 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_04_192054_create_products_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_04_192054_create_products_table.php on line 7
+[16-Dec-2024 12:08:39 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_06_27_190040_create_sizes_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_06_27_190040_create_sizes_table.php on line 7
+[16-Dec-2024 14:29:01 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Migrations\Migration' not found in /home/hamiltob/public_html/nasa/database/migrations/2024_07_25_171946_create_order_small_rates_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/hamiltob/public_html/nasa/database/migrations/2024_07_25_171946_create_order_small_rates_table.php on line 7
