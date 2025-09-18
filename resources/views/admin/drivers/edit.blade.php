@@ -9,11 +9,11 @@
 
 <div class="container-xxl flex-grow-1 container-p-y">
     <h3>Edit Driver</h3>
-    <form action="{{ route('admin.drivers.update', $driver->id) }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('admin.drivers.update', $driver->id) }}" method="POST" id="expenseTypeForm" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         @include('admin.drivers.form', ['driver' => $driver])
-        <button type="submit" class="btn btn-success">Update</button>
+        <button type="submit" class="btn btn-success" id="addExpenseType">Update</button>
     </form>
 
 </div>
@@ -39,5 +39,27 @@ document.querySelectorAll('.image-input').forEach(input => {
         }
     });
 });
+
+
+    $(document).ready(function () {
+        $('#addExpenseType').on('click', function (e) {
+
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you really want to update this driver?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, update it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                  $('#expenseTypeForm').submit();
+                }
+            });
+        });
+    });
 </script>
 @endsection

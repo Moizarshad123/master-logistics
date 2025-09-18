@@ -10,7 +10,7 @@ class WheelerController extends Controller
 {
     public function index()
     {
-        $wheelers = Wheeler::all();
+        $wheelers = Wheeler::orderByDESC('id')->get();
         return view('admin.wheelers.index', compact('wheelers'));
     }
 

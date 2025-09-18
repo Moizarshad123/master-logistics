@@ -38,7 +38,7 @@
                             <a href="{{ route('admin.wheelers.edit', $wheeler) }}" class="btn btn-warning btn-sm">Edit</a>
                             <form action="{{ route('admin.wheelers.destroy', $wheeler) }}" method="POST" style="display:inline-block;">
                                 @csrf @method('DELETE')
-                                <button class="btn btn-danger btn-sm" onclick="return confirm('Delete this wheeler?')">Delete</button>
+                                <button class="btn btn-danger btn-sm deleteExpenseType">Delete</button>
                             </form>
                         </td>
                     </tr>
@@ -51,7 +51,28 @@
 <!-- ./ content -->
 @endsection
 
+
 @section('js')
-<script>
-</script>
+    <script>
+        $(document).ready(function () {
+            $('.deleteExpenseType').on('click', function (e) {
+                e.preventDefault();
+                const form = $(this).closest('form');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you really want to delete this wheeler?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+
+    </script>
 @endsection

@@ -9,10 +9,10 @@
 
 <div class="container-xxl flex-grow-1 container-p-y">
     <h3>Add Driver</h3>
-    <form action="{{ route('admin.drivers.store') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('admin.drivers.store') }}" method="POST" enctype="multipart/form-data" id="expenseTypeForm">
         @csrf
         @include('admin.drivers.form')
-        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="submit" class="btn btn-primary" id="addExpenseType">Save</button>
     </form>
 
 </div>
@@ -39,6 +39,26 @@ document.querySelectorAll('.image-input').forEach(input => {
         }
     });
 });
-</script>
+    $(document).ready(function () {
+        $('#addExpenseType').on('click', function (e) {
 
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you really want to add this driver?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, add it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                  $('#expenseTypeForm').submit();
+                }
+            });
+        });
+    });
+
+</script>
 @endsection

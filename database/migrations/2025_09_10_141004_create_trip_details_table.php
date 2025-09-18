@@ -12,17 +12,17 @@ class CreateTripDetailsTable extends Migration
             $table->id();
             $table->Integer("trip_id");
             $table->Date("start_date");
-            $table->Date("end_date");
-            $table->String("from_destination");
-            $table->String("to_destination");
-            $table->String("material");
-            $table->Integer("total_bags");
-            $table->Double("loading_labour");
-            $table->Double("unloading_labour");
-            $table->Double("rent");
-            $table->Double("advance");
-            $table->String("weight");
-            $table->String("status");
+            $table->Date("end_date")->nullable();
+            $table->String("from_destination")->nullable();
+            $table->String("to_destination")->nullable();
+            $table->String("material")->nullable();
+            $table->Integer("total_bags")->nullable();
+            $table->Double("loading_labour")->nullable();
+            $table->Double("unloading_labour")->nullable();
+            $table->Double("rent")->nullable();
+            $table->Double("advance")->nullable();
+            $table->String("weight")->nullable();
+            $table->String("status")->default("Started");
             $table->timestamps();
         });
     }

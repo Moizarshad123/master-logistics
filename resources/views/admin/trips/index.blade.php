@@ -40,7 +40,7 @@
                             <a href="{{ route('admin.trips.edit', $trip->id) }}" class="btn btn-sm btn-warning">Edit</a>
                             <form action="{{ route('admin.trips.destroy', $trip->id) }}" method="POST" style="display:inline;">
                                 @csrf @method('DELETE')
-                                <button class="btn btn-sm btn-danger" onclick="return confirm('Delete this trip?')">Delete</button>
+                                <button class="btn btn-sm btn-danger deleteExpenseType">Delete</button>
                             </form>
                         </td>
                     </tr>
@@ -52,4 +52,30 @@
 
     {{ $trips->links() }}
 </div>
+@endsection
+
+@section('js')
+<script>
+    $(document).ready(function () {
+        $('.deleteExpenseType').on('click', function (e) {
+            e.preventDefault();
+            const form = $(this).closest('form');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you really want to delete this trip?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>
+
+
 @endsection

@@ -34,10 +34,10 @@
                         <td>{{ $item->name }}</td>
                         <td>
                             <a href="{{ route('admin.expense-types.edit', $item->id)}}" class="btn btn-primary btn-sm">Edit</a>
-                            <form action="{{ route('admin.expense-types.destroy', $item) }}" method="POST" style="display:inline-block;">
+                            <form action="{{ route('admin.expense-types.destroy', $item) }}"  method="POST" style="display:inline-block;">
                                 @csrf
                                 @method('DELETE')
-                                <button class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                                <button class="btn btn-sm btn-danger deleteExpenseType" >Delete</button>
                             </form>
                         </td>
                     </tr>
@@ -59,8 +59,29 @@
 </div>
 <!-- ./ content -->
 @endsection
-
 @section('js')
 <script>
+    $(document).ready(function () {
+        $('.deleteExpenseType').on('click', function (e) {
+
+            e.preventDefault();
+            const form = $(this).closest('form');
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you really want to delete this expnese?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                  form.submit();
+                }
+            });
+        });
+    });
+
 </script>
 @endsection

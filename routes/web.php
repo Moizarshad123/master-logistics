@@ -31,6 +31,8 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
 
     Route::get('get-vehicle-expenses', [VehicleController::class, 'getVehicleExpenses'])->name('getVehicleExpenses');
 
+    // Route::get('/endtrip/{vehicle}/expenses', [VehicleController::class, 'expenses'])->name('vehicles.expenses');
+    Route::get('endtrip/{id}', [TripController::class, 'endTrip']);
 
 
     Route::get('/vehicles/{vehicle}/expenses', [VehicleController::class, 'expenses'])->name('vehicles.expenses');

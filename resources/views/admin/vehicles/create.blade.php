@@ -10,11 +10,11 @@
 
 <div class="container-xxl flex-grow-1 container-p-y">
     <h3>Add Vehicle</h3>
-     <form action="{{ route('admin.vehicles.store') }}" method="POST" enctype="multipart/form-data">
+     <form action="{{ route('admin.vehicles.store') }}" method="POST" enctype="multipart/form-data" id="expenseTypeForm">
         @csrf
         @include('admin.vehicles.form')
         <a href="{{ route('admin.vehicles.index') }}" class="btn btn-secondary mt-2">Back</a>
-        <button type="submit" class="btn btn-success mt-2">Save</button>
+        <button type="submit" class="btn btn-success mt-2" id="addExpenseType">Save</button>
     </form>
 
 </div>
@@ -47,6 +47,29 @@
             $('#expense_types').select2({
                 placeholder: "Select Expenses",
                 allowClear: true
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('#addExpenseType').on('click', function (e) {
+
+                e.preventDefault();
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you really want to add this vehicle?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, add it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                    $('#expenseTypeForm').submit();
+                    }
+                });
             });
         });
     </script>

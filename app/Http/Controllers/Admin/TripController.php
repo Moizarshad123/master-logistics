@@ -126,6 +126,17 @@ class TripController extends Controller
         }
     }
 
+    public function endTrip($tripDetailId) {
+
+        $trip = TripDetail::findOrFail($tripDetailId);
+        $trip->end_date = date('Y-m-d');
+        $trip->status   = "Ended";
+        $trip->save();
+
+        return response()->json(true);
+
+    }
+
 
     public function destroy(Trip $trip)
     {

@@ -2,13 +2,12 @@
 @section('title', 'Vehicles')
 
 @section('css')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" crossorigin="anonymous">
 @endsection
 
 @section('content')
   <!-- content -->
   <div class="content ">
-
     <div class="mb-4">
         <div class="row">
             <div class="col-md-10">
@@ -52,7 +51,7 @@
                             <a href="{{ route('admin.vehicles.edit', $vehicle->id) }}" class="btn btn-sm btn-warning">Edit</a>
                             <form action="{{ route('admin.vehicles.destroy', $vehicle->id) }}" method="POST" style="display:inline-block;">
                                 @csrf @method('DELETE')
-                                <button class="btn btn-sm btn-danger" onclick="return confirm('Delete this vehicle?')">Delete</button>
+                                <button class="btn btn-sm btn-danger deleteExpenseType">Delete</button>
                             </form>
                             <a href="{{ route('admin.vehicles.expenses', $vehicle->id) }}" class="btn btn-sm btn-info">View Expenses</a>
 
@@ -72,12 +71,33 @@
         </div>
     </div>
 
-
 </div>
 <!-- ./ content -->
 @endsection
 
 @section('js')
 <script>
+    $(document).ready(function () {
+        $('.deleteExpenseType').on('click', function (e) {
+
+            e.preventDefault();
+            const form = $(this).closest('form');
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you really want to delete this vehicle?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                  form.submit();
+                }
+            });
+        });
+    });
+
 </script>
 @endsection

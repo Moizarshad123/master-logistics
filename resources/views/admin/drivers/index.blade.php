@@ -72,8 +72,7 @@
                         <form action="{{ route('admin.drivers.destroy', $driver) }}" method="POST"
                             style="display:inline-block;">
                             @csrf @method('DELETE')
-                            <button type="submit" onclick="return confirm('Are you sure?')"
-                                class="btn btn-danger btn-sm">
+                            <button type="submit" class="btn btn-danger btn-sm deleteExpenseType">
                                 Delete
                             </button>
                         </form>
@@ -100,5 +99,27 @@
 
 @section('js')
 <script>
+    $(document).ready(function () {
+        $('.deleteExpenseType').on('click', function (e) {
+
+            e.preventDefault();
+            const form = $(this).closest('form');
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you really want to delete this driver?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                  form.submit();
+                }
+            });
+        });
+    });
+
 </script>
 @endsection

@@ -1,18 +1,18 @@
 <div class="trip-detail border rounded p-3 mb-3">
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-4">
             <label>Start Date</label>
             <input type="date" name="trip_details[{{ $index }}][start_date]" value="{{ old("trip_details.$index.start_date", $detail->start_date ?? '') }}" class="form-control" required>
         </div>
-        <div class="col-md-3">
+        {{-- <div class="col-md-3">
             <label>End Date</label>
             <input type="date" name="trip_details[{{ $index }}][end_date]" value="{{ old("trip_details.$index.end_date", $detail->end_date ?? '') }}" class="form-control">
-        </div>
-        <div class="col-md-3">
+        </div> --}}
+        <div class="col-md-4">
             <label>From</label>
             <input type="text" name="trip_details[{{ $index }}][from_destination]" value="{{ old("trip_details.$index.from_destination", $detail->from_destination ?? '') }}" class="form-control">
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             <label>To</label>
             <input type="text" name="trip_details[{{ $index }}][to_destination]" value="{{ old("trip_details.$index.to_destination", $detail->to_destination ?? '') }}" class="form-control">
         </div>
@@ -50,8 +50,6 @@
             <label>Weight</label>
             <input type="number" step="0.01" name="trip_details[{{ $index }}][weight]" value="{{ old("trip_details.$index.weight", $detail->weight ?? '') }}" class="form-control">
         </div>
-        <div class="col-md-3 d-flex align-items-end">
-            <button type="button" class="btn btn-danger removeRow">Remove</button>
-        </div>
+        
     </div>
 </div>

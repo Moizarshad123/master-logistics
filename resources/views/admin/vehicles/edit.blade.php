@@ -9,10 +9,10 @@
 <div class="container-xxl flex-grow-1 container-p-y">
 
     <h3>Edit Vehicle</h3>
-    <form method="POST" action="{{ route('admin.vehicles.update', $vehicle->id) }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('admin.vehicles.update', $vehicle->id) }}" enctype="multipart/form-data" id="expenseTypeForm">
         @csrf @method('PUT')
         @include('admin.vehicles.form')
-        <button class="btn btn-primary">Update</button>
+        <button class="btn btn-primary" id="addExpenseType">Update</button>
     </form>
 </div>
 @endsection
@@ -43,6 +43,30 @@
         $('#expense_types').select2({
             placeholder: "Select Expenses",
             allowClear: true
+        });
+    });
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        $('#addExpenseType').on('click', function (e) {
+
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you really want to update this vehicle?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, update it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                $('#expenseTypeForm').submit();
+                }
+            });
         });
     });
 </script>

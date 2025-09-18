@@ -4,7 +4,7 @@
 @section('content')
 <div class="content">
     <h3>Edit Trip</h3>
-    <form action="{{ route('admin.trips.update', $trip->id) }}" method="POST">
+    <form action="{{ route('admin.trips.update', $trip->id) }}" method="POST" id="expenseTypeForm">
         @csrf @method('PUT')
 
         <div class="row mb-3">
@@ -71,7 +71,7 @@
 
         <button type="button" class="btn btn-sm btn-success" id="addRow">+ Add Detail</button>
         <br><br>
-        <button type="submit" class="btn btn-primary">Update Trip</button>
+        <button type="submit" class="btn btn-primary" id="addExpenseType">Update Trip</button>
     </form>
 </div>
 @endsection
@@ -87,19 +87,15 @@
             let row = `
             <div class="trip-detail border rounded p-3 mb-3">
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <label>Start Date</label>
                         <input type="date" name="trip_details[${index}][start_date]" value="{{date('Y-m-d')}}" class="form-control" required>
                     </div>
-                    <div class="col-md-3">
-                        <label>End Date</label>
-                        <input type="date" name="trip_details[${index}][end_date]" value="{{date('Y-m-d')}}" class="form-control">
-                    </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <label>From</label>
                         <input type="text" name="trip_details[${index}][from_destination]" class="form-control">
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <label>To</label>
                         <input type="text" name="trip_details[${index}][to_destination]" class="form-control">
                     </div>
@@ -147,6 +143,66 @@
 
         $(document).on("click", ".removeRow", function () {
             $(this).closest(".trip-detail").remove();
+        });
+
+        $('.endTripBtn').on('click', function () {
+            const tripId = $(this).data('trip-id');
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you really want to end this trip?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, end it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `/admin/endtrip/${tripId}`,
+                        type: 'GET',
+                        data: {
+                            _token: '{{ csrf_token() }}' // Required for Laravel POST
+                        },
+                        success: function (response) {
+                            Swal.fire(
+                                'Trip Ended!',
+                                'The trip has been successfully ended.',
+                                'success'
+                            );
+
+                            // Optional: Update UI or disable button
+                            $('#endTripBtn').prop('disabled', true).text('Trip Ended');
+                        },
+                        error: function (xhr) {
+                            Swal.fire(
+                                'Error!',
+                                'Something went wrong. Please try again.',
+                                'error'
+                            );
+                        }
+                    });
+                }
+            });
+        });
+
+        $('#addExpenseType').on('click', function (e) {
+
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you really want to update this trip?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, update it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                  $('#expenseTypeForm').submit();
+                }
+            });
         });
     });
 

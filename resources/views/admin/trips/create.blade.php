@@ -4,7 +4,7 @@
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <h3>Create Trip</h3>
-        <form action="{{ route('admin.trips.store') }}" method="POST">
+        <form action="{{ route('admin.trips.store') }}" method="POST" id="expenseTypeForm">
             @csrf
 
             <div class="row mb-3">
@@ -51,7 +51,7 @@
             </div>
 
 
-            <button type="submit" class="btn btn-primary">Save Trip</button>
+            <button type="submit" class="btn btn-primary" id="addExpenseType">Save Trip</button>
         </form>
     </div>
 @endsection
@@ -67,19 +67,15 @@
             let row = `
             <div class="trip-detail border rounded p-3 mb-3">
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <label>Start Date</label>
                         <input type="date" name="trip_details[${index}][start_date]" value="{{date('Y-m-d')}}" class="form-control" required>
                     </div>
-                    <div class="col-md-3">
-                        <label>End Date</label>
-                        <input type="date" name="trip_details[${index}][end_date]" value="{{date('Y-m-d')}}" class="form-control">
-                    </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <label>From</label>
                         <input type="text" name="trip_details[${index}][from_destination]" class="form-control">
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <label>To</label>
                         <input type="text" name="trip_details[${index}][to_destination]" class="form-control">
                     </div>
@@ -148,6 +144,25 @@
             } else {
                 $("#vehicleExpensesContainer").empty();
             }
+        });
+
+        $('#addExpenseType').on('click', function (e) {
+
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you really want to add this trip?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, add it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                  $('#expenseTypeForm').submit();
+                }
+            });
         });
     });
 
