@@ -25,7 +25,7 @@
                         {{ $expense->name }}
                         <div>
                             <!-- Edit Button -->
-                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editExpenseModal{{ $expense->id }}">
+                            <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#editExpenseModal{{ $expense->id }}">
                                 Edit
                             </button>
                             <!-- Delete Button -->
@@ -63,7 +63,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary">Update</button>
+                                        <button type="submit" class="btn btn-success">Update</button>
                                     </div>
                                 </div>
                             </form>

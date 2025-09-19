@@ -19,34 +19,35 @@
     </div>
 
     <div class="row mt-2">
-        <div class="col-md-3">
+        <div class="col-md-4">
             <label>Material</label>
             <input type="text" name="trip_details[{{ $index }}][material]" value="{{ old("trip_details.$index.material", $detail->material ?? '') }}" class="form-control">
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             <label>Total Bags</label>
             <input type="number" name="trip_details[{{ $index }}][total_bags]" value="{{ old("trip_details.$index.total_bags", $detail->total_bags ?? '') }}" class="form-control">
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             <label>Loading Labour</label>
             <input type="text" name="trip_details[{{ $index }}][loading_labour]" value="{{ old("trip_details.$index.loading_labour", $detail->loading_labour ?? '') }}" class="form-control">
         </div>
-        <div class="col-md-3">
-            <label>Unloading Labour</label>
-            <input type="text" name="trip_details[{{ $index }}][unloading_labour]" value="{{ old("trip_details.$index.unloading_labour", $detail->unloading_labour ?? '') }}" class="form-control">
-        </div>
+        
     </div>
 
     <div class="row mt-2">
-        <div class="col-md-3">
+        <div class="col-md-4">
+            <label>Unloading Labour</label>
+            <input type="text" name="trip_details[{{ $index }}][unloading_labour]" value="{{ old("trip_details.$index.unloading_labour", $detail->unloading_labour ?? '') }}" class="form-control">
+        </div>
+        <div class="col-md-4">
             <label>Rent</label>
             <input type="number" name="trip_details[{{ $index }}][rent]" value="{{ old("trip_details.$index.rent", $detail->rent ?? '') }}" class="form-control">
         </div>
-        <div class="col-md-3">
+        {{-- <div class="col-md-3">
             <label>Advance</label>
             <input type="number" name="trip_details[{{ $index }}][advance]" value="{{ old("trip_details.$index.advance", $detail->advance ?? '') }}" class="form-control">
-        </div>
-        <div class="col-md-3">
+        </div> --}}
+        <div class="col-md-4">
             <label>Weight</label>
             <input type="number" step="0.01" name="trip_details[{{ $index }}][weight]" value="{{ old("trip_details.$index.weight", $detail->weight ?? '') }}" class="form-control">
         </div>

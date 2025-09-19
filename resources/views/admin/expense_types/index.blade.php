@@ -33,7 +33,7 @@
                     <tr>
                         <td>{{ $item->name }}</td>
                         <td>
-                            <a href="{{ route('admin.expense-types.edit', $item->id)}}" class="btn btn-primary btn-sm">Edit</a>
+                            <a href="{{ route('admin.expense-types.edit', $item->id)}}" class="btn btn-success btn-sm">Edit</a>
                             <form action="{{ route('admin.expense-types.destroy', $item) }}"  method="POST" style="display:inline-block;">
                                 @csrf
                                 @method('DELETE')

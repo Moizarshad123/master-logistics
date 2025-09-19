@@ -25,6 +25,7 @@ class DriverController extends Controller
         $request->validate([
             'name'       => 'required|string|max:255',
             'phone'      => 'required|string|max:20',
+            'salary'     => 'required',
             'address'    => 'nullable|string',
             'cnic_front' => 'nullable|image|max:2048',
             'cnic_back'  => 'nullable|image|max:2048',
@@ -89,6 +90,7 @@ class DriverController extends Controller
         Driver::create([
             'name'                  => $request->name,
             'phone'                 => $request->phone,
+            'salary'                => $request->salary,
             'address'               => $request->address,
             'cnic_front'            => $cnic_front,
             'cnic_back'             => $cnic_back,
@@ -173,6 +175,7 @@ class DriverController extends Controller
         $driver->name    = $request->name;
         $driver->phone   = $request->phone;
         $driver->address = $request->address;
+        $driver->salary  = $request->salary;
         $driver->save();
 
         return redirect()->route('admin.drivers.index')->with('success', 'Driver updated successfully.');

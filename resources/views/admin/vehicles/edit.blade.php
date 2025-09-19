@@ -12,7 +12,7 @@
     <form method="POST" action="{{ route('admin.vehicles.update', $vehicle->id) }}" enctype="multipart/form-data" id="expenseTypeForm">
         @csrf @method('PUT')
         @include('admin.vehicles.form')
-        <button class="btn btn-primary" id="addExpenseType">Update</button>
+        <button class="btn btn-success" id="addExpenseType">Update</button>
     </form>
 </div>
 @endsection

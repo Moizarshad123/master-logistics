@@ -28,6 +28,7 @@
                     <th>Image</th>
                     <th>Name</th>
                     <th>Phone</th>
+                    <th>Salary</th>
                     <th>Address</th>
                     <th>CNIC Front</th>
                     <th>CNIC Back</th>
@@ -46,6 +47,8 @@
                     </td>
                     <td>{{ $driver->name }}</td>
                     <td>{{ $driver->phone }}</td>
+                    <td>{{ $driver->salary }}</td>
+
                     <td>{{ $driver->address }}</td>
                     <td>
                         @if($driver->cnic_front)

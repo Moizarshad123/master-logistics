@@ -11,12 +11,19 @@ class Trip extends Model
     protected $fillable = [
         "trip_no",
         "vehicle_id",
-        "driver_id"
+        "driver_id",
+        "balance"
     ];
 
     public function tripDetails()
     {
         return $this->hasMany(TripDetail::class);
+    }
+
+
+    public function tripPayments()
+    {
+        return $this->hasMany(TripPayment::class);
     }
 
     public function tripExpenses()

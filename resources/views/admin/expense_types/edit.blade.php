@@ -17,7 +17,7 @@
             <input type="text" name="name" class="form-control" value="{{ old('name', $expenseType->name) }}" required>
             @error('name')<span class="text-danger">{{ $message }}</span>@enderror
         </div>
-        <button type="submit" class="btn btn-primary mt-2" id="addExpenseType">Update</button>
+        <button type="submit" class="btn btn-success mt-2" id="addExpenseType">Update</button>
         <a href="{{ route('admin.expense-types.index') }}" class="btn btn-secondary mt-2">Back</a>
     </form>
 

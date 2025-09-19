@@ -13,7 +13,7 @@
         @csrf
         @method('PUT')
         @include('admin.drivers.form', ['driver' => $driver])
-        <button type="submit" class="btn btn-success" id="addExpenseType">Update</button>
+        <button type="submit" style="margin-top: 25px;" class="btn btn-success" id="addExpenseType">Update Driver</button>
     </form>
 
 </div>

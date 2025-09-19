@@ -19,6 +19,7 @@ class VehicleController extends Controller
 
         $expenses = Vehicle::with('expenseTypes')->findOrFail($request->vehicle_id);
         $html = "";
+        // <td>' . e($expense->name) . '</td>
         if(count($expenses->expenseTypes) > 0) {
             $html .= ' <table class="table table-bordered">
             <thead>
@@ -27,18 +28,24 @@ class VehicleController extends Controller
                     <th>Expense Amount</th>
                 </tr>
             </thead>
-            <tbody>';
+            <tbody id="expensesTableBody">';
             foreach ($expenses->expenseTypes as $expense) {
                 $html .= '<tr>
-                    <td>' . e($expense->name) . '</td>
+
                     <td>
+                     <input type="text" 
+                                name="expenses[${extraExpenseIndex}][name]" 
+                                class="form-control" value="'.e($expense->name).'" readonly>
+                    </td>
+                    <td>
+                        <input type="hidden" 
+                            name="expenses['.$expense->id.'][name]" 
+                            value="'.$expense->name.'">
                         <input type="number" step="0.01" 
                             name="expenses['.$expense->id.'][amount]" 
                             class="form-control" 
                             placeholder="Enter amount">
-                        <input type="hidden" 
-                            name="expenses['.$expense->id.'][expense_type_id]" 
-                            value="'.$expense->id.'">
+                        
                     </td>
                 </tr>';
             }
@@ -106,6 +113,7 @@ class VehicleController extends Controller
 
     public function store(Request $request)
     {
+        
 
         try {
             $request->validate([

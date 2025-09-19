@@ -19,7 +19,7 @@ class TripDetail extends Model
         "loading_labour",
         "unloading_labour",
         "rent",
-        "advance",
+        // "advance",
         "weight",
         "status"
     ];

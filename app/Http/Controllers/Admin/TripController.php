@@ -8,6 +8,7 @@ use App\Models\TripDetail;
 use App\Models\Vehicle;
 use App\Models\Driver;
 use App\Models\TripVehicleExpense;
+use App\Models\TripPayment;
 use Illuminate\Http\Request;
 use DB;
 class TripController extends Controller
@@ -27,7 +28,6 @@ class TripController extends Controller
 
     public function store(Request $request)
     {
-
         try {
             $request->validate([
                 'vehicle_id' => 'required',
@@ -39,17 +39,36 @@ class TripController extends Controller
             $trip_no = str_pad(Trip::max('id') + 1, 6, '0', STR_PAD_LEFT);
     
             $trip = Trip::create([
-                'trip_no' => $trip_no,
-                'vehicle_id' => $request->vehicle_id,
-                'driver_id' => $request->driver_id,
-            ]);
+                                'trip_no'    => $trip_no,
+                                'vehicle_id' => $request->vehicle_id,
+                                'driver_id'  => $request->driver_id,
+                                "balance"    => $request->balance
+                            ]);
 
-            if(count($request['expenses']) > 0) {
-                foreach ($request['expenses'] as $expenseData) {
+
+            if (!empty($request->payment_type) && is_array($request->payment_type)) {
+                foreach ($request->payment_type as $index => $type) {
+                    TripPayment::create([
+                        'trip_id'      => $trip->id,
+                        'driver_id'    => $request->driver_id,
+                        'payment_type' => $type,
+                        'amount'       => $request->expense_amount[$index] ?? 0,
+                        'date'         => $request->date[$index] ?? now(),
+                        'comments'     => $request->comments[$index] ?? null,
+                    ]);
+                }
+            }
+
+            if (!empty($request->expenses)) {
+                foreach ($request->expenses as $expenseData) {
+
+                    if (empty($expenseData['name']) || empty($expenseData['amount'])) {
+                        continue;
+                    }
                     TripVehicleExpense::create([
                         'trip_id'    => $trip->id,
                         'vehicle_id' => $request->vehicle_id,
-                        'expense'    => $expenseData['expense_type_id'],
+                        'expense'    => $expenseData['name'],
                         'amount'     => $expenseData['amount'],
                     ]);
                 }
@@ -72,7 +91,7 @@ class TripController extends Controller
 
     public function show(Trip $trip)
     {
-        $trip->load(['vehicle', 'driver', 'tripDetails', 'tripExpenses', 'tripExpenses.expenseName']);
+        $trip->load(['vehicle', 'driver', 'tripDetails', 'tripPayments', 'tripExpenses', 'tripExpenses.expenseName']);
         return view('admin.trips.detail', compact('trip'));
     }
 
@@ -82,7 +101,9 @@ class TripController extends Controller
         $vehicles = Vehicle::all();
         $drivers  = Driver::all();
         $expenses = TripVehicleExpense::with("expenseName")->where("trip_id", $trip->id)->get();
-        return view('admin.trips.edit', compact('trip', 'vehicles', 'drivers', 'expenses'));
+        $payments = TripPayment::where("trip_id", $trip->id)->get();
+
+        return view('admin.trips.edit', compact('trip', 'vehicles', 'drivers', 'expenses', 'payments'));
     }
 
     public function update(Request $request, Trip $trip)
@@ -97,6 +118,75 @@ class TripController extends Controller
            DB::beginTransaction();
 
            $trip->update($request->only('trip_no', 'vehicle_id', 'driver_id'));
+
+            $paymentTypes   = $request->payment_type;
+            $amounts        = $request->expense_amount;
+            $dates          = $request->date;
+            $comments       = $request->comments;
+            $paymentIds     = $request->payment_id ?? []; // may not exist for new rows
+
+            for ($i = 0; $i < count($paymentTypes); $i++) {
+                $data = [
+                    'trip_id'      => $trip->id,
+                    'driver_id'    => $request->driver_id,
+                    'payment_type' => $paymentTypes[$i],
+                    'amount'       => $amounts[$i],
+                    'date'         => $dates[$i],
+                    'comments'     => $comments[$i],
+                ];
+
+                if (!empty($paymentIds[$i])) {
+                    // Update existing
+                    TripPayment::where('id', $paymentIds[$i])->update($data);
+                } else {
+                    // Insert new
+                    TripPayment::create($data);
+                }
+            }
+
+
+           $submittedExpenseIds = [];
+
+            // If you want to delete any existing expenses that the user removed from the form:
+        //    TripVehicleExpense::where('trip_id', $trip->id)
+        //                     ->whereNotIn('id', $submittedExpenseIds)
+        //                     ->delete();
+
+            if (!empty($request->expenses)) {
+                foreach ($request->expenses as $expenseData) {
+                    // Skip incomplete rows
+                    if (empty($expenseData['name']) || empty($expenseData['amount'])) {
+                        continue;
+                    }
+
+                    // Update existing expense
+                    if (!empty($expenseData['id'])) {
+                        $existing = TripVehicleExpense::find($expenseData['id']);
+
+                        if ($existing) {
+                            $existing->update([
+                                'expense' => $expenseData['name'],
+                                'amount'  => $expenseData['amount'],
+                            ]);
+
+                            $submittedExpenseIds[] = $existing->id;
+                        }
+                    }
+                    // Insert new expense
+                    else {
+                        $new = TripVehicleExpense::create([
+                            'trip_id'    => $trip->id,
+                            'vehicle_id' => $trip->vehicle_id,
+                            'expense'    => $expenseData['name'],
+                            'amount'     => $expenseData['amount'],
+                        ]);
+
+                        $submittedExpenseIds[] = $new->id;
+                    }
+                }
+            }
+
+
    
            $existingIds = [];
            if ($request->trip_details) {
@@ -134,9 +224,7 @@ class TripController extends Controller
         $trip->save();
 
         return response()->json(true);
-
     }
-
 
     public function destroy(Trip $trip)
     {

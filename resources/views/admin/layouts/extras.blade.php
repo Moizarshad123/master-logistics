@@ -208,7 +208,7 @@
                     </ul>
                 </div>
                 <div class="tab-pane-footer">
-                    <a href="#" class="btn btn-primary btn-block">
+                    <a href="#" class="btn btn-success btn-block">
                         <i class="bi bi-plus me-2"></i> Add Notes
                     </a>
                 </div>
@@ -364,7 +364,7 @@
         </ul>
     </div>
     <div class="sidebar-action">
-        <a href="#" class="btn btn-primary">All Settings</a>
+        <a href="#" class="btn btn-success">All Settings</a>
     </div>
 </div>
 <!-- ./ settings sidebar -->

@@ -20,7 +20,7 @@ class CreateTripDetailsTable extends Migration
             $table->Double("loading_labour")->nullable();
             $table->Double("unloading_labour")->nullable();
             $table->Double("rent")->nullable();
-            $table->Double("advance")->nullable();
+            // $table->Double("advance")->nullable();
             $table->String("weight")->nullable();
             $table->String("status")->default("Started");
             $table->timestamps();

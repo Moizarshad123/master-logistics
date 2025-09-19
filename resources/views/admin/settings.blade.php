@@ -68,7 +68,7 @@
             <div class="row" style="margin-top: 20px">
                 <div class="col">
                     <div class="form-group">
-                        <button type="submit" class="btn btn-primary">Update Setting</button>
+                        <button type="submit" class="btn btn-success">Update Setting</button>
                     </div>
                 </div>
             </div>

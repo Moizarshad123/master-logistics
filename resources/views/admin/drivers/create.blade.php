@@ -12,7 +12,7 @@
     <form action="{{ route('admin.drivers.store') }}" method="POST" enctype="multipart/form-data" id="expenseTypeForm">
         @csrf
         @include('admin.drivers.form')
-        <button type="submit" class="btn btn-primary" id="addExpenseType">Save</button>
+        <button type="submit"  style="margin-top: 25px;" class="btn btn-success" id="addExpenseType">Add Driver</button>
     </form>
 
 </div>

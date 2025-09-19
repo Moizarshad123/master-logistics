@@ -59,7 +59,7 @@
                                     </div>
                                     <div class="text-center text-lg-start">
                                         {{-- <p class="small">Can't access your account? <a href="#">Reset your password now</a>.</p> --}}
-                                        <button type="submit" class="btn btn-primary">Sign In</button>
+                                        <button type="submit" class="btn btn-success">Sign In</button>
                                     </div>
                                 </form>
                                

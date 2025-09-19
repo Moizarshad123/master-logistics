@@ -11,6 +11,7 @@ class Driver extends Model
     protected $fillable = [
         'name',
         'phone',
+        "salary",
         'cnic_front',
         'cnic_back',
         'driving_license_front',

@@ -1,11 +1,15 @@
 <div class="row">
-    <div class="col-md-6">
-        <label for="name" class="form-label">Driver Name</label>
+    <div class="col-md-4">
+        <label for="name" class="form-label">Driver Name<span style="color: red">*</span></label>
         <input type="text" name="name" id="name" value="{{ old('name', $driver->name ?? '') }}" class="form-control" required>
     </div>
-    <div class="col-md-6">
-        <label for="phone" class="form-label">Phone</label>
+    <div class="col-md-4">
+        <label for="phone" class="form-label">Phone<span style="color: red">*</span></label>
         <input type="text" name="phone" id="phone" value="{{ old('phone', $driver->phone ?? '') }}" class="form-control" required>
+    </div>
+    <div class="col-md-4">
+        <label for="phone" class="form-label">Salary<span style="color: red">*</span></label>
+        <input type="number" min="1" name="salary" id="salary" value="{{ old('salary', $driver->salary ?? '') }}" class="form-control" required>
     </div>
 </div>
 

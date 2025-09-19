@@ -17,6 +17,35 @@
         </div>
     </div>
 
+    <h5>Trip Payments</h5>
+    <div style="max-height: 300px; overflow-y: auto;">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Payment Type</th>
+                    <th>Payment Date</th>
+                    <th>Amount</th>
+                    <th>Comment</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($trip->tripPayments as $detail)
+                    <tr>
+                        <td>{{ $detail->payment_type }}</td>
+                        <td>{{ date('d M Y', strtotime($detail->date)) ?? "" }}</td>
+                        <td>{{ number_format($detail->amount) }}</td>
+                        <td>{{ $detail->comments }}</td>
+                        
+                    </tr>
+                @empty
+                    <tr><td colspan="12" class="text-center">No trip details added.</td></tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
+
+
     <h5>Trip Detail Records</h5>
     <div style="max-height: 300px; overflow-y: auto;">
         <table class="table table-bordered">
@@ -31,7 +60,7 @@
                     <th>Loading Labour</th>
                     <th>Unloading Labour</th>
                     <th>Rent</th>
-                    <th>Advance</th>
+                    {{-- <th>Advance</th> --}}
                     <th>Weight</th>
                     <th>Status</th>
                     <th>Action</th>
@@ -39,32 +68,32 @@
             </thead>
             <tbody>
                 @forelse($trip->tripDetails as $detail)
-                <tr>
-                    <td>{{ date('d M Y', strtotime($detail->start_date)) }}</td>
-                    <td>{{ date('d M Y', strtotime($detail->end_date)) }}</td>
-                    <td>{{ $detail->from_destination }}</td>
-                    <td>{{ $detail->to_destination }}</td>
-                    <td>{{ $detail->material }}</td>
-                    <td>{{ $detail->total_bags }}</td>
-                    <td>{{ $detail->loading_labour }}</td>
-                    <td>{{ $detail->unloading_labour }}</td>
-                    <td>{{ $detail->rent }}</td>
-                    <td>{{ $detail->advance }}</td>
-                    <td>{{ $detail->weight }}</td>
-                    <td>
-                        @if($detail->status == 'Started')
-                            <span class="badge badge-primary">Started</span>
-                        @elseif($detail->status == 'Ended')
-                            <span class="badge badge-success">Ended</span>
-                        @endif
-                    </td>
+                    <tr>
+                        <td>{{ date('d M Y', strtotime($detail->start_date)) ?? "" }}</td>
+                        <td>{{ isset($detail->end_date) ? date('d M Y', strtotime($detail->end_date)) : ""}}</td>
+                        <td>{{ $detail->from_destination }}</td>
+                        <td>{{ $detail->to_destination }}</td>
+                        <td>{{ $detail->material }}</td>
+                        <td>{{ $detail->total_bags }}</td>
+                        <td>{{ $detail->loading_labour }}</td>
+                        <td>{{ $detail->unloading_labour }}</td>
+                        <td>{{ $detail->rent }}</td>
+                        {{-- <td>{{ $detail->advance }}</td> --}}
+                        <td>{{ $detail->weight }}</td>
+                        <td>
+                            @if($detail->status == 'Started')
+                                <span class="badge badge-primary">Started</span>
+                            @elseif($detail->status == 'Ended')
+                                <span class="badge badge-success">Ended</span>
+                            @endif
+                        </td>
 
-                    <td>
-                        @if($detail->status == "Started")
-                            <button type="button" data-trip-id="{{ $detail->id }}"  class="btn btn-danger btn-sm endTripBtn">End Trip</button>
-                        @endif
-                    </td>
-                </tr>
+                        <td>
+                            @if($detail->status == "Started")
+                                <button type="button" data-trip-id="{{ $detail->id }}"  class="btn btn-danger btn-sm endTripBtn">End Trip</button>
+                            @endif
+                        </td>
+                    </tr>
                 @empty
                     <tr><td colspan="12" class="text-center">No trip details added.</td></tr>
                 @endforelse
@@ -84,7 +113,7 @@
         <tbody>
             @forelse($trip->tripExpenses as $expense)
                 <tr>
-                    <td>{{ $expense->expenseName->name ?? "" }}</td>
+                    <td>{{ $expense->expense ?? "" }}</td>
                     <td>{{ $expense->amount }}</td>
                 </tr>
             @empty
