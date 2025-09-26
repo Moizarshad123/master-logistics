@@ -80,22 +80,20 @@
             </li>
 
 
-            {{-- <li>
+            <li>
                 <a href="javascript:;">
                     <span class="nav-link-icon">
                         <i class="bi bi-receipt"></i>
                     </span>
-                    <span>Tills</span>
+                    <span>Reports</span>
                 </a>
                 <ul>
                     <li>
-                        <a href="{{ route('admin.cashTill') }}" id="tillCashIn">Cash In + Out</a>
+                        <a href="{{ route('admin.tripVehicleReport') }}">Trip Vehicle Report</a>
                     </li>
-                    <li>
-                        <a href="{{ route('admin.cashTill') }}" id="tillCashOut">Cash Out</a>
-                    </li>
+                    
                 </ul>
-            </li> --}}
+            </li>
 
             <li>
                 <a  href="{{route('admin.logout') }}">

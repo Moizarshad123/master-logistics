@@ -14,6 +14,8 @@
             <p><strong>Trip No:</strong> {{ $trip->trip_no }}</p>
             <p><strong>Vehicle:</strong> {{ $trip->vehicle->vehicle_no ?? 'N/A' }}</p>
             <p><strong>Driver:</strong> {{ $trip->driver->name ?? 'N/A' }}</p>
+            <p><strong>Balance:</strong> {{ $trip->balance ?? '00' }}</p>
+
         </div>
     </div>
 
@@ -125,54 +127,134 @@
 
     <a style="margin-top: 20px;" href="{{ route('admin.trips.index') }}" class="btn btn-secondary">Back</a>
 </div>
+
+<!-- End Trip Modal -->
+<div class="modal fade" id="endTripModal" tabindex="-1" aria-labelledby="endTripModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="endTripModalLabel">End Trip</h5>
+        <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <form id="endTripForm">
+          @csrf
+          <input type="hidden" name="trip_id" id="modalTripId">
+
+          <div class="form-group">
+            <label for="end_date">Select End Date</label>
+            <input type="date" class="form-control" name="end_date" id="end_date" required>
+          </div>
+          
+          <button type="submit" class="btn btn-danger btn-block">Confirm End Trip</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 @endsection
 
 @section('js')
 <script>
     $(document).ready(function () {
+
+        let selectedTripId = null;
+
+        // When user clicks End Trip button
         $('.endTripBtn').on('click', function () {
-            const tripId = $(this).data('trip-id');
+            selectedTripId = $(this).data('trip-id');
+            $('#modalTripId').val(selectedTripId);
+            $('#endTripModal').modal('show');
+        });
 
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "Do you really want to end this trip?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Yes, end it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: `{{ url('admin/endtrip') }}/${tripId}`,
-                        type: 'GET',
-                        data: {
-                            _token: '{{ csrf_token() }}' // Required for Laravel POST
-                        },
-                        success: function (response) {
-                            Swal.fire(
-                                'Trip Ended!',
-                                'The trip has been successfully ended.',
-                                'success'
-                            );
+        // Handle form submission
+        $('#endTripForm').on('submit', function (e) {
+            e.preventDefault();
 
-                            // Optional: Update UI or disable button
-                            $('#endTripBtn').prop('disabled', true).text('Trip Ended');
-                            setTimeout(function () {
-                                location.reload();
-                            }, 2000);
-                        },
-                        error: function (xhr) {
-                            Swal.fire(
-                                'Error!',
-                                'Something went wrong. Please try again.',
-                                'error'
-                            );
-                        }
-                    });
+            let tripId = $('#modalTripId').val();
+            let endDate = $('#end_date').val();
+
+            if (!endDate) {
+                Swal.fire('Error', 'Please select an end date.', 'error');
+                return;
+            }
+
+            $.ajax({
+                url: `{{ url('admin/endtrip') }}`,
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    end_date: endDate,
+                    trip_id:tripId
+                },
+                success: function (response) {
+                    $('#endTripModal').modal('hide');
+
+                    Swal.fire(
+                        'Trip Ended!',
+                        'The trip has been successfully ended.',
+                        'success'
+                    );
+
+                    setTimeout(function () {
+                        location.reload();
+                    }, 2000);
+                },
+                error: function (xhr) {
+                    $('#endTripModal').modal('hide');
+                    Swal.fire('Error', 'Something went wrong. Please try again.', 'error');
                 }
             });
         });
+
+
+        // $('.endTripBtn').on('click', function () {
+        //     const tripId = $(this).data('trip-id');
+
+        //     Swal.fire({
+        //         title: 'Are you sure?',
+        //         text: "Do you really want to end this trip?",
+        //         icon: 'warning',
+        //         showCancelButton: true,
+        //         confirmButtonColor: '#d33',
+        //         cancelButtonColor: '#6c757d',
+        //         confirmButtonText: 'Yes, end it!'
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             $.ajax({
+        //                 url: `{{ url('admin/endtrip') }}/${tripId}`,
+        //                 type: 'GET',
+        //                 data: {
+        //                     _token: '{{ csrf_token() }}' // Required for Laravel POST
+        //                 },
+        //                 success: function (response) {
+        //                     Swal.fire(
+        //                         'Trip Ended!',
+        //                         'The trip has been successfully ended.',
+        //                         'success'
+        //                     );
+
+        //                     // Optional: Update UI or disable button
+        //                     $('#endTripBtn').prop('disabled', true).text('Trip Ended');
+        //                     setTimeout(function () {
+        //                         location.reload();
+        //                     }, 2000);
+        //                 },
+        //                 error: function (xhr) {
+        //                     Swal.fire(
+        //                         'Error!',
+        //                         'Something went wrong. Please try again.',
+        //                         'error'
+        //                     );
+        //                 }
+        //             });
+        //         }
+        //     });
+        // });
     });
 
 </script>

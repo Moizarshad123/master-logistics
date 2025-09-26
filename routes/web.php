@@ -7,6 +7,8 @@ use App\Http\Controllers\Admin\DriverController;
 use App\Http\Controllers\Admin\VehicleController;
 use App\Http\Controllers\Admin\WheelerController;
 use App\Http\Controllers\Admin\TripController;
+use App\Http\Controllers\Admin\ReportController;
+
 
 
 Route::match(['get', 'post'], 'login', [AdminController::class, 'login'])->name('login');
@@ -32,7 +34,9 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
     Route::get('get-vehicle-expenses', [VehicleController::class, 'getVehicleExpenses'])->name('getVehicleExpenses');
 
     // Route::get('/endtrip/{vehicle}/expenses', [VehicleController::class, 'expenses'])->name('vehicles.expenses');
-    Route::get('endtrip/{id}', [TripController::class, 'endTrip']);
+    Route::POST('endtrip', [TripController::class, 'endTrip']);
+    Route::get('trip-vehicle-report', [ReportController::class, 'tripVehicleReport'])->name("tripVehicleReport");
+    Route::get('view-trip-vehicle-report/{id}', [ReportController::class, 'viewTripVehicleReport'])->name("viewTripVehicleReport");
 
 
     Route::get('/vehicles/{vehicle}/expenses', [VehicleController::class, 'expenses'])->name('vehicles.expenses');

@@ -36,7 +36,7 @@ class TripController extends Controller
     
             DB::beginTransaction();
     
-            $trip_no = str_pad(Trip::max('id') + 1, 6, '0', STR_PAD_LEFT);
+            $trip_no = str_pad(Trip::max('id') + 1, 2, '0', STR_PAD_LEFT);
     
             $trip = Trip::create([
                                 'trip_no'    => $trip_no,
@@ -145,12 +145,7 @@ class TripController extends Controller
             }
 
 
-           $submittedExpenseIds = [];
-
-            // If you want to delete any existing expenses that the user removed from the form:
-        //    TripVehicleExpense::where('trip_id', $trip->id)
-        //                     ->whereNotIn('id', $submittedExpenseIds)
-        //                     ->delete();
+           $submittedExpenseIds = [];       
 
             if (!empty($request->expenses)) {
                 foreach ($request->expenses as $expenseData) {
@@ -186,8 +181,6 @@ class TripController extends Controller
                 }
             }
 
-
-   
            $existingIds = [];
            if ($request->trip_details) {
                foreach ($request->trip_details as $detail) {
@@ -216,10 +209,10 @@ class TripController extends Controller
         }
     }
 
-    public function endTrip($tripDetailId) {
+    public function endTrip(Request $request) {
 
-        $trip = TripDetail::findOrFail($tripDetailId);
-        $trip->end_date = date('Y-m-d');
+        $trip           = TripDetail::findOrFail($request->trip_id);
+        $trip->end_date = $request->end_date ?? date('Y-m-d');
         $trip->status   = "Ended";
         $trip->save();
 
