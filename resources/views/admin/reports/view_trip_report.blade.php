@@ -72,11 +72,35 @@
             </tr>
             <tr>
                 <th><strong>Driver Name</strong></th>
-                <td>Imdad Ali</td> {{-- Hardcoded from image --}}
+                <td>{{ $trip?->driver?->name ?? ""}}</td>
                 <th><strong>Vehicle #</strong></th>
-                <td>JV-1247</td> {{-- Hardcoded from image --}}
+                <td>{{ $trip?->vehicle?->vehicle_no ?? ""}}</td>
             </tr>
         </table>
+
+        Payments
+        @if(count($trip->tripPayments) > 0)
+            <table class="table table-custom table-bordered table-sm mb-4 report-table">
+                <thead>
+                    <tr>
+                        <th>Payment Type</th>
+                        <th>Payment Date</th>
+                        <th>Amount</th>
+                        <th>Comment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($trip->tripPayments as $item)
+                        <tr>
+                            <td>{{ date('d M Y', strtotime($item->date)) ?? "" }}</td>
+                            <td>{{ $item->payment_type ?? ""}}</td>
+                            <td>{{ $item->amount ?? ""}}</td>
+                            <td>{{ $item->comments ?? ""}}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endif
 
         {{-- Trip 1 Details --}}
         @if(count($trip->tripDetails) > 0)
@@ -97,39 +121,35 @@
                         <tr>
                             <th>Material</th>
                             <td>{{ $item->material ?? ""}}</td>
-                            <th>Bags</th>
+                            <th>{{ $item->material_type ?? ""}}</th>
                             <td>{{ $item->total_bags ?? ""}}</td>
                         </tr>
-                        <tr>
-                            <th>Labour Rate</th>
-                            <td>0</td>
+                        {{-- <tr>
+                            <th>Baloch Labour</th>
+                            <td>{{ $item->baloch_labour ?? ""}}</td>
                             <th>Weekly Labour</th>
-                            <td>0</td>
-                        </tr>
-                        <tr>
-                            <th>Unloading</th>
-                            <td>{{ $item->unloading_labour ?? ""}}</td>
-                            <th>Weight</th>
-                            <td>{{ $item->weight ?? ""}}</td>
-                        </tr>
-                        <tr>
-                            <th>Advance</th>
-                            <td>{{ $item->advance ?? ""}}</td>
-                            <th>Rent</th>
-                            <td>{{ $item->rent ?? ""}}</td>
-                        </tr>
+                            <td>{{ $item->weekly_labour ?? ""}}</td>
+                        </tr> --}}
                         <tr>
                             <th>Loading Labour</th>
                             <td>{{ $item->loading_labour ?? ""}}</td>
-                            <td colspan="2"></td> {{-- Empty cells for alignment --}}
+                            <th>Unloading Labour</th>
+                            <td>{{ $item->unloading_labour ?? ""}}</td>
                         </tr>
+                        <tr>
+                            {{-- <th>Advance</th>
+                            <td>{{ $item->advance ?? ""}}</td> --}}
+                            <th>Rent</th>
+                            <td>{{ $item->rent ?? ""}}</td>
+                            <th>Weight</th>
+                            <td>{{ $item->weight ?? ""}}</td>
+                        </tr>
+                      
                     </tbody>
                 </table>
             @endforeach
         @endif
 
-    
-        
         {{-- Remarks --}}
         <table class="table table-custom table-sm mb-0">
             <tr>

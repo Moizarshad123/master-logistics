@@ -20,6 +20,7 @@
             <thead>
                 <tr>
                     <th>Trip No</th>
+                    <th>Trip Type</th>
                     <th>Vehicle</th>
                     <th>Driver</th>
                     <th>Total Journeys</th>
@@ -31,6 +32,7 @@
                 @foreach($trips as $trip)
                     <tr>
                         <td>{{ $trip->trip_no }}</td>
+                        <td>{{ $trip->trip_type }}</td>
                         <td>{{ $trip->vehicle->vehicle_no ?? '-' }}</td>
                         <td>{{ $trip->driver->name ?? '-' }}</td>
                         <td>{{ $trip->tripDetails->count() }}</td>

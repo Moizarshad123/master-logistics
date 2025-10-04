@@ -34,7 +34,7 @@
                     <th>CNIC Back</th>
                     <th>DL Front</th>
                     <th>DL Back</th>
-                    <th>Action</th>
+                    <th style="text-align: center">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -48,7 +48,6 @@
                     <td>{{ $driver->name }}</td>
                     <td>{{ $driver->phone }}</td>
                     <td>{{ $driver->salary }}</td>
-
                     <td>{{ $driver->address }}</td>
                     <td>
                         @if($driver->cnic_front)
@@ -71,6 +70,7 @@
                         @endif
                     </td>
                     <td>
+                        <a href="{{ route('admin.driverPayments', $driver->id) }}" class="btn btn-info btn-sm">View Payments</a>
                         <a href="{{ route('admin.drivers.edit', $driver) }}" class="btn btn-warning btn-sm">Edit</a>
                         <form action="{{ route('admin.drivers.destroy', $driver) }}" method="POST"
                             style="display:inline-block;">

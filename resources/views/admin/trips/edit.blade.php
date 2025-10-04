@@ -1,20 +1,33 @@
 @extends('admin.layouts.app')
 @section('title', 'Edit Trip')
 
+@section('css')
+<!-- In head -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+@endsection
+
 @section('content')
 <div class="content">
     <h3>Edit Trip</h3>
     <form action="{{ route('admin.trips.update', $trip->id) }}" method="POST" id="expenseTypeForm">
         @csrf @method('PUT')
-
         <div class="row mb-3">
             <div class="col-md-3">
-                <label>Trip No</label>
-                <input type="text" name="trip_no" value="{{ old('trip_no', $trip->trip_no) }}" class="form-control" readonly>
+                <label>Trip Type<span style="color: red">*</span></label>
+                <select name="trip_type" class="form-select" required>
+                    <option value="">Select Trip Type</option>
+                    <option value="Commercial" {{ $trip->trip_type == "Commercial" ? "selected" : "" }}>Commercial</option>
+                    <option value="Purchase" {{ $trip->trip_type == "Purchase" ? "selected" : "" }}>Purchase</option>
+                    <option value="Sell" {{ $trip->trip_type == "Sell" ? "selected" : "" }}>Sell</option>
+                    <option value="Local" {{ $trip->trip_type == "Local" ? "selected" : "" }}>Local</option>
+                    {{-- @foreach($drivers as $driver)
+                        <option value="{{ $driver->id }}">{{ $driver->name }}</option>
+                    @endforeach --}}
+                </select>
             </div>
             <div class="col-md-3">
                 <label>Vehicle</label>
-                <select name="vehicle_id" class="form-control" required>
+                <select name="vehicle_id" class="form-control select2" required>
                     <option value="">Select Vehicle</option>
                     @foreach($vehicles as $vehicle)
                         <option value="{{ $vehicle->id }}" {{ $vehicle->id == $trip->vehicle_id ? 'selected' : '' }}>
@@ -25,7 +38,7 @@
             </div>
             <div class="col-md-3">
                 <label>Driver</label>
-                <select name="driver_id" class="form-control" required>
+                <select name="driver_id" class="form-control select2" required>
                     <option value="">Select Driver</option>
                     @foreach($drivers as $driver)
                         <option value="{{ $driver->id }}" {{ $driver->id == $trip->driver_id ? 'selected' : '' }}>
@@ -87,10 +100,6 @@
             </div>
         </div>
 
-
-
-        
-
         <div id="vehicleExpensesContainer" class="mt-3">
             <table class="table table-bordered">
                 <thead>
@@ -121,7 +130,6 @@
             </table>
         </div>
 
-
         <div class="row align-items-center mb-2" style="margin-top: 25px">
             <div class="col-md-9">
                 <h5 class="mb-0">Trip Details</h5>
@@ -151,13 +159,30 @@
 
 
 @section('js')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('.select2').select2({
+            placeholder: "Select an option",
+            allowClear: true,
+            width: '100%'
+        });
+    });
+</script>
 <script>
     $(document).ready(function () {
         let index = $("#tripDetailsContainer .trip-detail").length;
         let extraExpenseIndex = 1000;
-
-        console.log("Document ready, calculating initial balance...");
         calculateBalance();
+
+         // Generate expense options from $expenses
+        const expenseOptions = `
+                                <option value="">Select Expense</option>
+                                @foreach($expensesTypes as $expense)
+                                    <option value="{{ $expense->id }}">{{ $expense->name }}</option>
+                                @endforeach
+                            `;
 
 
         function calculateBalance() {
@@ -182,10 +207,6 @@
 
             const balance = totalPayments - totalExpenses;
 
-            console.log("Total Payments:", totalPayments);
-    console.log("Total Expenses:", totalExpenses);
-    console.log("Calculated Balance:", balance);
-
             if (balance < 0) {
                 $("#balance").addClass("text-danger").removeClass("text-success");
             } else {
@@ -194,19 +215,15 @@
             $("#balance").val(balance.toFixed(2));
         }
         
-
         $(document).on("input", "input[name='expense_amount[]'], input[name^='expenses'][name$='[amount]']", calculateBalance);
-
-
         $("#addExpenseRow").click(function (e) {
             e.preventDefault();
             const newRow = `
                     <tr>
                         <td>
-                            <input type="text" 
-                                name="expenses[${extraExpenseIndex}][name]" 
-                                class="form-control" 
-                                placeholder="Enter expense name">
+                            <select name="expenses[${extraExpenseIndex}][name]" class="form-select">
+                                ${expenseOptions}
+                            </select>
                         </td>
                         <td>
                             <input type="number" step="0.01" 
@@ -271,14 +288,35 @@
                     </div>
                 </div>
                 <div class="row mt-2">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <label>Material</label>
                         <input type="text" name="trip_details[${index}][material]" class="form-control">
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
+                        <label>Material Type</label>
+                        <select class="form-select" name="trip_details[${index}][material_type]">
+                            <option value="">Select Material Type</option>
+                            <option value="Bags">Bags</option>
+                            <option value="Tainki">Tainki</option>
+                            <option value="LTR">LTR</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
                         <label>Total Bags</label>
                         <input type="number" name="trip_details[${index}][total_bags]" class="form-control">
                     </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-3">
+                        <label>Weekly Labour</label>
+                        <input type="text" name="trip_details[${index}][weekly_labour]" class="form-control">
+                    </div>
+
+                    <div class="col-md-3">
+                        <label>Baloch Labour</label>
+                        <input type="text" name="trip_details[${index}][baloch_labour]" class="form-control">
+                    </div>
+
                     <div class="col-md-3">
                         <label>Loading Labour</label>
                         <input type="text" name="trip_details[${index}][loading_labour]" class="form-control">
@@ -287,8 +325,6 @@
                         <label>Unloading Labour</label>
                         <input type="text" name="trip_details[${index}][unloading_labour]" class="form-control">
                     </div>
-                </div>
-                <div class="row mt-2">
                     <div class="col-md-3">
                         <label>Rent</label>
                         <input type="number" name="trip_details[${index}][rent]" class="form-control">
@@ -302,6 +338,7 @@
                         <button type="button" class="btn btn-danger removeRow">Remove</button>
                     </div>
                 </div>
+               
             </div>`;
             //   <div class="col-md-3">
             //             <label>Advance</label>

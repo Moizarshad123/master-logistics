@@ -9,6 +9,9 @@ use App\Models\Vehicle;
 use App\Models\Driver;
 use App\Models\TripVehicleExpense;
 use App\Models\TripPayment;
+use App\Models\ExpenseType;
+
+
 use Illuminate\Http\Request;
 use DB;
 class TripController extends Controller
@@ -23,7 +26,8 @@ class TripController extends Controller
     {
         $vehicles = Vehicle::all();
         $drivers  = Driver::all();
-        return view('admin.trips.create', compact('vehicles', 'drivers'));
+        $expenses = ExpenseType::all();
+        return view('admin.trips.create', compact('vehicles', 'drivers', "expenses"));
     }
 
     public function store(Request $request)
@@ -32,6 +36,8 @@ class TripController extends Controller
             $request->validate([
                 'vehicle_id' => 'required',
                 'driver_id'  => 'required',
+                'trip_type'  => 'required',
+
             ]);
     
             DB::beginTransaction();
@@ -40,6 +46,7 @@ class TripController extends Controller
     
             $trip = Trip::create([
                                 'trip_no'    => $trip_no,
+                                "trip_type"  => $request->trip_type,
                                 'vehicle_id' => $request->vehicle_id,
                                 'driver_id'  => $request->driver_id,
                                 "balance"    => $request->balance
@@ -97,27 +104,30 @@ class TripController extends Controller
 
     public function edit(Trip $trip)
     {
-        $trip->load('tripDetails');
+        $trip->load(['tripDetails' => function($query) {
+            $query->whereNull('end_date');
+        }]);
         $vehicles = Vehicle::all();
         $drivers  = Driver::all();
+        $expensesTypes = ExpenseType::all();
         $expenses = TripVehicleExpense::with("expenseName")->where("trip_id", $trip->id)->get();
         $payments = TripPayment::where("trip_id", $trip->id)->get();
 
-        return view('admin.trips.edit', compact('trip', 'vehicles', 'drivers', 'expenses', 'payments'));
+        return view('admin.trips.edit', compact('trip', 'vehicles', 'drivers', 'expenses', 'payments', 'expensesTypes'));
     }
 
     public function update(Request $request, Trip $trip)
     {
         try {
-           $request->validate([
-               'trip_no'    => 'required|unique:trips,trip_no,' . $trip->id,
-               'vehicle_id' => 'required|exists:vehicles,id',
-               'driver_id'  => 'required|exists:drivers,id',
-           ]);
+            $request->validate([
+               'trip_type'  => 'required',
+               'vehicle_id' => 'required',
+               'driver_id'  => 'required',
+            ]);
    
            DB::beginTransaction();
 
-           $trip->update($request->only('trip_no', 'vehicle_id', 'driver_id'));
+           $trip->update($request->only('trip_no', 'trip_type', 'vehicle_id', 'driver_id'));
 
             $paymentTypes   = $request->payment_type;
             $amounts        = $request->expense_amount;

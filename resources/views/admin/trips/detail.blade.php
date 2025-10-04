@@ -12,6 +12,7 @@
     <div class="card mb-3">
         <div class="card-body">
             <p><strong>Trip No:</strong> {{ $trip->trip_no }}</p>
+            <p><strong>Trip Type:</strong> {{ $trip->trip_type }}</p>
             <p><strong>Vehicle:</strong> {{ $trip->vehicle->vehicle_no ?? 'N/A' }}</p>
             <p><strong>Driver:</strong> {{ $trip->driver->name ?? 'N/A' }}</p>
             <p><strong>Balance:</strong> {{ $trip->balance ?? '00' }}</p>
@@ -58,11 +59,13 @@
                     <th>From</th>
                     <th>To</th>
                     <th>Material</th>
+                    <th>Material Type</th>
                     <th>Total Bags</th>
-                    <th>Loading Labour</th>
-                    <th>Unloading Labour</th>
+                    <th>Weekly</th>
+                    <th>Baloch</th>
+                    <th>Loading</th>
+                    <th>Unloading</th>
                     <th>Rent</th>
-                    {{-- <th>Advance</th> --}}
                     <th>Weight</th>
                     <th>Status</th>
                     <th>Action</th>
@@ -76,7 +79,10 @@
                         <td>{{ $detail->from_destination }}</td>
                         <td>{{ $detail->to_destination }}</td>
                         <td>{{ $detail->material }}</td>
+                        <td>{{ $detail->material_type ?? "" }}</td>
                         <td>{{ $detail->total_bags }}</td>
+                        <td>{{ $detail->baloch_labour }}</td>
+                        <td>{{ $detail->weekly_labour }}</td>
                         <td>{{ $detail->loading_labour }}</td>
                         <td>{{ $detail->unloading_labour }}</td>
                         <td>{{ $detail->rent }}</td>

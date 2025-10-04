@@ -16,7 +16,10 @@ class CreateTripDetailsTable extends Migration
             $table->String("from_destination")->nullable();
             $table->String("to_destination")->nullable();
             $table->String("material")->nullable();
+            $table->String("material_type")->nullable();
             $table->Integer("total_bags")->nullable();
+            $table->Double("weekly_labour")->nullable();
+            $table->Double("baloch_labour")->nullable();
             $table->Double("loading_labour")->nullable();
             $table->Double("unloading_labour")->nullable();
             $table->Double("rent")->nullable();

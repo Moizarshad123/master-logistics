@@ -5,10 +5,16 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Driver;
+use App\Models\TripPayment;
 use Illuminate\Support\Facades\Storage;
 
 class DriverController extends Controller
 {
+    public function driver_payments($driverId) {
+        $payments = TripPayment::where("driver_id", $driverId)->orderByDESC("id")->paginate(10);
+        return view('admin.drivers.payments', compact('payments'));
+
+    }
     public function index()
     {
         $drivers = Driver::latest()->paginate(10);

@@ -23,18 +23,38 @@
             <label>Material</label>
             <input type="text" name="trip_details[{{ $index }}][material]" value="{{ old("trip_details.$index.material", $detail->material ?? '') }}" class="form-control">
         </div>
+
+        <div class="col-md-4">
+            <label>Material Type</label>
+            <select class="form-select" name="trip_details[{{ $index }}][material_type]">
+                <option value="Bags" {{ $detail->material_type == "Bags" ? "selected" : "" }}>Bags</option>
+                <option value="Tainki" {{ $detail->material_type == "Tainki" ? "selected" : "" }}>Tainki</option>
+                <option value="LTR" {{ $detail->material_type == "LTR" ? "selected" : "" }}>LTR</option>
+            </select>
+        </div>
         <div class="col-md-4">
             <label>Total Bags</label>
             <input type="number" name="trip_details[{{ $index }}][total_bags]" value="{{ old("trip_details.$index.total_bags", $detail->total_bags ?? '') }}" class="form-control">
         </div>
+        
+    </div>
+    
+    <div class="row mt-2">
+
+        <div class="col-md-4">
+            <label>Weekly Labour</label>
+            <input type="text" name="trip_details[{{ $index }}][weekly_labour]" value="{{ old("trip_details.$index.weekly_labour", $detail->weekly_labour ?? '') }}" class="form-control weekly-labour">
+        </div>
+
+        <div class="col-md-4">
+            <label>Baloch Labour</label>
+            <input type="text" name="trip_details[{{ $index }}][baloch_labour]" value="{{ old("trip_details.$index.baloch_labour", $detail->baloch_labour ?? '') }}" class="form-control">
+        </div>
+
         <div class="col-md-4">
             <label>Loading Labour</label>
             <input type="text" name="trip_details[{{ $index }}][loading_labour]" value="{{ old("trip_details.$index.loading_labour", $detail->loading_labour ?? '') }}" class="form-control">
         </div>
-        
-    </div>
-
-    <div class="row mt-2">
         <div class="col-md-4">
             <label>Unloading Labour</label>
             <input type="text" name="trip_details[{{ $index }}][unloading_labour]" value="{{ old("trip_details.$index.unloading_labour", $detail->unloading_labour ?? '') }}" class="form-control">

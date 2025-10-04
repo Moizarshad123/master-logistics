@@ -52,7 +52,14 @@ class VehicleController extends Controller
 
             $html .= '</tbody></table>';
         } else {
-            $html .= '<p>No expenses found for this vehicle.</p>';
+            $html .= '<table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Expense</th>
+                    <th>Expense Amount</th>
+                </tr>
+            </thead>
+            <tbody id="expensesTableBody"></tbody></table>';
         }
 
         return response()->json($html);
