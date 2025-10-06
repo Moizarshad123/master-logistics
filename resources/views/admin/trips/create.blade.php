@@ -18,7 +18,8 @@
                         <option value="">Select Trip Type</option>
                         <option value="Commercial">Commercial</option>
                         <option value="Purchase">Purchase</option>
-                        <option value="Sell">Sell</option>
+                        <option value="Feed Sell">Feed Sell</option>
+                        <option value="Other Sell">Other Sell</option>
                         <option value="Local">Local</option>
                         {{-- @foreach($drivers as $driver)
                             <option value="{{ $driver->id }}">{{ $driver->name }}</option>

@@ -18,7 +18,8 @@
                     <option value="">Select Trip Type</option>
                     <option value="Commercial" {{ $trip->trip_type == "Commercial" ? "selected" : "" }}>Commercial</option>
                     <option value="Purchase" {{ $trip->trip_type == "Purchase" ? "selected" : "" }}>Purchase</option>
-                    <option value="Sell" {{ $trip->trip_type == "Sell" ? "selected" : "" }}>Sell</option>
+                    <option value="Sell" {{ $trip->trip_type == "Feed Sell" ? "selected" : "" }}>Feed Sell</option>
+                    <option value="Sell" {{ $trip->trip_type == "Other Sell" ? "selected" : "" }}>Other Sell</option>
                     <option value="Local" {{ $trip->trip_type == "Local" ? "selected" : "" }}>Local</option>
                     {{-- @foreach($drivers as $driver)
                         <option value="{{ $driver->id }}">{{ $driver->name }}</option>
