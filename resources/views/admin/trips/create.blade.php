@@ -7,24 +7,25 @@
 @endsection
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
-        <h3>Create Trip</h3>
+        <h3 style="margin-bottom: 35px">Create Trip</h3>
         <form action="{{ route('admin.trips.store') }}" method="POST" id="expenseTypeForm">
             @csrf
 
-            <div class="row mb-3">
+            <div class="row mb-4">
                 <div class="col-md-3">
                     <label>Trip Type<span style="color: red">*</span></label>
-                    <select name="trip_type" class="form-select" required>
+                    <select name="trip_type" id="trip_type" class="form-select" required>
                         <option value="">Select Trip Type</option>
                         <option value="Commercial">Commercial</option>
                         <option value="Purchase">Purchase</option>
                         <option value="Feed Sell">Feed Sell</option>
                         <option value="Other Sell">Other Sell</option>
                         <option value="Local">Local</option>
-                        {{-- @foreach($drivers as $driver)
-                            <option value="{{ $driver->id }}">{{ $driver->name }}</option>
-                        @endforeach --}}
                     </select>
+                </div>
+                <div class="col-md-3">
+                    <label>Trip Date<span style="color: red">*</span></label>
+                    <input type="date" name="trip_date" value="{{ date('Y-m-d')}}" class="form-control">
                 </div>
                
                 <div class="col-md-3">
@@ -45,19 +46,25 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-3">
+            </div>
+            <div class="row">
+                {{-- <div class="col-md-6">
                     <label>Balance</label>
                     <input type="text" name="balance" class="form-control" readonly id="balance">
-                </div>
+                </div> --}}
             </div>
 
             <div class="card">
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col">
+                    <div class="row" style="margin-bottom: 25px">
+                        <div class="col-md-3">
                             <h5 class="mb-0">Trip Payments</h5>
                         </div>
-                        <div class="col text-end">
+                        <div class="col-md-4">
+                            <label>Balance</label>
+                            <input type="text" name="balance" class="form-control" readonly id="balance">
+                        </div>
+                        <div class="col-md-5 text-end">
                             <button class="btn btn-success" id="addTripExpense">+</button>
                         </div>
                     </div>
@@ -68,6 +75,7 @@
                                 <th>Amount</th>
                                 <th>Payment Date</th>
                                 <th>Comment</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody id="expensePaymentTable">
@@ -82,17 +90,13 @@
             </div>
 
             <div class="row align-items-center mb-2" style="margin-top: 25px">
-                <div class="col-md-7">
+                <div class="col-md-9">
                     <h5 class="mb-0">Trip Details</h5>
-                </div>
-                <div class="col-md-2 text-end">
-                    <button type="button" class="btn btn-sm btn-success" id="addRow">
-                        + Add Trip Detail
-                    </button>
+                   
                 </div>
                 <div class="col-md-3 text-end">
-                    <button type="button" class="btn btn-sm btn-warning" id="addExpenseRow">
-                        + Add More Expenses
+                    <button type="button" class="btn btn-sm btn-success" id="addRow">
+                        + Add Trip Detail
                     </button>
                 </div>
             </div>   
@@ -103,11 +107,11 @@
                     </div>
                 </div>
             </div>         
-
-
-            <button type="submit" class="btn btn-success" id="addExpenseType">Save Trip</button>
+            <button style="margin-top: 50px;" type="submit" class="btn btn-success" id="addExpenseType">Save Trip</button>
         </form>
     </div>
+
+    
 @endsection
 
 @section('js')
@@ -168,7 +172,8 @@
                                     <option value="{{ $expense->id }}">{{ $expense->name }}</option>
                                 @endforeach
                             `;
-        $("#addExpenseRow").click(function (e) {
+
+        $(document).on('click', "#addExpenseRow", function(e) {
             e.preventDefault();
             const newRow = `
                     <tr>
@@ -183,6 +188,11 @@
                                 class="form-control" 
                                 placeholder="Enter amount">
                         </td>
+                        <td class="text-center">
+                            <button type="button" style="border-radius: 25%;" class="btn btn-danger btn-sm removeExpenseRow">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
                     </tr>
                 `;
 
@@ -191,6 +201,10 @@
 
                 calculateBalance();
 
+        });
+
+        $(document).on("click", ".removeExpenseRow", function () {
+            $(this).closest("tr").remove();
         });
 
         $("#addTripExpense").click(function (e) {
@@ -214,6 +228,11 @@
                         <td>
                             <textarea class="form-control" name="comments[]"></textarea>
                         </td>
+                        <td class="text-center">
+                            <button type="button" style="border-radius: 25%;" class="btn btn-danger btn-sm removeTripPaymentRow">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
                     </tr>`;
 
                 $("#expensePaymentTable").append(newRow);
@@ -222,8 +241,10 @@
 
         });
 
-        $("#addRow").click(function (e) {
+        $(document).on("click", "#addRow", function (e) {
+
             e.preventDefault();
+            const tripType = $("#trip_type").val();
 
             let row = `
             <div class="trip-detail border rounded p-3 mb-3">
@@ -234,19 +255,25 @@
                     </div>
                     <div class="col-md-4">
                         <label>From</label>
-                        <input type="text" name="trip_details[${index}][from_destination]" class="form-control">
+                        <select class="form-select select2" name="trip_details[${index}][from_destination]">
+                            <option value="">Select From Destination</option>
+                            @foreach ($destinations as $item)
+                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="col-md-4">
                         <label>To</label>
-                        <input type="text" name="trip_details[${index}][to_destination]" class="form-control">
+                        <select class="form-select select2" name="trip_details[${index}][to_destination]">
+                            <option value="">Select To Destination</option>
+                            @foreach ($destinations as $item)
+                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                            @endforeach
+                        </select>
                     </div>
-                   
                 </div>
                 <div class="row mt-2 trip-row">    
-                    <div class="col-md-4">
-                        <label>Total Bags</label>
-                        <input type="number" name="trip_details[${index}][total_bags]" class="form-control total-bags">
-                    </div>
+                  
                     <div class="col-md-4">
                         <label>Material Type</label>
                         <select class="form-select" name="trip_details[${index}][material_type]">
@@ -259,31 +286,34 @@
                         <label>Material</label>
                         <input type="text" name="trip_details[${index}][material]" class="form-control">
                     </div>
-
-                   
+                     <div class="col-md-4 baloch-labour-field" style="display: ${tripType === 'Feed Sell' ? 'block' : 'none'};">
+                        <label>Baloch Labour</label>
+                        <input type="text" name="trip_details[${index}][baloch_labour]" class="form-control weekly-labour">
+                    </div>
                 </div>
                 <div class="row mt-2">
+                    <div class="col-md-3">
+                        <label>Total Bags</label>
+                        <input type="number" name="trip_details[${index}][total_bags]" class="form-control total-bags">
+                    </div>
+
+                    <div class="col-md-3">
+                        <label>Labour Rate</label>
+                        <input type="text" name="trip_details[${index}][rate]" class="form-control rate">
+                    </div>
+
+                    <div class="col-md-3">
+                        <label>No Of Labour</label>
+                        <input type="text" name="trip_details[${index}][no_of_labour]" class="form-control no_of_labour">
+                    </div>
                     
 
                     <div class="col-md-3">
                         <label>Weekly Labour</label>
-                        <input type="text" name="trip_details[${index}][weekly_labour]" class="form-control weekly-labour">
+                        <input type="text" name="trip_details[${index}][weekly_labour]" class="form-control weekly-labour" readonly>
                     </div>
-
-                    <div class="col-md-3">
-                        <label>Baloch Labour</label>
-                        <input type="text" name="trip_details[${index}][baloch_labour]" class="form-control weekly-labour">
-                    </div>
-
-               
-                    <div class="col-md-3">
-                        <label>Loading Labour</label>
-                        <input type="text" name="trip_details[${index}][loading_labour]" class="form-control">
-                    </div>
-                    <div class="col-md-3">
-                        <label>Unloading Labour</label>
-                        <input type="text" name="trip_details[${index}][unloading_labour]" class="form-control">
-                    </div>
+                </div>
+                <div class="row mt-2">
                     <div class="col-md-3">
                         <label>Rent</label>
                         <input type="number" name="trip_details[${index}][rent]" class="form-control">
@@ -307,6 +337,60 @@
             //             <label>Advance</label>
             //             <input type="number" name="trip_details[${index}][advance]" class="form-control">
             //         </div>
+        });
+
+
+        document.addEventListener('input', function(e) {
+            const row = e.target.closest('.row');
+            if (!row) return;
+
+            const totalBagsInput    = row.querySelector('.total-bags');
+            const labourRateInput   = row.querySelector('.rate');
+            const noOfLabourInput   = row.querySelector('.no_of_labour');
+            const weeklyLabourInput = row.querySelector('.weekly-labour');
+
+            let totalBags  = parseFloat(totalBagsInput.value) || null;
+            let labourRate = parseFloat(labourRateInput.value) || null;
+            let noOfLabour = parseFloat(noOfLabourInput.value) || null;
+
+            // Agar sab 3 values hain
+            if (totalBags && labourRate && noOfLabour) {
+                weeklyLabourInput.value = totalBags * labourRate * noOfLabour;
+            } 
+            // Agar labour rate missing
+            else if (totalBags && noOfLabour && weeklyLabourInput.value) {
+                labourRate = weeklyLabourInput.value / (totalBags * noOfLabour);
+                labourRateInput.value = labourRate.toFixed(1);
+            }
+
+            else if (totalBags && noOfLabour) {
+                labourRate = totalBags / noOfLabour;
+                labourRateInput.value = labourRate.toFixed(1);
+            }
+            // Aur baqi missing value ke liye calculation
+            else if (labourRate && noOfLabour && weeklyLabourInput.value) {
+                totalBags = weeklyLabourInput.value / (labourRate * noOfLabour);
+                totalBagsInput.value = totalBags.toFixed(1);
+            }
+            else if (totalBags && labourRate && weeklyLabourInput.value) {
+                noOfLabour = weeklyLabourInput.value / (totalBags * labourRate);
+                noOfLabourInput.value = noOfLabour.toFixed(1);
+            }
+        });
+
+
+
+
+
+
+        $(document).on("change", "#trip_type", function () {
+            const tripType = $(this).val();
+
+            if (tripType === "Feed Sell") {
+                $(".baloch-labour-field").show();
+            } else {
+                $(".baloch-labour-field").hide();
+            }
         });
 
         // $(document).on('change keyup', '.workers, .total-bags, .labour-rate', function () {
@@ -335,6 +419,9 @@
             $(this).closest(".trip-detail").remove();
         });
 
+        $(document).on("click", ".removeTripPaymentRow", function () {
+            $(this).closest("tr").remove();
+        });
 
         $("#vehicle_id").change(function() {
             let vehicleId = $(this).val();
@@ -346,6 +433,7 @@
                     data: { vehicle_id: vehicleId },
                     success: function(response) {
                         $("#vehicleExpensesContainer").html(response);
+                        $('#addExpenseRow').show();
                     },
                     error: function() {
                         alert("Unable to fetch vehicle expenses.");

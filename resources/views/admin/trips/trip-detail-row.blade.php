@@ -10,11 +10,19 @@
         </div> --}}
         <div class="col-md-4">
             <label>From</label>
-            <input type="text" name="trip_details[{{ $index }}][from_destination]" value="{{ old("trip_details.$index.from_destination", $detail->from_destination ?? '') }}" class="form-control">
+            <select class="form-select" name="trip_details[{{ $index }}][from_destination]">
+                @foreach ($destinations as $item)
+                    <option value="{{ $item->id }}" {{ $detail->from_destination == $item->id ? "selected" : ""}}>{{ $item->name }}</option>
+                @endforeach
+            </select>
         </div>
         <div class="col-md-4">
             <label>To</label>
-            <input type="text" name="trip_details[{{ $index }}][to_destination]" value="{{ old("trip_details.$index.to_destination", $detail->to_destination ?? '') }}" class="form-control">
+            <select class="form-select" name="trip_details[{{ $index }}][to_destination]">
+                @foreach ($destinations as $item)
+                    <option value="{{ $item->id }}" {{ $detail->to_destination == $item->id ? "selected" : ""}}>{{ $item->name }}</option>
+                @endforeach
+            </select>
         </div>
     </div>
 
@@ -50,15 +58,7 @@
             <label>Baloch Labour</label>
             <input type="text" name="trip_details[{{ $index }}][baloch_labour]" value="{{ old("trip_details.$index.baloch_labour", $detail->baloch_labour ?? '') }}" class="form-control">
         </div>
-
-        <div class="col-md-4">
-            <label>Loading Labour</label>
-            <input type="text" name="trip_details[{{ $index }}][loading_labour]" value="{{ old("trip_details.$index.loading_labour", $detail->loading_labour ?? '') }}" class="form-control">
-        </div>
-        <div class="col-md-4">
-            <label>Unloading Labour</label>
-            <input type="text" name="trip_details[{{ $index }}][unloading_labour]" value="{{ old("trip_details.$index.unloading_labour", $detail->unloading_labour ?? '') }}" class="form-control">
-        </div>
+        
         <div class="col-md-4">
             <label>Rent</label>
             <input type="number" name="trip_details[{{ $index }}][rent]" value="{{ old("trip_details.$index.rent", $detail->rent ?? '') }}" class="form-control">

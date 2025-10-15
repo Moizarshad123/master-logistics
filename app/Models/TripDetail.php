@@ -19,8 +19,8 @@ class TripDetail extends Model
         "total_bags",
         "weekly_labour",
         "baloch_labour",
-        "loading_labour",
-        "unloading_labour",
+        "rate",
+        "no_of_labour",
         "rent",
         // "advance",
         "weight",
@@ -30,5 +30,15 @@ class TripDetail extends Model
     public function trip()
     {
         return $this->belongsTo(Trip::class);
+    }
+
+    public function from_dest()
+    {
+        return $this->hasOne(Destination::class, 'id', 'from_destination');
+    }
+
+    public function to_dest()
+    {
+        return $this->hasOne(Destination::class, 'id', 'to_destination');
     }
 }

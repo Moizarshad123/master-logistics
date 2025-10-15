@@ -26,6 +26,12 @@
                     @endforeach --}}
                 </select>
             </div>
+
+             <div class="col-md-3">
+                <label>Trip Date</label>
+                <input type="date" name="trip_date" value="{{ date('d-m-Y', strtotime($trip->trip_date))}}" class="form-control">
+            </div>
+
             <div class="col-md-3">
                 <label>Vehicle</label>
                 <select name="vehicle_id" class="form-control select2" required>
@@ -48,19 +54,20 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-md-3">
-                <label>Balance</label>
-                <input type="text" name="balance" class="form-control" readonly id="balance" value="{{ $trip->balance }}">
-            </div>
+           
         </div>
 
         <div class="card">
             <div class="card-body">
-                <div class="row">
-                    <div class="col">
+                <div class="row" style="margin-bottom: 25px">
+                    <div class="col-md-3">
                         <h5 class="mb-0">Trip Payments</h5>
                     </div>
-                    <div class="col text-end">
+                    <div class="col-md-4">
+                        <label>Balance</label>
+                        <input type="text" name="balance" class="form-control" readonly id="balance" value="{{ $trip->balance }}">
+                    </div>
+                    <div class="col-md-5 text-end">
                         <button class="btn btn-success" id="addTripExpense">+</button>
                     </div>
                 </div>
@@ -71,6 +78,7 @@
                             <th>Amount</th>
                             <th>Payment Date</th>
                             <th>Comment</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody id="expensePaymentTable">
@@ -107,6 +115,9 @@
                     <tr>
                         <th>Expense</th>
                         <th>Expense Amount</th>
+                        <th style="text-align: center"><button type="button" class="btn btn-sm btn-warning" id="addExpenseRow">
+                    + Add More Expenses
+                </button></th>
                     </tr>
                 </thead>
                 <tbody id="expensesTableBody">
@@ -132,14 +143,8 @@
         </div>
 
         <div class="row align-items-center mb-2" style="margin-top: 25px">
-            <div class="col-md-9">
-                <h5 class="mb-0">Trip Details</h5>
-            </div>
-            <div class="col-md-3 text-end">
-                <button type="button" class="btn btn-sm btn-warning" id="addExpenseRow">
-                    + Add More Expenses
-                </button>
-            </div>
+            <h5 class="mb-0">Trip Details</h5>
+           
         </div>  
 
         <div id="tripDetailsContainer">
@@ -217,7 +222,8 @@
         }
         
         $(document).on("input", "input[name='expense_amount[]'], input[name^='expenses'][name$='[amount]']", calculateBalance);
-        $("#addExpenseRow").click(function (e) {
+
+        $(document).on('click', "#addExpenseRow", function(e) {
             e.preventDefault();
             const newRow = `
                     <tr>
@@ -232,6 +238,11 @@
                                 class="form-control" 
                                 placeholder="Enter amount">
                         </td>
+                        <td class="text-center">
+                            <button type="button" style="border-radius: 25%;" class="btn btn-danger btn-sm removeExpenseRow">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
                     </tr>
                 `;
 
@@ -239,6 +250,10 @@
                 extraExpenseIndex++;
                  calculateBalance();
 
+        });
+
+        $(document).on("click", ".removeExpenseRow", function () {
+            $(this).closest("tr").remove();
         });
 
         $("#addTripExpense").click(function (e) {
@@ -262,12 +277,16 @@
                         <td>
                             <textarea class="form-control" name="comments[]"></textarea>
                         </td>
+                         <td class="text-center">
+                            <button type="button" style="border-radius: 25%;" class="btn btn-danger btn-sm removeTripPaymentRow">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
                     </tr>`;
 
                 $("#expensePaymentTable").append(newRow);
 
             calculateBalance();
-
         });
 
         $("#addRow").click(function (e) {
@@ -316,15 +335,6 @@
                     <div class="col-md-3">
                         <label>Baloch Labour</label>
                         <input type="text" name="trip_details[${index}][baloch_labour]" class="form-control">
-                    </div>
-
-                    <div class="col-md-3">
-                        <label>Loading Labour</label>
-                        <input type="text" name="trip_details[${index}][loading_labour]" class="form-control">
-                    </div>
-                    <div class="col-md-3">
-                        <label>Unloading Labour</label>
-                        <input type="text" name="trip_details[${index}][unloading_labour]" class="form-control">
                     </div>
                     <div class="col-md-3">
                         <label>Rent</label>
@@ -412,6 +422,11 @@
                   $('#expenseTypeForm').submit();
                 }
             });
+        });
+
+
+        $(document).on("click", ".removeTripPaymentRow", function () {
+            $(this).closest("tr").remove();
         });
     });
 

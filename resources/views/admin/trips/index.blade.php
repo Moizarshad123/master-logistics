@@ -16,10 +16,11 @@
     </div>
     
     <div class="table-responsive">
-        <table class="table table-custom table-lg mb-0" id="ordersTable">
+        <table class="table table-custom table-lg mb-0" id="tripsTable">
             <thead>
                 <tr>
                     <th>Trip No</th>
+                    <th>Trip Date</th>
                     <th>Trip Type</th>
                     <th>Vehicle</th>
                     <th>Driver</th>
@@ -29,30 +30,12 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($trips as $trip)
-                    <tr>
-                        <td>{{ $trip->trip_no }}</td>
-                        <td>{{ $trip->trip_type }}</td>
-                        <td>{{ $trip->vehicle->vehicle_no ?? '-' }}</td>
-                        <td>{{ $trip->driver->name ?? '-' }}</td>
-                        <td>{{ $trip->tripDetails->count() }}</td>
-                        <td>{{ $trip->created_at->format('d M Y') }}</td>
-                        <td>
-                            <a href="{{ route('admin.trips.show', $trip->id) }}" class="btn btn-sm btn-info">View</a>
-                            <a href="{{ route('admin.trips.edit', $trip->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                            <form action="{{ route('admin.trips.destroy', $trip->id) }}" method="POST" style="display:inline;">
-                                @csrf @method('DELETE')
-                                <button class="btn btn-sm btn-danger deleteExpenseType">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
             </tbody>
         </table>
     </div>
 
-
-    {{ $trips->links() }}
+{{-- 
+    {{ $trips->links() }} --}}
 </div>
 @endsection
 
@@ -78,6 +61,108 @@
         });
     });
 </script>
+
+<script>
+
+    $(document).ready(function() {
+        var DataTable = $("#tripsTable").DataTable({
+            dom: "Bfrtip",
+            buttons: [{
+                extend: "csv",
+                className: "btn-sm"
+            }],
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            pageLength: 20,
+            ajax: {
+                url: `{{route('admin.trips.index')}}`,
+            },
+            columns: [
+
+                {
+                    data: 'id',
+                    name: 'id'
+                },
+                {
+                    data: 'trip_date',
+                    name: 'trip_date'
+                },
+                {
+                    data: 'trip_type',
+                    name: 'trip_type'
+                },
+                {
+                    data: 'vehicle',
+                    name: 'vehicle'
+                },
+                {
+                    data: 'driver',
+                    name: 'driver'
+                },
+                {
+                    data: 'journey_count',
+                    name: 'journey_count'
+                },
+                {
+                    data: 'created_at',
+                    name: 'created_at'
+                },
+                {
+                    data: 'action',
+                    name: 'action'
+                }
+            ],
+            order: [[0, 'desc']],
+
+            createdRow: function(row, data, dataIndex) {
+                // Check if order_nature is 'urgent'
+                if (data.order_nature == 'urgent' && data.outstanding_amount == 0) {
+                    $(row).css('background-color', 'rgb(253 136 136)');
+                } if(data.order_nature == 'normal' && data.outstanding_amount != 0) {
+                    $(row).css('background-color', 'rgb(191 204 181)');
+                } else if(data.order_nature == 'urgent' && data.outstanding_amount != 0) {
+                    $(row).css('background-color', 'rgb(241 240 129)');
+                }
+            }
+
+        });
+        
+        var delete_id;
+        $(document, this).on('click', '.delete', function() {
+            delete_id = $(this).data('id');
+            $('#confirmModal').modal('show');
+        });
+
+        $(document).on('click', '#ok_delete', function() {
+            $.ajax({
+                type: "delete",
+                url: "{{url('admin/orderBigDC')}}/"+delete_id,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                beforeSend: function() {
+                    $('#ok_delete').text('Deleting...');
+                    $('#ok_delete').attr("disabled", true);
+                },
+                success: function(data) {
+                    DataTable.ajax.reload();
+                    $('#ok_delete').text('Delete');
+                    $('#ok_delete').attr("disabled", false);
+                    $('#confirmModal').modal('hide');
+                    //   js_success(data);
+                    if (data == 0) {
+                        toastr.error("Tag Exist in Products");
+                    } else if (data == 2) {
+                        toastr.error("Tag Exist in Collections");
+                    } else {
+                        toastr.success('Record Deleted Successfully');
+                    }
+                }
+            })
+        });
+    });
+    </script>
 
 
 @endsection

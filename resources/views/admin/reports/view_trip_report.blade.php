@@ -131,12 +131,6 @@
                             <td>{{ $item->weekly_labour ?? ""}}</td>
                         </tr> --}}
                         <tr>
-                            <th>Loading Labour</th>
-                            <td>{{ $item->loading_labour ?? ""}}</td>
-                            <th>Unloading Labour</th>
-                            <td>{{ $item->unloading_labour ?? ""}}</td>
-                        </tr>
-                        <tr>
                             {{-- <th>Advance</th>
                             <td>{{ $item->advance ?? ""}}</td> --}}
                             <th>Rent</th>

@@ -34,43 +34,6 @@
             </li>
 
             <li>
-                <a  class="{{ request()->IS('admin/expense-types') ? 'active' : '' }}"  href="{{ route('admin.expense-types.index') }}">
-                    <span class="nav-link-icon">
-                        <i class="bi bi-bar-chart"></i>
-                    </span>
-                    <span>Expense Types</span>
-                </a>
-            </li>
-
-            <li>
-                <a  class="{{ request()->IS('admin/drivers') ? 'active' : '' }}"  href="{{ route('admin.drivers.index') }}">
-                    <span class="nav-link-icon">
-                        <i class="bi bi-bar-chart"></i>
-                    </span>
-                    <span>Drivers</span>
-                </a>
-            </li>
-
-            <li>
-                <a  class="{{ request()->IS('admin/vehicles') ? 'active' : '' }}"  href="{{ route('admin.vehicles.index') }}">
-                    <span class="nav-link-icon">
-                        <i class="bi bi-bar-chart"></i>
-                    </span>
-                    <span>Vehicles</span>
-                </a>
-            </li>
-
-            <li>
-                <a  class="{{ request()->IS('admin/wheelers') ? 'active' : '' }}"  href="{{ route('admin.wheelers.index') }}">
-                    <span class="nav-link-icon">
-                        <i class="bi bi-bar-chart"></i>
-                    </span>
-                    <span>Wheelers</span>
-                </a>
-            </li>
-
-
-            <li>
                 <a  class="{{ request()->IS('admin/trips') ? 'active' : '' }}"  href="{{ route('admin.trips.index') }}">
                     <span class="nav-link-icon">
                         <i class="bi bi-bar-chart"></i>
@@ -79,7 +42,7 @@
                 </a>
             </li>
 
-
+          
             <li>
                 <a href="javascript:;">
                     <span class="nav-link-icon">
@@ -94,6 +57,28 @@
                     
                 </ul>
             </li>
+
+            <li>
+                <a href="javascript:;">
+                    <span class="nav-link-icon">
+                        <i class="bi bi-receipt"></i>
+                    </span>
+                    <span>Settings</span>
+                </a>
+                <ul>
+                    <li>
+                        <a href="{{ route('admin.destinations.index') }}">Destinations</a>
+                        <a href="{{ route('admin.expense-types.index') }}">Expense Types</a>
+                        <a href="{{ route('admin.drivers.index') }}">Drivers</a>
+                        <a href="{{ route('admin.vehicles.index') }}">Vehicles</a>
+                        <a href="{{ route('admin.wheelers.index') }}">Wheelers</a>
+                    </li>
+                    
+                </ul>
+            </li>
+
+
+        
 
             <li>
                 <a  href="{{route('admin.logout') }}">

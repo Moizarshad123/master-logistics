@@ -26,6 +26,9 @@ class VehicleController extends Controller
                 <tr>
                     <th>Expense</th>
                     <th>Expense Amount</th>
+                    <th> <button type="button" class="btn btn-sm btn-warning" id="addExpenseRow" style="display: none">
+                        + Add More Expenses
+                    </button></th>
                 </tr>
             </thead>
             <tbody id="expensesTableBody">';
@@ -47,6 +50,7 @@ class VehicleController extends Controller
                             placeholder="Enter amount">
                         
                     </td>
+                    <td></td>
                 </tr>';
             }
 

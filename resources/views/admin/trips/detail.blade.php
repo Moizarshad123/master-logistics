@@ -12,6 +12,7 @@
     <div class="card mb-3">
         <div class="card-body">
             <p><strong>Trip No:</strong> {{ $trip->trip_no }}</p>
+            <p><strong>Trip Date:</strong> {{ date("d-m-Y", strtotime($trip->trip_date)) }}</p>
             <p><strong>Trip Type:</strong> {{ $trip->trip_type }}</p>
             <p><strong>Vehicle:</strong> {{ $trip->vehicle->vehicle_no ?? 'N/A' }}</p>
             <p><strong>Driver:</strong> {{ $trip->driver->name ?? 'N/A' }}</p>
@@ -47,8 +48,6 @@
         </table>
     </div>
 
-
-
     <h5>Trip Detail Records</h5>
     <div style="max-height: 300px; overflow-y: auto;">
         <table class="table table-bordered">
@@ -76,15 +75,13 @@
                     <tr>
                         <td>{{ date('d M Y', strtotime($detail->start_date)) ?? "" }}</td>
                         <td>{{ isset($detail->end_date) ? date('d M Y', strtotime($detail->end_date)) : ""}}</td>
-                        <td>{{ $detail->from_destination }}</td>
-                        <td>{{ $detail->to_destination }}</td>
-                        <td>{{ $detail->material }}</td>
+                        <td>{{ $detail->from_dest->name ?? "" }}</td>
+                        <td>{{ $detail->to_dest->name ?? "" }}</td>
+                        <td>{{ $detail->material ?? "" }}</td>
                         <td>{{ $detail->material_type ?? "" }}</td>
                         <td>{{ $detail->total_bags }}</td>
                         <td>{{ $detail->baloch_labour }}</td>
                         <td>{{ $detail->weekly_labour }}</td>
-                        <td>{{ $detail->loading_labour }}</td>
-                        <td>{{ $detail->unloading_labour }}</td>
                         <td>{{ $detail->rent }}</td>
                         {{-- <td>{{ $detail->advance }}</td> --}}
                         <td>{{ $detail->weight }}</td>

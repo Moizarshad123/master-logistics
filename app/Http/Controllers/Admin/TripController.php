@@ -10,24 +10,84 @@ use App\Models\Driver;
 use App\Models\TripVehicleExpense;
 use App\Models\TripPayment;
 use App\Models\ExpenseType;
-
-
+use App\Models\Destination;
 use Illuminate\Http\Request;
-use DB;
+use DB, DataTables;
+
 class TripController extends Controller
 {
     public function index()
     {
-        $trips = Trip::with('tripDetails', 'vehicle', 'driver')->latest()->paginate(10);
-        return view('admin.trips.index', compact('trips'));
+
+        try {
+            if (request()->ajax()) {
+            
+                $trips = Trip::with('tripDetails', 'vehicle', 'driver')->latest()->get();
+
+                return datatables()->of($trips)
+                    ->addColumn('vehicle', function ($data) {
+                        if($data->vehicle != null) {
+                            return $data->vehicle->vehicle_no;
+                        } else {
+                            return "";
+                        }
+                    })
+                    ->editColumn('trip_date', function ($data) {
+                       
+                        return date("d-m-Y", strtotime($data->trip_date));
+                        
+                    })
+
+                    
+                    ->addColumn('driver', function ($data) {
+                        if($data->driver != null) {
+                            return $data->driver->name;
+                        } else {
+                            return "";
+                        }
+                    })
+                    ->addColumn('journey_count', function ($data) {
+                        return  $data->tripDetails->count() ?? 0;
+                    })
+                    ->editColumn('created_at', function ($data) {
+                        return  date('d M Y', strtotime($data->created_at));
+                    })   
+                    ->addColumn('action', function ($data) {
+
+                        $viewUrl   = route('admin.trips.show', $data->id);
+                        $editUrl   = route('admin.trips.edit', $data->id);
+                        $deleteUrl = route('admin.trips.destroy', $data->id);
+
+                        return '
+                            <a href="'.$viewUrl.'" class="btn btn-sm btn-info">View</a> |
+                            <a href="'.$editUrl.'" class="btn btn-sm btn-warning">Edit</a> |
+                            <form action="'.$deleteUrl.'" method="POST" style="display:inline;">
+                                '.csrf_field().'
+                                '.method_field('DELETE').'
+                                <button type="submit" class="btn btn-sm btn-danger deleteExpenseType" onclick="return confirm(\'Are you sure?\')">Delete</button>
+                            </form>
+                        ';
+                    })
+                    ->rawColumns(['action', 'vehicle', 'driver', 'journey_count'])->make(true);
+
+            }
+
+        } catch (\Exception $ex) {
+            return redirect('/')->with('error', $ex->getMessage());
+        }
+
+        return view('admin.trips.index');
     }
 
     public function create()
     {
-        $vehicles = Vehicle::all();
-        $drivers  = Driver::all();
-        $expenses = ExpenseType::all();
-        return view('admin.trips.create', compact('vehicles', 'drivers', "expenses"));
+        $vehicles     = Vehicle::all();
+        $drivers      = Driver::all();
+        $expenses     = ExpenseType::all();
+        $destinations = Destination::all();
+
+        
+        return view('admin.trips.create', compact('vehicles', 'drivers', "expenses", "destinations"));
     }
 
     public function store(Request $request)
@@ -37,7 +97,6 @@ class TripController extends Controller
                 'vehicle_id' => 'required',
                 'driver_id'  => 'required',
                 'trip_type'  => 'required',
-
             ]);
     
             DB::beginTransaction();
@@ -49,7 +108,8 @@ class TripController extends Controller
                                 "trip_type"  => $request->trip_type,
                                 'vehicle_id' => $request->vehicle_id,
                                 'driver_id'  => $request->driver_id,
-                                "balance"    => $request->balance
+                                "balance"    => $request->balance,
+                                "trip_date"  => $request->trip_date 
                             ]);
 
 
@@ -98,7 +158,7 @@ class TripController extends Controller
 
     public function show(Trip $trip)
     {
-        $trip->load(['vehicle', 'driver', 'tripDetails', 'tripPayments', 'tripExpenses', 'tripExpenses.expenseName']);
+        $trip->load(['tripDetails.from_dest', 'tripDetails.to_dest', 'vehicle', 'driver', 'tripDetails', 'tripPayments', 'tripExpenses', 'tripExpenses.expenseName']);
         return view('admin.trips.detail', compact('trip'));
     }
 
@@ -107,13 +167,14 @@ class TripController extends Controller
         $trip->load(['tripDetails' => function($query) {
             $query->whereNull('end_date');
         }]);
-        $vehicles = Vehicle::all();
-        $drivers  = Driver::all();
+        $vehicles      = Vehicle::all();
+        $drivers       = Driver::all();
         $expensesTypes = ExpenseType::all();
         $expenses = TripVehicleExpense::with("expenseName")->where("trip_id", $trip->id)->get();
         $payments = TripPayment::where("trip_id", $trip->id)->get();
+        $destinations = Destination::all();
 
-        return view('admin.trips.edit', compact('trip', 'vehicles', 'drivers', 'expenses', 'payments', 'expensesTypes'));
+        return view('admin.trips.edit', compact('trip', 'vehicles', 'drivers', 'expenses', 'payments', 'expensesTypes', 'destinations'));
     }
 
     public function update(Request $request, Trip $trip)
@@ -127,7 +188,7 @@ class TripController extends Controller
    
            DB::beginTransaction();
 
-           $trip->update($request->only('trip_no', 'trip_type', 'vehicle_id', 'driver_id'));
+           $trip->update($request->only('trip_no', 'trip_date', 'trip_type', 'vehicle_id', 'driver_id'));
 
             $paymentTypes   = $request->payment_type;
             $amounts        = $request->expense_amount;
