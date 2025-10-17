@@ -12,6 +12,12 @@ use App\Models\TripPayment;
 use App\Models\ExpenseType;
 use App\Models\Destination;
 use Illuminate\Http\Request;
+use App\Models\PurchaseSheet;
+use App\Models\SaleSheet;
+use App\Models\Material;
+
+
+
 use DB, DataTables;
 
 class TripController extends Controller
@@ -85,9 +91,10 @@ class TripController extends Controller
         $drivers      = Driver::all();
         $expenses     = ExpenseType::all();
         $destinations = Destination::all();
-
-        
-        return view('admin.trips.create', compact('vehicles', 'drivers', "expenses", "destinations"));
+        $sales        = SaleSheet::orderByDESC("id")->get();
+        $purchases    = PurchaseSheet::orderByDESC("id")->get();
+        $materials    = Material::orderBy("name", "ASC")->get();
+        return view('admin.trips.create', compact("materials", 'vehicles', 'drivers', "expenses", "destinations", "sales", "purchases"));
     }
 
     public function store(Request $request)
@@ -102,7 +109,7 @@ class TripController extends Controller
             DB::beginTransaction();
     
             $trip_no = str_pad(Trip::max('id') + 1, 2, '0', STR_PAD_LEFT);
-    
+            
             $trip = Trip::create([
                                 'trip_no'    => $trip_no,
                                 "trip_type"  => $request->trip_type,
@@ -170,11 +177,14 @@ class TripController extends Controller
         $vehicles      = Vehicle::all();
         $drivers       = Driver::all();
         $expensesTypes = ExpenseType::all();
-        $expenses = TripVehicleExpense::with("expenseName")->where("trip_id", $trip->id)->get();
-        $payments = TripPayment::where("trip_id", $trip->id)->get();
+        $expenses     = TripVehicleExpense::with("expenseName")->where("trip_id", $trip->id)->get();
+        $payments     = TripPayment::where("trip_id", $trip->id)->get();
         $destinations = Destination::all();
+        $sales        = SaleSheet::orderByDESC("id")->get();
+        $purchases    = PurchaseSheet::orderByDESC("id")->get();
+        $materials    = Material::orderBy("name", "ASC")->get();
 
-        return view('admin.trips.edit', compact('trip', 'vehicles', 'drivers', 'expenses', 'payments', 'expensesTypes', 'destinations'));
+        return view('admin.trips.edit', compact("sales", "purchases", "materials", 'trip', 'vehicles', 'drivers', 'expenses', 'payments', 'expensesTypes', 'destinations'));
     }
 
     public function update(Request $request, Trip $trip)
@@ -214,7 +224,6 @@ class TripController extends Controller
                     TripPayment::create($data);
                 }
             }
-
 
            $submittedExpenseIds = [];       
 

@@ -19,10 +19,9 @@ class TripDetail extends Model
         "total_bags",
         "weekly_labour",
         "baloch_labour",
-        "rate",
+        "baloch_labour_rate",
         "no_of_labour",
         "rent",
-        // "advance",
         "weight",
         "status"
     ];

@@ -62,8 +62,6 @@
                     <th>Total Bags</th>
                     <th>Weekly</th>
                     <th>Baloch</th>
-                    <th>Loading</th>
-                    <th>Unloading</th>
                     <th>Rent</th>
                     <th>Weight</th>
                     <th>Status</th>

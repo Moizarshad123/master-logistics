@@ -244,8 +244,54 @@
         $(document).on("click", "#addRow", function (e) {
 
             e.preventDefault();
-            const tripType = $("#trip_type").val();
+            let tripType = $("#trip_type option:selected").val();
 
+            if (!tripType) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Please select Trip type to continue!",
+                });
+                return; // stop the function, do not append row
+            }
+            let to ="";
+            from = "";
+            if(tripType == "Feed Sell") {
+
+                from = `<input type="text" class="form-control" name="trip_details[${index}][from_destination]" value="Master Agro" readonly>`;
+
+                to = `<select class="form-select" name="trip_details[${index}][to_destination]" style="display: ${tripType === 'Purchase' ? 'none' : 'block'};">
+                            <option value="">Select To Station</option>
+                            @foreach ($purchases as $item)
+                                <option value="{{ $item->id }}">{{ $item->station }}</option>
+                            @endforeach
+                        </select>`;
+            } else if (tripType === "Purchase") {
+                // For Purchase
+                to = `<input type="text" class="form-control" name="trip_details[${index}][from_destination]" value="Master Agro" readonly>`;
+                
+                from = `<select class="form-select" name="trip_details[${index}][to_destination]">
+                        <option value="">Select From Station</option>
+                        @foreach ($sales as $item)
+                            <option value="{{ $item->id }}">{{ $item->station }}</option>
+                        @endforeach
+                    </select>`;
+            } else {
+                // For all other trip types
+                from = `<select class="form-select" name="trip_details[${index}][from_destination]">
+                            <option value="">Select From Destination</option>
+                            @foreach ($destinations as $item)
+                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                            @endforeach
+                        </select>`;
+                
+                to = `<select class="form-select" name="trip_details[${index}][to_destination]">
+                            <option value="">Select To Destination</option>
+                            @foreach ($destinations as $item)
+                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                            @endforeach
+                    </select>`;
+            }
             let row = `
             <div class="trip-detail border rounded p-3 mb-3">
                 <div class="row">
@@ -255,26 +301,17 @@
                     </div>
                     <div class="col-md-4">
                         <label>From</label>
-                        <select class="form-select select2" name="trip_details[${index}][from_destination]">
-                            <option value="">Select From Destination</option>
-                            @foreach ($destinations as $item)
-                                <option value="{{ $item->id }}">{{ $item->name }}</option>
-                            @endforeach
-                        </select>
+                       `+from+`
+
                     </div>
                     <div class="col-md-4">
                         <label>To</label>
-                        <select class="form-select select2" name="trip_details[${index}][to_destination]">
-                            <option value="">Select To Destination</option>
-                            @foreach ($destinations as $item)
-                                <option value="{{ $item->id }}">{{ $item->name }}</option>
-                            @endforeach
-                        </select>
+                        `+to+`
                     </div>
                 </div>
                 <div class="row mt-2 trip-row">    
                   
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label>Material Type</label>
                         <select class="form-select" name="trip_details[${index}][material_type]">
                             <option value="Bags">Bags</option>
@@ -282,13 +319,23 @@
                             <option value="LTR">LTR</option>
                         </select>
                     </div>
-                     <div class="col-md-4">
+                     <div class="col-md-3">
                         <label>Material</label>
-                        <input type="text" name="trip_details[${index}][material]" class="form-control">
+                        
+                        <select class="form-select" name="trip_details[${index}][material]">
+                            <option value="">Select Material</option>
+                            @foreach ($materials as $material)
+                                <option value="{{ $material->name }}">{{ $material->name }}</option>
+                            @endforeach
+                        </select>
                     </div>
-                     <div class="col-md-4 baloch-labour-field" style="display: ${tripType === 'Feed Sell' ? 'block' : 'none'};">
+                    <div class="col-md-3 baloch-labour-field" style="display: ${tripType === 'Feed Sell' ? 'block' : 'none'};">
+                        <label>Baloch Labour Rate</label>
+                        <input type="text" name="trip_details[${index}][baloch_labour_rate]" class="form-control baloch-labour-rate">
+                    </div>
+                    <div class="col-md-3 baloch-labour-field" style="display: ${tripType === 'Feed Sell' ? 'block' : 'none'};">
                         <label>Baloch Labour</label>
-                        <input type="text" name="trip_details[${index}][baloch_labour]" class="form-control weekly-labour">
+                        <input type="text" name="trip_details[${index}][baloch_labour]" class="form-control baloch-labour">
                     </div>
                 </div>
                 <div class="row mt-2">
@@ -310,7 +357,7 @@
 
                     <div class="col-md-3">
                         <label>Weekly Labour</label>
-                        <input type="text" name="trip_details[${index}][weekly_labour]" class="form-control weekly-labour" readonly>
+                        <input type="text" name="trip_details[${index}][weekly_labour]" class="form-control weekly-labour">
                     </div>
                 </div>
                 <div class="row mt-2">
@@ -340,46 +387,118 @@
         });
 
 
+        // document.addEventListener('input', function(e) {
+        //     const row = e.target.closest('.trip-detail');
+        //     if (!row) return;
+
+        //     const totalBagsInput        = row.querySelector('.total-bags');
+        //     const labourRateInput       = row.querySelector('.rate');
+        //     const noOfLabourInput       = row.querySelector('.no_of_labour');
+        //     const weeklyLabourInput     = row.querySelector('.weekly-labour');
+        //     const balochLabourRateInput = row.querySelector('.baloch-labour-rate');
+        //     const balochLabourInput     = row.querySelector('.baloch-labour');
+
+        //     const totalBags        = totalBagsInput ? parseFloat(totalBagsInput.value) : null;
+        //     const labourRate       = labourRateInput ? parseFloat(labourRateInput.value) : null;
+        //     const noOfLabour       = noOfLabourInput ? parseFloat(noOfLabourInput.value) : null;
+        //     const weeklyLabour     = weeklyLabourInput ? parseFloat(weeklyLabourInput.value) : null;
+        //     const balochLabourRate = balochLabourRateInput ? parseFloat(balochLabourRateInput.value) : null;
+
+
+        //     if(Number.isFinite(totalBags) && Number.isFinite(balochLabourRate)) {
+        //         balochLabourInput.value = (totalBags * balochLabourRate);
+        //     }
+
+        //     // Only calculate if all required inputs are finite numbers
+        //     if (Number.isFinite(totalBags) && Number.isFinite(labourRate) && Number.isFinite(noOfLabour)) {
+        //         if (weeklyLabourInput) {
+        //             weeklyLabourInput.value = (totalBags * labourRate * noOfLabour).toFixed(1);
+        //         }
+        //     }
+
+        //     else if (Number.isFinite(totalBags) && Number.isFinite(noOfLabour) && Number.isFinite(weeklyLabour)) {
+        //         if (labourRateInput) {
+        //             labourRateInput.value = (weeklyLabour / (totalBags * noOfLabour)).toFixed(1);
+        //         }
+        //     }
+
+        //     else if (Number.isFinite(labourRate) && Number.isFinite(noOfLabour) && Number.isFinite(weeklyLabour)) {
+        //         if (totalBagsInput) {
+        //             totalBagsInput.value = (weeklyLabour / (labourRate * noOfLabour)).toFixed(1);
+        //         }
+        //     }
+
+        //     else if (Number.isFinite(totalBags) && Number.isFinite(labourRate) && Number.isFinite(weeklyLabour)) {
+        //         if (noOfLabourInput) {
+        //             noOfLabourInput.value = (weeklyLabour / (totalBags * labourRate)).toFixed(1);
+        //         }
+        //     }
+        // });
+
         document.addEventListener('input', function(e) {
-            const row = e.target.closest('.row');
-            if (!row) return;
+    const row = e.target.closest('.trip-detail');
+    if (!row) return;
 
-            const totalBagsInput    = row.querySelector('.total-bags');
-            const labourRateInput   = row.querySelector('.rate');
-            const noOfLabourInput   = row.querySelector('.no_of_labour');
-            const weeklyLabourInput = row.querySelector('.weekly-labour');
+    const totalBagsInput        = row.querySelector('.total-bags');
+    const labourRateInput       = row.querySelector('.rate');
+    const noOfLabourInput       = row.querySelector('.no_of_labour');
+    const weeklyLabourInput     = row.querySelector('.weekly-labour');
+    const balochLabourRateInput = row.querySelector('.baloch-labour-rate');
+    const balochLabourInput     = row.querySelector('.baloch-labour');
 
-            let totalBags  = parseFloat(totalBagsInput.value) || null;
-            let labourRate = parseFloat(labourRateInput.value) || null;
-            let noOfLabour = parseFloat(noOfLabourInput.value) || null;
+    const totalBags        = parseFloat(totalBagsInput?.value) || null;
+    const labourRate       = parseFloat(labourRateInput?.value) || null;
+    const noOfLabour       = parseFloat(noOfLabourInput?.value) || null;
+    const weeklyLabour     = parseFloat(weeklyLabourInput?.value) || null;
+    const balochLabourRate = parseFloat(balochLabourRateInput?.value) || null;
 
-            // Agar sab 3 values hain
-            if (totalBags && labourRate && noOfLabour) {
-                weeklyLabourInput.value = totalBags * labourRate * noOfLabour;
-            } 
-            // Agar labour rate missing
-            else if (totalBags && noOfLabour && weeklyLabourInput.value) {
-                labourRate = weeklyLabourInput.value / (totalBags * noOfLabour);
-                labourRateInput.value = labourRate.toFixed(1);
-            }
+    const active = e.target; // jis field me user likh raha hai
 
-            else if (totalBags && noOfLabour) {
-                labourRate = totalBags / noOfLabour;
-                labourRateInput.value = labourRate.toFixed(1);
-            }
-            // Aur baqi missing value ke liye calculation
-            else if (labourRate && noOfLabour && weeklyLabourInput.value) {
-                totalBags = weeklyLabourInput.value / (labourRate * noOfLabour);
-                totalBagsInput.value = totalBags.toFixed(1);
-            }
-            else if (totalBags && labourRate && weeklyLabourInput.value) {
-                noOfLabour = weeklyLabourInput.value / (totalBags * labourRate);
-                noOfLabourInput.value = noOfLabour.toFixed(1);
-            }
-        });
+    // 👇 BALUCH LABOUR calculation
+    if (Number.isFinite(totalBags) && Number.isFinite(balochLabourRate) && active !== balochLabourInput) {
+        balochLabourInput.value = (totalBags * balochLabourRate).toFixed(1);
+    }
 
+    // 👇 WEEKLY LABOUR calculation
+    if (
+        Number.isFinite(totalBags) && 
+        Number.isFinite(labourRate) && 
+        Number.isFinite(noOfLabour) && 
+        active !== weeklyLabourInput
+    ) {
+        weeklyLabourInput.value = (totalBags * labourRate * noOfLabour).toFixed(1);
+    }
 
+    // 👇 LABOUR RATE calculation
+    else if (
+        Number.isFinite(totalBags) && 
+        Number.isFinite(noOfLabour) && 
+        Number.isFinite(weeklyLabour) && 
+        active !== labourRateInput
+    ) {
+        labourRateInput.value = (weeklyLabour / (totalBags * noOfLabour)).toFixed(1);
+    }
 
+    // 👇 TOTAL BAGS calculation
+    else if (
+        Number.isFinite(labourRate) && 
+        Number.isFinite(noOfLabour) && 
+        Number.isFinite(weeklyLabour) && 
+        active !== totalBagsInput
+    ) {
+        totalBagsInput.value = (weeklyLabour / (labourRate * noOfLabour)).toFixed(1);
+    }
+
+    // 👇 NO. OF LABOUR calculation
+    else if (
+        Number.isFinite(totalBags) && 
+        Number.isFinite(labourRate) && 
+        Number.isFinite(weeklyLabour) && 
+        active !== noOfLabourInput
+    ) {
+        noOfLabourInput.value = (weeklyLabour / (totalBags * labourRate)).toFixed(1);
+    }
+});
 
 
 
