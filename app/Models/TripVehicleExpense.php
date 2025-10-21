@@ -12,6 +12,7 @@ class TripVehicleExpense extends Model
         "trip_id",
         "vehicle_id",
         "expense",
+        "expense_from",
         "amount"
     ];
 

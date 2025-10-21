@@ -19,7 +19,7 @@
                 @error('station') <p style="color:red">{{ $message }}</p> @enderror
             </div>
             <div class="col-md-4">
-                <label>Per Tonn Rate:</label>
+                <label>Per Ton Rate:</label>
                 <input type="text" name="per_ton_rate" value="{{ old('per_ton_rate', $salesSheet->per_ton_rate) }}" class="form-control">
                 @error('per_ton_rate') <p style="color:red">{{ $message }}</p> @enderror
             </div>

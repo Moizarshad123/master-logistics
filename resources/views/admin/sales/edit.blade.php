@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'Edit Sales')
+@section('title', 'Edit Sell')
 
 @section('css')
 @endsection
@@ -8,7 +8,7 @@
 <!-- Content -->
 
 <div class="container-xxl flex-grow-1 container-p-y">
-    <h3>Update Sales</h3>
+    <h3>Update Sell</h3>
     <form action="{{ route('admin.sales.update', $salesSheet->id) }}" method="POST" enctype="multipart/form-data" id="expenseTypeForm">
         @csrf
         @method('PUT')

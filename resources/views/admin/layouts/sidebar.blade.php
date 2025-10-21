@@ -67,8 +67,8 @@
                 </a>
                 <ul>
                     <li>
-                        
-                        <a href="{{ route('admin.sales.index') }}">Sales Sheet</a>
+                        <a href="{{ route('admin.expense-from.index')}}">Expense From</a>
+                        <a href="{{ route('admin.sales.index') }}">Sell Sheet</a>
                         <a href="{{ route('admin.purchases.index') }}">Purchase Sheet</a>
                         <a href="{{ route('admin.destinations.index') }}">Destinations</a>
                         <a href="{{ route('admin.expense-types.index') }}">Expense Types</a>

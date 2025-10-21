@@ -25,7 +25,7 @@
             <thead>
                 <tr>
                     <th>Station</th>
-                    <th>Per Tonn Rate</th>
+                    <th>Per Ton Rate</th>
                     <th>Type</th>
                     <th>Action</th>
                 </tr>

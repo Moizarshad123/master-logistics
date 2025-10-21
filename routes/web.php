@@ -11,6 +11,8 @@ use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\DestinationController;
 use App\Http\Controllers\Admin\PurchaseSheetController;
 use App\Http\Controllers\Admin\SalesSheetController;
+use App\Http\Controllers\Admin\ExpenseFromController;
+
 
 
 
@@ -30,19 +32,16 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
     Route::controller(AdminController::class)->group(function() {
         Route::get('dashboard', 'dashboard')->name('dashboard');
     });
+    Route::resource('expense-from', ExpenseFromController::class);
     Route::resource('expense-types', ExpenseTypeController::class);
     Route::resource('drivers', DriverController::class);
     Route::resource('vehicles', VehicleController::class);
     Route::resource('wheelers', WheelerController::class);
     Route::resource('trips', TripController::class);
     Route::resource('destinations', DestinationController::class);
-
     Route::resource('purchases', PurchaseSheetController::class);
     Route::resource('sales', SalesSheetController::class);
 
-
-
-    
 
     Route::get('driver-payments/{id}', [DriverController::class, "driver_payments"])->name("driverPayments");
     Route::get('get-vehicle-expenses', [VehicleController::class, 'getVehicleExpenses'])->name('getVehicleExpenses');

@@ -12,7 +12,7 @@
     <div class="mb-4">
         <div class="row">
             <div class="col-md-10">
-                <h3>Sales Sheet</h3>
+                <h3>Sell Sheet</h3>
             </div>
             <div class="col-md-2">
                 {{-- <a href="{{ route('admin.expense-types.create') }}" class="btn btn-sm btn-success">Add Expense Types</a> --}}
@@ -48,7 +48,7 @@
                 @empty
                 <tr>
                     <th colspan="2">
-                        <p class="text-center">No Sales Found</p>
+                        <p class="text-center">No Sells Found</p>
                     </th>
                 </tr>
                 @endforelse

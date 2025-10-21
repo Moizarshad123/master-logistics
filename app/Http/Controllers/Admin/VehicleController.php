@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Vehicle;
 use App\Models\ExpenseType;
 use App\Models\Wheeler;
+use App\Models\ExpenseFrom;
+
 
 use DB;
 
@@ -15,9 +17,9 @@ class VehicleController extends Controller
 
     public function getVehicleExpenses(Request $request)
     {
-        $vehicleId = $request->vehicle_id;
-
-        $expenses = Vehicle::with('expenseTypes')->findOrFail($request->vehicle_id);
+        $vehicleId     = $request->vehicle_id;
+        $expenses      = Vehicle::with('expenseTypes')->findOrFail($request->vehicle_id);
+        $expense_froms = ExpenseFrom::orderBy("name", "ASC")->get();
         $html = "";
         // <td>' . e($expense->name) . '</td>
         if(count($expenses->expenseTypes) > 0) {
@@ -26,6 +28,7 @@ class VehicleController extends Controller
                 <tr>
                     <th>Expense</th>
                     <th>Expense Amount</th>
+                    <th>Expense From</th>
                     <th> <button type="button" class="btn btn-sm btn-warning" id="addExpenseRow" style="display: none">
                         + Add More Expenses
                     </button></th>
@@ -33,23 +36,31 @@ class VehicleController extends Controller
             </thead>
             <tbody id="expensesTableBody">';
             foreach ($expenses->expenseTypes as $expense) {
-                $html .= '<tr>
 
+                $new = '<select name="expenses['.$expense->id.'][expense_from]" class="form-select">
+                    <option value="">Select Expense From</option>';
+
+                foreach ($expense_froms as $item) {
+                    $new .= '<option value="' . $item->name . '">' . $item->name . '</option>';
+                }
+
+                $new .= '</select>';
+        
+                $html .= '<tr>
                     <td>
                      <input type="text" 
                                 name="expenses[${extraExpenseIndex}][name]" 
                                 class="form-control" value="'.e($expense->name).'" readonly>
                     </td>
                     <td>
-                        <input type="hidden" 
-                            name="expenses['.$expense->id.'][name]" 
-                            value="'.$expense->name.'">
-                        <input type="number" step="0.01" 
-                            name="expenses['.$expense->id.'][amount]" 
-                            class="form-control" 
-                            placeholder="Enter amount">
+                        <input type="hidden" name="expenses['.$expense->id.'][name]" value="'.$expense->name.'">
+                        <input type="number" step="0.01"  name="expenses['.$expense->id.'][amount]" 
+                            class="form-control" placeholder="Enter amount">
                         
                     </td>
+                    <td>'.$new.'
+
+                        </td>
                     <td></td>
                 </tr>';
             }
@@ -61,8 +72,12 @@ class VehicleController extends Controller
                 <tr>
                     <th>Expense</th>
                     <th>Expense Amount</th>
+                    <th>Expense From</th>
+                    <th> <button type="button" class="btn btn-sm btn-warning" id="addExpenseRow" style="display: none">
+                        + Add More Expenses
+                    </button></th>
                 </tr>
-            </thead>
+            </thead> 
             <tbody id="expensesTableBody"></tbody></table>';
         }
 

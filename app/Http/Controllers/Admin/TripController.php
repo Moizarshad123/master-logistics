@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use App\Models\PurchaseSheet;
 use App\Models\SaleSheet;
 use App\Models\Material;
+use App\Models\ExpenseFrom;
 
 
 
@@ -94,7 +95,10 @@ class TripController extends Controller
         $sales        = SaleSheet::orderByDESC("id")->get();
         $purchases    = PurchaseSheet::orderByDESC("id")->get();
         $materials    = Material::orderBy("name", "ASC")->get();
-        return view('admin.trips.create', compact("materials", 'vehicles', 'drivers', "expenses", "destinations", "sales", "purchases"));
+        $expense_froms = ExpenseFrom::orderBy("name", "ASC")->get();
+
+        
+        return view('admin.trips.create', compact("expense_froms", "materials", 'vehicles', 'drivers', "expenses", "destinations", "sales", "purchases"));
     }
 
     public function store(Request $request)
@@ -143,6 +147,7 @@ class TripController extends Controller
                         'trip_id'    => $trip->id,
                         'vehicle_id' => $request->vehicle_id,
                         'expense'    => $expenseData['name'],
+                        'expense_from' => $expenseData["expense_from"],
                         'amount'     => $expenseData['amount'],
                     ]);
                 }
