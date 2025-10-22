@@ -342,7 +342,7 @@
                     </div>
                   
                     <div class="col-md-3">
-                        <label>Weight</label>
+                        <label>Weight (In Ton)</label>
                         <input type="number" step="0.01" name="trip_details[${index}][weight]" class="form-control">
                     </div>
                     <div class="col-md-3 d-flex align-items-end">

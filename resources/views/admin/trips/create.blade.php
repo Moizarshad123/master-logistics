@@ -264,13 +264,12 @@
                 });
                 return; // stop the function, do not append row
             }
-            let to ="";
-            from = "";
+            let to = "";
+            from   = "";
             if(tripType == "Feed Sell") {
 
                 from = `<input type="text" class="form-control" name="trip_details[${index}][from_destination]" value="Master Agro" readonly>`;
-
-                to = `<select class="form-select" name="trip_details[${index}][to_destination]" style="display: ${tripType === 'Purchase' ? 'none' : 'block'};">
+                to   = `<select class="form-select" name="trip_details[${index}][to_destination]" style="display: ${tripType === 'Purchase' ? 'none' : 'block'};">
                             <option value="">Select To Station</option>
                             @foreach ($sales as $item)
                                 <option value="{{ $item->id }}">{{ $item->station }}</option>
@@ -353,18 +352,15 @@
                         <label>Total Bags</label>
                         <input type="number" name="trip_details[${index}][total_bags]" class="form-control total-bags">
                     </div>
-
-                    <div class="col-md-3">
-                        <label>Labour Rate</label>
-                        <input type="text" name="trip_details[${index}][rate]" class="form-control rate">
-                    </div>
-
                     <div class="col-md-3">
                         <label>No Of Labour</label>
                         <input type="text" name="trip_details[${index}][no_of_labour]" class="form-control no_of_labour">
                     </div>
-                    
 
+                    <div class="col-md-3">
+                        <label>Weekly Labour Rate</label>
+                        <input type="text" name="trip_details[${index}][rate]" class="form-control rate">
+                    </div>
                     <div class="col-md-3">
                         <label>Weekly Labour</label>
                         <input type="text" name="trip_details[${index}][weekly_labour]" class="form-control weekly-labour">
@@ -373,11 +369,11 @@
                 <div class="row mt-2">
                     <div class="col-md-3">
                         <label>Rent</label>
-                        <input type="number" name="trip_details[${index}][rent]" class="form-control">
+                        <input type="number" name="trip_details[${index}][rent]" class="form-control rent">
                     </div>
                     
                     <div class="col-md-3">
-                        <label>Weight</label>
+                        <label>Weight (In Ton)</label>
                         <input type="number" step="0.01" name="trip_details[${index}][weight]" class="form-control">
                     </div>
                     <div class="col-md-4 d-flex align-items-end">
@@ -396,10 +392,52 @@
             //         </div>
         });
 
+        document.addEventListener('change', function(e) {
+            if (e.target.matches('.form-select[name^="trip_details"][name$="[to_destination]"]')) {
+                const select = e.target;
+                const saleSheetId = select.value;
+                const row = select.closest('.trip-detail');
+                const rentInput = row.querySelector('.rent'); // change this to your rent field's class
+
+                if (!saleSheetId) return;
+
+                fetch(`https://finchat.online/master-logistics/public/admin/salesheets/${saleSheetId}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data && data.minimum_rent !== undefined) {
+                            rentInput.value = data.minimum_rent;
+                        }
+                    })
+                    .catch(err => console.error('Error fetching SaleSheet:', err));
+            }
+        });
+
+
+        document.addEventListener('change', function(e) {
+            if (e.target.matches('.form-select[name^="trip_details"][name$="[from_destination]"]')) {
+                const select      = e.target;
+                const purchaseSheetId = select.value;
+                const row         = select.closest('.trip-detail');
+                const rentInput   = row.querySelector('.rent'); // change this to your rent field's class
+
+                if (!purchaseSheetId) return;
+
+                fetch(`https://finchat.online/master-logistics/public/admin/purchasesheets/${purchaseSheetId}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data && data.per_ton_rate !== undefined) {
+                            rentInput.value = data.per_ton_rate;
+                        }
+                    })
+                    .catch(err => console.error('Error fetching PurchaseSheet:', err));
+            }
+        });
+
         // document.addEventListener('input', function(e) {
         //     const row = e.target.closest('.trip-detail');
-        //     if (!row) return;
 
+        //     let tripType = $("#trip_type option:selected").val();
+        //     if (!row) return;
         //     const totalBagsInput        = row.querySelector('.total-bags');
         //     const labourRateInput       = row.querySelector('.rate');
         //     const noOfLabourInput       = row.querySelector('.no_of_labour');
@@ -407,46 +445,82 @@
         //     const balochLabourRateInput = row.querySelector('.baloch-labour-rate');
         //     const balochLabourInput     = row.querySelector('.baloch-labour');
 
-        //     const totalBags        = totalBagsInput ? parseFloat(totalBagsInput.value) : null;
-        //     const labourRate       = labourRateInput ? parseFloat(labourRateInput.value) : null;
-        //     const noOfLabour       = noOfLabourInput ? parseFloat(noOfLabourInput.value) : null;
-        //     const weeklyLabour     = weeklyLabourInput ? parseFloat(weeklyLabourInput.value) : null;
-        //     const balochLabourRate = balochLabourRateInput ? parseFloat(balochLabourRateInput.value) : null;
+        //     const totalBags        = parseFloat(totalBagsInput?.value) || null;
+        //     const labourRate       = parseFloat(labourRateInput?.value) || null;
+        //     const noOfLabour       = noOfLabourInput?.value === "" ? null : parseFloat(noOfLabourInput.value);
+        //     const weeklyLabour     = parseFloat(weeklyLabourInput?.value) || null;
+        //     const balochLabourRate = parseFloat(balochLabourRateInput?.value) || null;
+
+        //     const active = e.target; // jis field me user likh raha hai
 
 
-        //     if(Number.isFinite(totalBags) && Number.isFinite(balochLabourRate)) {
-        //         balochLabourInput.value = (totalBags * balochLabourRate);
-        //     }
+        //     if(tripType == "Feed Sell") {
 
-        //     // Only calculate if all required inputs are finite numbers
-        //     if (Number.isFinite(totalBags) && Number.isFinite(labourRate) && Number.isFinite(noOfLabour)) {
-        //         if (weeklyLabourInput) {
-        //             weeklyLabourInput.value = (totalBags * labourRate * noOfLabour).toFixed(1);
+        //         if (noOfLabour === 1) {
+        //             if (labourRateInput) labourRateInput.value = 2;
+        //             if (balochLabourRateInput) balochLabourRateInput.value = 1.5;
+        //         } 
+        //         else if (noOfLabour === 2) {
+        //             if (labourRateInput) labourRateInput.value = 4;
+        //             if (balochLabourRateInput) balochLabourRateInput.value = 0;
+        //         } 
+        //         else if (noOfLabour === 0) {
+        //             if (labourRateInput) labourRateInput.value = 0;
+        //             if (balochLabourRateInput) balochLabourRateInput.value = 3;
         //         }
         //     }
 
-        //     else if (Number.isFinite(totalBags) && Number.isFinite(noOfLabour) && Number.isFinite(weeklyLabour)) {
-        //         if (labourRateInput) {
-        //             labourRateInput.value = (weeklyLabour / (totalBags * noOfLabour)).toFixed(1);
-        //         }
+        //     //  BALUCH LABOUR calculation
+        //     if (Number.isFinite(totalBags) && Number.isFinite(balochLabourRate) && active !== balochLabourInput) {
+        //         balochLabourInput.value = (totalBags * balochLabourRate).toFixed(1);
         //     }
 
-        //     else if (Number.isFinite(labourRate) && Number.isFinite(noOfLabour) && Number.isFinite(weeklyLabour)) {
-        //         if (totalBagsInput) {
-        //             totalBagsInput.value = (weeklyLabour / (labourRate * noOfLabour)).toFixed(1);
-        //         }
+        //     //  WEEKLY LABOUR calculation
+        //     if (
+        //         Number.isFinite(totalBags) && 
+        //         Number.isFinite(labourRate) && 
+        //         Number.isFinite(noOfLabour) && 
+        //         active !== weeklyLabourInput
+        //     ) {
+        //         weeklyLabourInput.value = (totalBags * labourRate).toFixed(1);
         //     }
 
-        //     else if (Number.isFinite(totalBags) && Number.isFinite(labourRate) && Number.isFinite(weeklyLabour)) {
-        //         if (noOfLabourInput) {
-        //             noOfLabourInput.value = (weeklyLabour / (totalBags * labourRate)).toFixed(1);
-        //         }
+        //     // 👇 LABOUR RATE calculation
+        //     else if (
+        //         Number.isFinite(totalBags) && 
+        //         Number.isFinite(noOfLabour) && 
+        //         Number.isFinite(weeklyLabour) && 
+        //         active !== labourRateInput
+        //     ) {
+        //         labourRateInput.value = (weeklyLabour / (totalBags * noOfLabour)).toFixed(1);
+        //     }
+
+        //     // 👇 TOTAL BAGS calculation
+        //     else if (
+        //         Number.isFinite(labourRate) && 
+        //         Number.isFinite(noOfLabour) && 
+        //         Number.isFinite(weeklyLabour) && 
+        //         active !== totalBagsInput
+        //     ) {
+        //         totalBagsInput.value = (weeklyLabour / (labourRate * noOfLabour)).toFixed(1);
+        //     }
+
+        //     // 👇 NO. OF LABOUR calculation
+        //     else if (
+        //         Number.isFinite(totalBags) && 
+        //         Number.isFinite(labourRate) && 
+        //         Number.isFinite(weeklyLabour) && 
+        //         active !== noOfLabourInput
+        //     ) {
+        //         noOfLabourInput.value = (weeklyLabour / (totalBags * labourRate)).toFixed(1);
         //     }
         // });
 
         document.addEventListener('input', function(e) {
             const row = e.target.closest('.trip-detail');
             if (!row) return;
+
+            let tripType = $("#trip_type option:selected").val();
 
             const totalBagsInput        = row.querySelector('.total-bags');
             const labourRateInput       = row.querySelector('.rate');
@@ -455,59 +529,54 @@
             const balochLabourRateInput = row.querySelector('.baloch-labour-rate');
             const balochLabourInput     = row.querySelector('.baloch-labour');
 
-            const totalBags        = parseFloat(totalBagsInput?.value) || null;
-            const labourRate       = parseFloat(labourRateInput?.value) || null;
-            const noOfLabour       = parseFloat(noOfLabourInput?.value) || null;
-            const weeklyLabour     = parseFloat(weeklyLabourInput?.value) || null;
-            const balochLabourRate = parseFloat(balochLabourRateInput?.value) || null;
+            const totalBags        = parseFloat(totalBagsInput?.value) || 0;
+            const labourRate       = parseFloat(labourRateInput?.value) || 0;
+            const noOfLabour       = noOfLabourInput?.value === "" ? null : parseFloat(noOfLabourInput.value);
+            // const noOfLabour = Number(noOfLabourInput?.value) || 0;
+            const weeklyLabour     = parseFloat(weeklyLabourInput?.value) || 0;
+            const balochLabourRate = parseFloat(balochLabourRateInput?.value) || 0;
 
             const active = e.target; // jis field me user likh raha hai
 
-            //  BALUCH LABOUR calculation
-            if (Number.isFinite(totalBags) && Number.isFinite(balochLabourRate) && active !== balochLabourInput) {
-                balochLabourInput.value = (totalBags * balochLabourRate).toFixed(1);
+            // 👇 Feed Sell Type Conditions
+            if (tripType === "Feed Sell") {
+                if (noOfLabour === 1) {
+                    if (labourRateInput) labourRateInput.value = 2;
+                    if (balochLabourRateInput) balochLabourRateInput.value = 1.5;
+                    balochLabourInput.value = (totalBags * 1.5).toFixed(1);
+                    weeklyLabourInput.value = (totalBags * 2).toFixed(1);
+                } 
+                else if (noOfLabour === 2) {
+                    if (labourRateInput) labourRateInput.value = 4;
+                    if (balochLabourRateInput) balochLabourRateInput.value = 0;
+                    balochLabourInput.value = 0;
+                    weeklyLabourInput.value = (totalBags * 4).toFixed(1);
+
+
+                } 
+                else if (noOfLabour === 0) {
+                    if (labourRateInput) labourRateInput.value = 0;
+                    if (balochLabourRateInput) balochLabourRateInput.value = 3;
+
+                    balochLabourInput.value = (totalBags * 3).toFixed(1);
+                    weeklyLabourInput.value = 0;
+
+                }
             }
 
-            //  WEEKLY LABOUR calculation
-            if (
-                Number.isFinite(totalBags) && 
-                Number.isFinite(labourRate) && 
-                Number.isFinite(noOfLabour) && 
-                active !== weeklyLabourInput
-            ) {
-                weeklyLabourInput.value = (totalBags * labourRate * noOfLabour).toFixed(1);
-            }
+            // // 👇 BALUCH LABOUR calculation
+            // if (Number.isFinite(totalBags) && Number.isFinite(balochLabourRate) && active !== balochLabourInput) {
+            //     balochLabourInput.value = (totalBags * balochLabourRate).toFixed(1);
+            // }
 
-            // 👇 LABOUR RATE calculation
-            else if (
-                Number.isFinite(totalBags) && 
-                Number.isFinite(noOfLabour) && 
-                Number.isFinite(weeklyLabour) && 
-                active !== labourRateInput
-            ) {
-                labourRateInput.value = (weeklyLabour / (totalBags * noOfLabour)).toFixed(1);
-            }
-
-            // 👇 TOTAL BAGS calculation
-            else if (
-                Number.isFinite(labourRate) && 
-                Number.isFinite(noOfLabour) && 
-                Number.isFinite(weeklyLabour) && 
-                active !== totalBagsInput
-            ) {
-                totalBagsInput.value = (weeklyLabour / (labourRate * noOfLabour)).toFixed(1);
-            }
-
-            // 👇 NO. OF LABOUR calculation
-            else if (
-                Number.isFinite(totalBags) && 
-                Number.isFinite(labourRate) && 
-                Number.isFinite(weeklyLabour) && 
-                active !== noOfLabourInput
-            ) {
-                noOfLabourInput.value = (weeklyLabour / (totalBags * labourRate)).toFixed(1);
-            }
+            // 👇 WEEKLY LABOUR = TOTAL BAGS × NO OF LABOUR
+            // if (Number.isFinite(totalBags) && Number.isFinite(labourRate)) {
+            //     weeklyLabourInput.value = (totalBags * labourRate).toFixed(1);
+            // }
         });
+
+
+
 
         $(document).on("change", "#trip_type", function () {
             const tripType = $(this).val();

@@ -42,6 +42,11 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
     Route::resource('purchases', PurchaseSheetController::class);
     Route::resource('sales', SalesSheetController::class);
 
+    Route::get('salesheets/{id}', [SalesSheetController::class, 'show_sheet']);
+    Route::get('purchasesheets/{id}', [PurchaseSheetController::class, 'show_sheet']);
+
+
+
 
     Route::get('driver-payments/{id}', [DriverController::class, "driver_payments"])->name("driverPayments");
     Route::get('get-vehicle-expenses', [VehicleController::class, 'getVehicleExpenses'])->name('getVehicleExpenses');

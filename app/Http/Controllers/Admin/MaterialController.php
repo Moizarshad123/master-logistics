@@ -4,36 +4,18 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\PurchaseSheet;
-
-class PurchaseSheetController extends Controller
+use App\Models\Material;
+class MaterialController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-
-     public function show_sheet($id)
-    {
-        $purchase = PurchaseSheet::find($id);
-
-        if (!$purchase) {
-            return response()->json(['error' => 'Not found'], 404);
-        }
-
-        return response()->json([
-            'id'           => $purchase->id,
-            'station'      => $purchase->station,
-            'per_ton_rate' => $purchase->per_ton_rate,
-            'type'         => $purchase->type,
-        ]);
-    }
-
     public function index()
     {
-        $purchases = PurchaseSheet::orderByDESC("id")->paginate(50);
-        return view("admin.purchases.index", compact("purchases"));
+        $materials = Material::orderByDESC("id")->get();
+        return view("admin.materials.index", compact("materials"));
     }
 
     /**
@@ -76,8 +58,7 @@ class PurchaseSheetController extends Controller
      */
     public function edit($id)
     {
-        $salesSheet = PurchaseSheet::findOrFail($id);
-        return view('admin.purchases.edit', compact('salesSheet'));
+        //
     }
 
     /**
@@ -89,13 +70,7 @@ class PurchaseSheetController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $SaleSheet              = PurchaseSheet::find($id);
-        $SaleSheet->station      = $request->station;
-        $SaleSheet->per_ton_rate = $request->per_ton_rate;
-        $SaleSheet->type = $request->type;
-        $SaleSheet->save();
-
-        return redirect()->route('admin.purchases.index')->with('success', 'Purchase updated!');
+        //
     }
 
     /**
@@ -106,8 +81,6 @@ class PurchaseSheetController extends Controller
      */
     public function destroy($id)
     {
-        $sheet = PurchaseSheet::find($id);
-        $sheet->delete();
-        return redirect()->route('admin.purchases.index')->with('success', 'Purchase deleted!');
+        //
     }
 }

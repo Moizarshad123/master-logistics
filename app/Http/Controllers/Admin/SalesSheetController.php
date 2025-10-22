@@ -14,6 +14,22 @@ class SalesSheetController extends Controller
         return view("admin.sales.index", compact("sales"));
     }
 
+    public function show_sheet($id)
+    {
+        $sale = SaleSheet::find($id);
+
+        if (!$sale) {
+            return response()->json(['error' => 'Not found'], 404);
+        }
+
+        return response()->json([
+            'id'            => $sale->id,
+            'station'       => $sale->station,
+            'minimum_rent' => $sale->minimum_rent,
+            'per_bag_rate' => $sale->per_bag_rate,
+        ]);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
