@@ -15,7 +15,7 @@
                 <h3>Purchase Sheet</h3>
             </div>
             <div class="col-md-2">
-                {{-- <a href="{{ route('admin.expense-types.create') }}" class="btn btn-sm btn-success">Add Expense Types</a> --}}
+                <a href="{{ route('admin.purchases.create') }}" class="btn btn-sm btn-success">Add Purchase</a>
             </div>
         </div>
     </div>
@@ -48,7 +48,7 @@
                 @empty
                 <tr>
                     <th colspan="2">
-                        <p class="text-center">No Sales Found</p>
+                        <p class="text-center">No Purchase Found</p>
                     </th>
                 </tr>
                 @endforelse

@@ -472,89 +472,6 @@
             }
         });
 
-        // document.addEventListener('input', function(e) {
-        //     const row = e.target.closest('.trip-detail');
-
-        //     let tripType = $("#trip_type option:selected").val();
-        //     if (!row) return;
-        //     const totalBagsInput        = row.querySelector('.total-bags');
-        //     const labourRateInput       = row.querySelector('.rate');
-        //     const noOfLabourInput       = row.querySelector('.no_of_labour');
-        //     const weeklyLabourInput     = row.querySelector('.weekly-labour');
-        //     const balochLabourRateInput = row.querySelector('.baloch-labour-rate');
-        //     const balochLabourInput     = row.querySelector('.baloch-labour');
-
-        //     const totalBags        = parseFloat(totalBagsInput?.value) || null;
-        //     const labourRate       = parseFloat(labourRateInput?.value) || null;
-        //     const noOfLabour       = noOfLabourInput?.value === "" ? null : parseFloat(noOfLabourInput.value);
-        //     const weeklyLabour     = parseFloat(weeklyLabourInput?.value) || null;
-        //     const balochLabourRate = parseFloat(balochLabourRateInput?.value) || null;
-
-        //     const active = e.target; // jis field me user likh raha hai
-
-
-        //     if(tripType == "Feed Sell") {
-
-        //         if (noOfLabour === 1) {
-        //             if (labourRateInput) labourRateInput.value = 2;
-        //             if (balochLabourRateInput) balochLabourRateInput.value = 1.5;
-        //         } 
-        //         else if (noOfLabour === 2) {
-        //             if (labourRateInput) labourRateInput.value = 4;
-        //             if (balochLabourRateInput) balochLabourRateInput.value = 0;
-        //         } 
-        //         else if (noOfLabour === 0) {
-        //             if (labourRateInput) labourRateInput.value = 0;
-        //             if (balochLabourRateInput) balochLabourRateInput.value = 3;
-        //         }
-        //     }
-
-        //     //  BALUCH LABOUR calculation
-        //     if (Number.isFinite(totalBags) && Number.isFinite(balochLabourRate) && active !== balochLabourInput) {
-        //         balochLabourInput.value = (totalBags * balochLabourRate).toFixed(1);
-        //     }
-
-        //     //  WEEKLY LABOUR calculation
-        //     if (
-        //         Number.isFinite(totalBags) && 
-        //         Number.isFinite(labourRate) && 
-        //         Number.isFinite(noOfLabour) && 
-        //         active !== weeklyLabourInput
-        //     ) {
-        //         weeklyLabourInput.value = (totalBags * labourRate).toFixed(1);
-        //     }
-
-        //     // 👇 LABOUR RATE calculation
-        //     else if (
-        //         Number.isFinite(totalBags) && 
-        //         Number.isFinite(noOfLabour) && 
-        //         Number.isFinite(weeklyLabour) && 
-        //         active !== labourRateInput
-        //     ) {
-        //         labourRateInput.value = (weeklyLabour / (totalBags * noOfLabour)).toFixed(1);
-        //     }
-
-        //     // 👇 TOTAL BAGS calculation
-        //     else if (
-        //         Number.isFinite(labourRate) && 
-        //         Number.isFinite(noOfLabour) && 
-        //         Number.isFinite(weeklyLabour) && 
-        //         active !== totalBagsInput
-        //     ) {
-        //         totalBagsInput.value = (weeklyLabour / (labourRate * noOfLabour)).toFixed(1);
-        //     }
-
-        //     // 👇 NO. OF LABOUR calculation
-        //     else if (
-        //         Number.isFinite(totalBags) && 
-        //         Number.isFinite(labourRate) && 
-        //         Number.isFinite(weeklyLabour) && 
-        //         active !== noOfLabourInput
-        //     ) {
-        //         noOfLabourInput.value = (weeklyLabour / (totalBags * labourRate)).toFixed(1);
-        //     }
-        // });
-
         document.addEventListener('input', function(e) {
             const row = e.target.closest('.trip-detail');
             if (!row) return;
@@ -602,7 +519,11 @@
                     weeklyLabourInput.value = 0;
 
                 }
+            } else if(tripType == "Purchase") {
+                weeklyLabourInput.value = (totalBags * labourRate).toFixed(1);
             }
+
+
 
             // // 👇 BALUCH LABOUR calculation
             // if (Number.isFinite(totalBags) && Number.isFinite(balochLabourRate) && active !== balochLabourInput) {

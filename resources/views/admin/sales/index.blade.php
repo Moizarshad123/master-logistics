@@ -15,7 +15,7 @@
                 <h3>Sell Sheet</h3>
             </div>
             <div class="col-md-2">
-                {{-- <a href="{{ route('admin.expense-types.create') }}" class="btn btn-sm btn-success">Add Expense Types</a> --}}
+                <a href="{{ route('admin.sales.create') }}" class="btn btn-sm btn-success">Add Sales</a>
             </div>
         </div>
     </div>

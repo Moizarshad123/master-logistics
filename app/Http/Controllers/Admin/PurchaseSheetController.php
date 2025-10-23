@@ -43,7 +43,7 @@ class PurchaseSheetController extends Controller
      */
     public function create()
     {
-        //
+        return view("admin.purchases.create");
     }
 
     /**
@@ -54,7 +54,13 @@ class PurchaseSheetController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
+        $purchase = PurchaseSheet::create([
+            "station"      => $request->station,
+            "per_ton_rate" => $request->per_ton_rate,
+            "type"         => $request->type,
+        ]);
+        return redirect()->route('admin.purchases.index')->with('success', 'New Purchase added!');
     }
 
     /**

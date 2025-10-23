@@ -37,7 +37,8 @@ class SalesSheetController extends Controller
      */
     public function create()
     {
-        //
+        return view("admin.sales.create");
+        
     }
 
     /**
@@ -48,7 +49,12 @@ class SalesSheetController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $SaleSheet = SaleSheet::create([
+            "station"      => $request->station,
+            "minimum_rent" => $request->minimum_rent,
+            "per_bag_rate" => $request->per_bag_rate,
+        ]);
+        return redirect()->route('admin.sales.index')->with('success', 'Sales added!');
     }
 
     /**
