@@ -21,7 +21,6 @@
                 <tr>
                     <th>Trip No</th>
                     <th>Trip Date</th>
-                    <th>Trip Type</th>
                     <th>Vehicle</th>
                     <th>Driver</th>
                     <th>Total Journeys</th>
@@ -87,10 +86,6 @@
                 {
                     data: 'trip_date',
                     name: 'trip_date'
-                },
-                {
-                    data: 'trip_type',
-                    name: 'trip_type'
                 },
                 {
                     data: 'vehicle',

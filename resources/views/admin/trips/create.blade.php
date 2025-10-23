@@ -12,23 +12,13 @@
             @csrf
 
             <div class="row mb-4">
-                <div class="col-md-3">
-                    <label>Trip Type<span style="color: red">*</span></label>
-                    <select name="trip_type" id="trip_type" class="form-select" required>
-                        <option value="">Select Trip Type</option>
-                        <option value="Commercial">Commercial</option>
-                        <option value="Purchase">Purchase</option>
-                        <option value="Feed Sell">Feed Sell</option>
-                        <option value="Other Sell">Other Sell</option>
-                        <option value="Local">Local</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
+           
+                <div class="col-md-4">
                     <label>Trip Date<span style="color: red">*</span></label>
                     <input type="date" name="trip_date" value="{{ date('Y-m-d')}}" class="form-control">
                 </div>
                
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <label>Vehicle<span style="color: red">*</span></label>
                     <select name="vehicle_id" id="vehicle_id" class="form-select select2" required>
                         <option value="">Select Vehicle</option>
@@ -37,7 +27,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <label>Driver<span style="color: red">*</span></label>
                     <select name="driver_id" class="form-select select2" required>
                         <option value="">Select Driver</option>
@@ -254,68 +244,31 @@
         $(document).on("click", "#addRow", function (e) {
 
             e.preventDefault();
-            let tripType = $("#trip_type option:selected").val();
-
-            if (!tripType) {
-                Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "Please select Trip type to continue!",
-                });
-                return; // stop the function, do not append row
-            }
-            let to = "";
-            from   = "";
-            if(tripType == "Feed Sell") {
-
-                from = `<input type="text" class="form-control" name="trip_details[${index}][from_destination]" value="Master Agro" readonly>`;
-                to   = `<select class="form-select" name="trip_details[${index}][to_destination]" style="display: ${tripType === 'Purchase' ? 'none' : 'block'};">
-                            <option value="">Select To Station</option>
-                            @foreach ($sales as $item)
-                                <option value="{{ $item->id }}">{{ $item->station }}</option>
-                            @endforeach
-                        </select>`;
-            } else if (tripType === "Purchase") {
-                // For Purchase
-                to = `<input type="text" class="form-control" name="trip_details[${index}][from_destination]" value="Master Agro" readonly>`;
-                
-                from = `<select class="form-select" name="trip_details[${index}][to_destination]">
-                        <option value="">Select From Station</option>
-                        @foreach ($purchases as $item)
-                            <option value="{{ $item->id }}">{{ $item->station }}</option>
-                        @endforeach
-                    </select>`;
-            } else {
-                // For all other trip types
-                from = `<select class="form-select" name="trip_details[${index}][from_destination]">
-                            <option value="">Select From Destination</option>
-                            @foreach ($destinations as $item)
-                                <option value="{{ $item->id }}">{{ $item->name }}</option>
-                            @endforeach
-                        </select>`;
-                
-                to = `<select class="form-select" name="trip_details[${index}][to_destination]">
-                            <option value="">Select To Destination</option>
-                            @foreach ($destinations as $item)
-                                <option value="{{ $item->id }}">{{ $item->name }}</option>
-                            @endforeach
-                    </select>`;
-            }
+       
             let row = `
             <div class="trip-detail border rounded p-3 mb-3">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
+                        <label>Trip Type<span style="color: red">*</span></label>
+                        <select name="name="trip_details[${index}][trip_type]" class="form-select trip_type" required>
+                            <option value="">Select Trip Type</option>
+                            <option value="Commercial">Commercial</option>
+                            <option value="Purchase">Purchase</option>
+                            <option value="Feed Sell">Feed Sell</option>
+                            <option value="Other Sell">Other Sell</option>
+                            <option value="Local">Local</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
                         <label>Start Date</label>
                         <input type="date" name="trip_details[${index}][start_date]" value="{{date('Y-m-d')}}" class="form-control" required>
                     </div>
-                    <div class="col-md-4">
-                        <label>From</label>
-                       `+from+`
+                    <div class="col-md-3 from-container">
+                      
 
                     </div>
-                    <div class="col-md-4">
-                        <label>To</label>
-                        `+to+`
+                    <div class="col-md-3 to-container">
+                       
                     </div>
                 </div>
                 <div class="row mt-2 trip-row">    
@@ -338,11 +291,11 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-3 baloch-labour-field" style="display: ${tripType === 'Feed Sell' ? 'block' : 'none'};">
+                    <div class="col-md-3 baloch-labour-field" style="display:none">
                         <label>Baloch Labour Rate</label>
-                        <input type="text" name="trip_details[${index}][baloch_labour_rate]" class="form-control baloch-labour-rate">
+                        <input type="text" name="trip_details[${index}][baloch_labour_rate]"  class="form-control baloch-labour-rate">
                     </div>
-                    <div class="col-md-3 baloch-labour-field" style="display: ${tripType === 'Feed Sell' ? 'block' : 'none'};">
+                    <div class="col-md-3 baloch-labour-field" style="display:none">
                         <label>Baloch Labour</label>
                         <input type="text" name="trip_details[${index}][baloch_labour]" class="form-control baloch-labour">
                     </div>
@@ -374,7 +327,7 @@
                     
                     <div class="col-md-3">
                         <label>Weight (In Ton)</label>
-                        <input type="number" step="0.01" name="trip_details[${index}][weight]" class="form-control">
+                        <input type="number" step="0.01" name="trip_details[${index}][weight]" class="form-control weight">
                     </div>
                     <div class="col-md-4 d-flex align-items-end">
                         <button type="button" class="btn btn-danger removeRow">Remove</button>
@@ -392,6 +345,75 @@
             //         </div>
         });
 
+
+        // Listen for Trip Type change dynamically
+        $(document).on('change', '.trip_type', function () {
+            const row      = $(this).closest('.trip-detail');
+            const tripType = $(this).val();
+            const rowIndex = row.index(); // Use index for unique names
+
+            const fromContainer = row.find('.from-container');
+            const toContainer   = row.find('.to-container');
+            const balochFields  = row.find('.baloch-labour-field');
+
+            // Hide Baloch Labour by default
+            balochFields.hide();
+
+            let fromHtml = '';
+            let toHtml   = '';
+
+            // ✅ Feed Sell Case
+            if (tripType === "Feed Sell") {
+                fromHtml = `<input type="text" class="form-control" name="trip_details[][from_destination]" value="Master Agro" readonly>`;
+                toHtml = `<select class="form-select" name="trip_details[][to_destination]">
+                            <option value="">Select To Station</option>
+                            @foreach ($sales as $item)
+                                <option value="{{ $item->id }}">{{ $item->station }}</option>
+                            @endforeach
+                        </select>`;
+                balochFields.show(); // show baloch fields
+            }
+
+            // ✅ Purchase Case
+            else if (tripType === "Purchase") {
+                fromHtml = `<select class="form-select" name="trip_details[][from_destination]">
+                                <option value="">Select From Station</option>
+                                @foreach ($purchases as $item)
+                                    <option value="{{ $item->id }}">{{ $item->station }}</option>
+                                @endforeach
+                            </select>`;
+                toHtml = `<input type="text" class="form-control" name="trip_details[][to_destination]" value="Master Agro" readonly>`;
+            }
+
+            // ✅ Default / Other Cases
+            else {
+                fromHtml = `<select class="form-select" name="trip_details[][from_destination]">
+                                <option value="">Select From Destination</option>
+                                @foreach ($destinations as $item)
+                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                @endforeach
+                            </select>`;
+                toHtml = `<select class="form-select" name="trip_details[][to_destination]">
+                                <option value="">Select To Destination</option>
+                                @foreach ($destinations as $item)
+                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                @endforeach
+                        </select>`;
+            }
+
+            // Replace the HTML for From and To fields dynamically
+            fromContainer.html(`
+                <label>From</label>
+                ${fromHtml}
+            `);
+
+            toContainer.html(`
+                <label>To</label>
+                ${toHtml}
+            `);
+        });
+
+
         document.addEventListener('change', function(e) {
             if (e.target.matches('.form-select[name^="trip_details"][name$="[to_destination]"]')) {
                 const select = e.target;
@@ -400,12 +422,22 @@
                 const rentInput = row.querySelector('.rent'); // change this to your rent field's class
 
                 if (!saleSheetId) return;
-
+                // https://finchat.online/master-logistics/public/
                 fetch(`https://finchat.online/master-logistics/public/admin/salesheets/${saleSheetId}`)
                     .then(res => res.json())
                     .then(data => {
                         if (data && data.minimum_rent !== undefined) {
-                            rentInput.value = data.minimum_rent;
+
+                            let rate = data.per_bag_rate;
+                            const totalBagsInput = row.querySelector('.total-bags');
+                            const totalBags      = parseFloat(totalBagsInput?.value) || 0;
+                            let total = totalBags * rate;
+
+                            if(total > data.minimum_rent) {
+                                rentInput.value = total;
+                            } else {
+                                rentInput.value = data.minimum_rent;
+                            }
                         }
                     })
                     .catch(err => console.error('Error fetching SaleSheet:', err));
@@ -421,12 +453,19 @@
                 const rentInput   = row.querySelector('.rent'); // change this to your rent field's class
 
                 if (!purchaseSheetId) return;
-
+                // 
                 fetch(`https://finchat.online/master-logistics/public/admin/purchasesheets/${purchaseSheetId}`)
                     .then(res => res.json())
                     .then(data => {
                         if (data && data.per_ton_rate !== undefined) {
                             rentInput.value = data.per_ton_rate;
+
+                            let rate = data.per_ton_rate;
+                            const weightInput = row.querySelector('.weight');
+                            const weight      = parseFloat(weightInput?.value) || 0;
+                            let total         = weight * rate;
+
+                            rentInput.value = total; 
                         }
                     })
                     .catch(err => console.error('Error fetching PurchaseSheet:', err));
@@ -520,7 +559,6 @@
             const row = e.target.closest('.trip-detail');
             if (!row) return;
 
-            let tripType = $("#trip_type option:selected").val();
 
             const totalBagsInput        = row.querySelector('.total-bags');
             const labourRateInput       = row.querySelector('.rate');
@@ -528,7 +566,9 @@
             const weeklyLabourInput     = row.querySelector('.weekly-labour');
             const balochLabourRateInput = row.querySelector('.baloch-labour-rate');
             const balochLabourInput     = row.querySelector('.baloch-labour');
+            const tripTypeInput         = row.querySelector('.trip_type');
 
+            const tripType         = tripTypeInput.value;
             const totalBags        = parseFloat(totalBagsInput?.value) || 0;
             const labourRate       = parseFloat(labourRateInput?.value) || 0;
             const noOfLabour       = noOfLabourInput?.value === "" ? null : parseFloat(noOfLabourInput.value);

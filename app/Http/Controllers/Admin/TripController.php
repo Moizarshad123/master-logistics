@@ -107,8 +107,8 @@ class TripController extends Controller
             $request->validate([
                 'vehicle_id' => 'required',
                 'driver_id'  => 'required',
-                'trip_type'  => 'required',
             ]);
+
     
             DB::beginTransaction();
     
@@ -116,7 +116,7 @@ class TripController extends Controller
             
             $trip = Trip::create([
                                 'trip_no'    => $trip_no,
-                                "trip_type"  => $request->trip_type,
+                                // "trip_type"  => $request->trip_type,
                                 'vehicle_id' => $request->vehicle_id,
                                 'driver_id'  => $request->driver_id,
                                 "balance"    => $request->balance,

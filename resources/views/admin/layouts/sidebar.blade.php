@@ -51,8 +51,13 @@
                     <span>Reports</span>
                 </a>
                 <ul>
+                    
                     <li>
                         <a href="{{ route('admin.tripVehicleReport') }}">Trip Vehicle Report</a>
+                    </li>
+
+                    <li>
+                        <a href="{{ route('admin.profitAndLossReport') }}">Profit and Loss Report</a>
                     </li>
                     
                 </ul>
@@ -71,6 +76,10 @@
                         <a href="{{ route('admin.sales.index') }}">Sell Sheet</a>
                         <a href="{{ route('admin.purchases.index') }}">Purchase Sheet</a>
                         <a href="{{ route('admin.destinations.index') }}">Destinations</a>
+                        <a href="{{ route('admin.materials.index') }}">Materials</a>
+
+                        <a href="{{ route('admin.expense-categories.index') }}">Expense Category</a>
+
                         <a href="{{ route('admin.expense-types.index') }}">Expense Types</a>
                         <a href="{{ route('admin.drivers.index') }}">Drivers</a>
                         <a href="{{ route('admin.vehicles.index') }}">Vehicles</a>

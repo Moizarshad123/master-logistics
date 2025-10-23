@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ExpenseType;
+use App\Models\ExpenseCategory;
 
 class ExpenseTypeController extends Controller
 {
@@ -15,7 +16,7 @@ class ExpenseTypeController extends Controller
      */
     public function index()
     {
-        $expenseTypes = ExpenseType::latest()->paginate(10);
+        $expenseTypes = ExpenseType::orderByDESC('id')->paginate(10);
         return view('admin.expense_types.index', compact('expenseTypes'));
     }
 
@@ -26,7 +27,9 @@ class ExpenseTypeController extends Controller
      */
     public function create()
     {
-        return view('admin.expense_types.create');
+        $categories = ExpenseCategory::all();
+
+        return view('admin.expense_types.create', compact("categories"));
     }
 
     /**
@@ -41,7 +44,10 @@ class ExpenseTypeController extends Controller
             'name' => 'required|string|max:255|unique:expense_types,name',
         ]);
 
-        ExpenseType::create($request->only('name'));
+        ExpenseType::create([
+            'name' => $request->name,
+            "category_id" => $request->category_id
+        ]);
 
         return redirect()->route('admin.expense-types.index')->with('success', 'Expense type created successfully.');
     }
@@ -53,7 +59,8 @@ class ExpenseTypeController extends Controller
 
     public function edit(ExpenseType $expenseType)
     {
-        return view('admin.expense_types.edit', compact('expenseType'));
+        $categories = ExpenseCategory::all();
+        return view('admin.expense_types.edit', compact('expenseType', 'categories'));
     }
 
     public function update(Request $request, ExpenseType $expenseType)
@@ -62,7 +69,7 @@ class ExpenseTypeController extends Controller
             'name' => 'required|string|max:255|unique:expense_types,name,' . $expenseType->id,
         ]);
 
-        $expenseType->update($request->only('name'));
+        $expenseType->update($request->only('name', 'category_id'));
 
         return redirect()->route('admin.expense-types.index')
                          ->with('success', 'Expense type updated successfully.');

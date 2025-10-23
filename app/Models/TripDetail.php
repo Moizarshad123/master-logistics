@@ -10,6 +10,7 @@ class TripDetail extends Model
     use HasFactory;
     protected $fillable = [
         "trip_id",
+        "trip_type",
         "start_date",
         "end_date",
         "from_destination",

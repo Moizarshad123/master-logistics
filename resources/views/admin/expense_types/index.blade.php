@@ -24,6 +24,7 @@
         <table class="table table-custom table-lg mb-0" id="ordersTable">
             <thead>
                 <tr>
+                    <th>Expense Category</th>
                     <th>Expense Type</th>
                     <th>Action</th>
                 </tr>
@@ -31,6 +32,7 @@
             <tbody>
                 @forelse ($expenseTypes as $item)
                     <tr>
+                        <td>{{ $item?->category?->name ?? ""}}</td>
                         <td>{{ $item->name }}</td>
                         <td>
                             <a href="{{ route('admin.expense-types.edit', $item->id)}}" class="btn btn-success btn-sm">Edit</a>

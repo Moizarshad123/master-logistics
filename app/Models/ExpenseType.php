@@ -9,8 +9,13 @@ class ExpenseType extends Model
 {
     use HasFactory;
     protected $fillable = [
+        "category_id",
         "name"
     ];
+
+    public function category() {
+        return $this->hasOne(ExpenseCategory::class, 'id', "category_id");
+    }
 
     public function vehicles()
     {

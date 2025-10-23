@@ -15,11 +15,12 @@
                 <h3>Material</h3>
             </div>
             <div class="col-md-2">
-                {{-- <a href="{{ route('admin.expense-types.create') }}" class="btn btn-sm btn-success">Add Expense Types</a> --}}
+                <a href="{{ route('admin.materials.create') }}" class="btn btn-sm btn-success">Add Material</a>
             </div>
         </div>
     </div>
 
+    
     <div class="table-responsive">
         <table class="table table-custom table-lg mb-0" id="ordersTable">
             <thead>
