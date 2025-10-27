@@ -368,7 +368,7 @@
                 toHtml = `<select class="form-select" name="trip_details[][to_destination]">
                             <option value="">Select To Station</option>
                             @foreach ($sales as $item)
-                                <option value="{{ $item->id }}">{{ $item->station }}</option>
+                                <option value="{{ $item->station }}">{{ $item->station }}</option>
                             @endforeach
                         </select>`;
                 balochFields.show(); // show baloch fields
@@ -379,7 +379,7 @@
                 fromHtml = `<select class="form-select" name="trip_details[][from_destination]">
                                 <option value="">Select From Station</option>
                                 @foreach ($purchases as $item)
-                                    <option value="{{ $item->id }}">{{ $item->station }}</option>
+                                    <option value="{{ $item->station }}">{{ $item->station }}</option>
                                 @endforeach
                             </select>`;
                 toHtml = `<input type="text" class="form-control" name="trip_details[][to_destination]" value="Master Agro" readonly>`;
@@ -390,13 +390,13 @@
                 fromHtml = `<select class="form-select" name="trip_details[][from_destination]">
                                 <option value="">Select From Destination</option>
                                 @foreach ($destinations as $item)
-                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                    <option value="{{ $item->name }}">{{ $item->name }}</option>
                                 @endforeach
                             </select>`;
                 toHtml = `<select class="form-select" name="trip_details[][to_destination]">
                                 <option value="">Select To Destination</option>
                                 @foreach ($destinations as $item)
-                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                    <option value="{{ $item->name }}">{{ $item->name }}</option>
                                 @endforeach
                         </select>`;
             }
