@@ -16,7 +16,7 @@ class SalesSheetController extends Controller
 
     public function show_sheet($id)
     {
-        $sale = SaleSheet::find($id);
+         $sale = SaleSheet::where('station', 'LIKE', '%' . $id . '%')->first();
 
         if (!$sale) {
             return response()->json(['error' => 'Not found'], 404);

@@ -13,7 +13,6 @@
         <div class="card-body">
             <p><strong>Trip No:</strong> {{ $trip->trip_no }}</p>
             <p><strong>Trip Date:</strong> {{ date("d-m-Y", strtotime($trip->trip_date)) }}</p>
-            <p><strong>Trip Type:</strong> {{ $trip->trip_type }}</p>
             <p><strong>Vehicle:</strong> {{ $trip->vehicle->vehicle_no ?? 'N/A' }}</p>
             <p><strong>Driver:</strong> {{ $trip->driver->name ?? 'N/A' }}</p>
             <p><strong>Balance:</strong> {{ $trip->balance ?? '00' }}</p>
@@ -53,6 +52,8 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
+                    <th>Customer</th>
+                    <th>Trip Type</th>
                     <th>Start Date</th>
                     <th>End Date</th>
                     <th>From</th>
@@ -71,15 +72,18 @@
             <tbody>
                 @forelse($trip->tripDetails as $detail)
                     <tr>
+                        
+                        <td>{{ $detail->customer->name ?? "" }}</td>
+                        <td>{{ $detail->trip_type ?? "" }}</td>
                         <td>{{ date('d M Y', strtotime($detail->start_date)) ?? "" }}</td>
                         <td>{{ isset($detail->end_date) ? date('d M Y', strtotime($detail->end_date)) : ""}}</td>
-                        <td>{{ $detail->from_dest->name ?? "" }}</td>
-                        <td>{{ $detail->to_dest->name ?? "" }}</td>
+                        <td>{{ $detail->from_destination ?? "" }}</td>
+                        <td>{{ $detail->to_destination ?? "" }}</td>
                         <td>{{ $detail->material ?? "" }}</td>
                         <td>{{ $detail->material_type ?? "" }}</td>
                         <td>{{ $detail->total_bags }}</td>
-                        <td>{{ $detail->baloch_labour }}</td>
                         <td>{{ $detail->weekly_labour }}</td>
+                        <td>{{ $detail->baloch_labour }}</td>
                         <td>{{ $detail->rent }}</td>
                         {{-- <td>{{ $detail->advance }}</td> --}}
                         <td>{{ $detail->weight }}</td>
@@ -110,6 +114,7 @@
         <thead>
             <tr>
                 <th>Expense Name</th>
+                <th>Expense From</th>
                 <th>Expense Amount</th>
             </tr>
         </thead>
@@ -117,6 +122,8 @@
             @forelse($trip->tripExpenses as $expense)
                 <tr>
                     <td>{{ $expense->expense ?? "" }}</td>
+                    <td>{{ $expense->expense_from ?? "" }}</td>
+
                     <td>{{ $expense->amount }}</td>
                 </tr>
             @empty

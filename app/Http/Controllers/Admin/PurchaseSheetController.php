@@ -16,7 +16,7 @@ class PurchaseSheetController extends Controller
 
      public function show_sheet($id)
     {
-        $purchase = PurchaseSheet::find($id);
+        $purchase = PurchaseSheet::where('station', 'LIKE', '%' . $id . '%')->first();
 
         if (!$purchase) {
             return response()->json(['error' => 'Not found'], 404);

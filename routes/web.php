@@ -14,7 +14,7 @@ use App\Http\Controllers\Admin\SalesSheetController;
 use App\Http\Controllers\Admin\ExpenseFromController;
 use App\Http\Controllers\Admin\MaterialController;
 use App\Http\Controllers\Admin\ExpenseCategoryController;
-
+use App\Http\Controllers\Admin\CustomerController;
 
 
 
@@ -45,7 +45,9 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
     Route::resource('sales', SalesSheetController::class);
     Route::resource('materials', MaterialController::class);
     Route::resource('expense-categories', ExpenseCategoryController::class);
+    Route::resource('customers', CustomerController::class);
 
+    
     Route::get('salesheets/{id}', [SalesSheetController::class, 'show_sheet']);
     Route::get('purchasesheets/{id}', [PurchaseSheetController::class, 'show_sheet']);
 

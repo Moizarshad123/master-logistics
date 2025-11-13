@@ -10,6 +10,7 @@ class TripDetail extends Model
     use HasFactory;
     protected $fillable = [
         "trip_id",
+        "customer_id",
         "trip_type",
         "start_date",
         "end_date",
@@ -23,6 +24,7 @@ class TripDetail extends Model
         "baloch_labour_rate",
         "no_of_labour",
         "rent",
+        "comments",
         "weight",
         "status"
     ];
@@ -40,5 +42,10 @@ class TripDetail extends Model
     public function to_dest()
     {
         return $this->hasOne(Destination::class, 'id', 'to_destination');
+    }
+
+    public function customer()
+    {
+        return $this->hasOne(Customer::class, 'id', 'customer_id');
     }
 }
