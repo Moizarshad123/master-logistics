@@ -33,14 +33,34 @@
                 </a>
             </li>
 
-            <li>
+            {{-- <li>
                 <a  class="{{ request()->IS('admin/trips') ? 'active' : '' }}"  href="{{ route('admin.trips.index') }}">
                     <span class="nav-link-icon">
                         <i class="bi bi-bar-chart"></i>
                     </span>
                     <span>Trips</span>
                 </a>
+            </li> --}}
+
+             <li>
+                <a href="javascript:;">
+                    <span class="nav-link-icon">
+                        <i class="bi bi-receipt"></i>
+                    </span>
+                    <span>Trips</span>
+                </a>
+                <ul>
+                    <li>
+                        <a href="{{ route('admin.trips.index') }}">Active Trips</a>
+                    </li>
+
+                    <li>
+                        <a href="{{ route('admin.closedTrips') }}">Closed Trips</a>
+                    </li>
+                    
+                </ul>
             </li>
+
 
             <li>
                 <a  class="{{ request()->IS('admin/maintenances') ? 'active' : '' }}"  href="{{ route('admin.maintenances.index') }}">

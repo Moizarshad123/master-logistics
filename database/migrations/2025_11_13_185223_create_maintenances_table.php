@@ -16,6 +16,7 @@ class CreateMaintenancesTable extends Migration
         Schema::create('maintenances', function (Blueprint $table) {
             $table->id();
             $table->foreignId('vehicle_id')->constrained('vehicles')->onDelete('cascade');
+            $table->foreignId('expense_id');
             $table->decimal('amount', 10, 2);
             $table->text('comments')->nullable();
             $table->timestamps();

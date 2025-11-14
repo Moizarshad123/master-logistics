@@ -72,7 +72,6 @@
             <tbody>
                 @forelse($trip->tripDetails as $detail)
                     <tr>
-                        
                         <td>{{ $detail->customer->name ?? "" }}</td>
                         <td>{{ $detail->trip_type ?? "" }}</td>
                         <td>{{ date('d M Y', strtotime($detail->start_date)) ?? "" }}</td>
@@ -94,10 +93,9 @@
                                 <span class="badge badge-success">Ended</span>
                             @endif
                         </td>
-
                         <td>
                             @if($detail->status == "Started")
-                                <button type="button" data-trip-id="{{ $detail->id }}"  class="btn btn-danger btn-sm endTripBtn">End Trip</button>
+                                <button type="button" data-trip-id="{{ $detail->id }}"  class="btn btn-danger btn-sm endTripBtn">End Journey</button>
                             @endif
                         </td>
                     </tr>
@@ -123,7 +121,6 @@
                 <tr>
                     <td>{{ $expense->expense ?? "" }}</td>
                     <td>{{ $expense->expense_from ?? "" }}</td>
-
                     <td>{{ $expense->amount }}</td>
                 </tr>
             @empty
@@ -131,7 +128,6 @@
             @endforelse
         </tbody>
     </table>
-
 
     <a style="margin-top: 20px;" href="{{ route('admin.trips.index') }}" class="btn btn-secondary">Back</a>
 </div>
@@ -264,7 +260,6 @@
         //     });
         // });
     });
-
 </script>
 @endsection
 

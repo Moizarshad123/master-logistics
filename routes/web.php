@@ -53,16 +53,15 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
 
     Route::get('driver-payments/{id}', [DriverController::class, "driver_payments"])->name("driverPayments");
     Route::get('get-vehicle-expenses', [VehicleController::class, 'getVehicleExpenses'])->name('getVehicleExpenses');
+    Route::get('end-actual-trip/{id}', [TripController::class, 'endActualTrip'])->name('endActualTrip');
+    Route::get('closed-trips', [TripController::class, 'closedTrips'])->name('closedTrips');
+
 
     // Route::get('/endtrip/{vehicle}/expenses', [VehicleController::class, 'expenses'])->name('vehicles.expenses');
     Route::POST('endtrip', [TripController::class, 'endTrip']);
     Route::get('trip-vehicle-report', [ReportController::class, 'tripVehicleReport'])->name("tripVehicleReport");
     Route::get('profit-and-loss-report', [ReportController::class, 'profit_and_loss'])->name("profitAndLossReport");
-
-    
     Route::get('view-trip-vehicle-report/{id}', [ReportController::class, 'viewTripVehicleReport'])->name("viewTripVehicleReport");
-
-
     Route::get('/vehicles/{vehicle}/expenses', [VehicleController::class, 'expenses'])->name('vehicles.expenses');
     Route::post('{vehicle}/expenses', [VehicleController::class, 'storeExpense'])->name('vehicles.expenses.store');
     Route::put('{vehicle}/expenses/{expense}', [VehicleController::class, 'updateExpense'])->name('vehicles.expenses.update');

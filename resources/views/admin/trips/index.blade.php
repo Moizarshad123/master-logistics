@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'Trips')
+@section('title', 'Active Trips')
 
 @section('content')
 
@@ -7,7 +7,7 @@
     <div class="mb-4">
         <div class="row">
             <div class="col-md-10">
-                <h3>Trips</h3>
+                <h3>Active Trips</h3>
             </div>
             <div class="col-md-2">
                 <a href="{{ route('admin.trips.create') }}" class="btn btn-sm btn-success">+ Add Trip</a>
@@ -155,6 +155,26 @@
                     }
                 }
             })
+        });
+
+        $(document).on('click', '.endTripBtn', function (e) {
+            e.preventDefault();
+
+            let url = $(this).attr('href'); // get URL of that specific trip
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you want to end this trip?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, end it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url; // redirect after confirm
+                }
+            });
         });
     });
     </script>

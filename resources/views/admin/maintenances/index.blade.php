@@ -5,11 +5,11 @@
 
   <div class="mb-4">
         <div class="row">
-            <div class="col-md-10">
+            <div class="col-md-8">
                 <h3>Maintenances</h3>
                 
             </div>
-            <div class="col-md-2">
+            <div class="col-md-4">
                 <a href="{{ route('admin.maintenances.create') }}" class="btn btn-sm btn-success">+Add Maintenance</a>
             </div>
         </div>
@@ -20,6 +20,7 @@
             <tr>
                 <th>ID</th>
                 <th>Vehicle No</th>
+                <th>Expense Type</th>
                 <th>Amount</th>
                 <th>Comments</th>
                 <th>Actions</th>
@@ -30,6 +31,7 @@
                 <tr>
                     <td>{{ $m->id }}</td>
                     <td>{{ $m->vehicle->vehicle_no ?? '' }}</td>
+                    <td>{{ $m->expense->name ?? '' }}</td>
                     <td>{{ $m->amount }}</td>
                     <td>{{ $m->comments }}</td>
                     <td>

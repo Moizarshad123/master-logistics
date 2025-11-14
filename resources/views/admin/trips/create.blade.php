@@ -372,7 +372,7 @@
             let fromHtml = '';
             let toHtml   = '';
 
-            // ✅ Feed Sell Case
+            // Feed Sell Case
             if (tripType === "Feed Sell") {
                 fromHtml = `<input type="text" class="form-control" name="trip_details[${rowIndex}][from_destination]" value="Master Agro" readonly>`;
                 toHtml = `<select class="form-select" name="trip_details[${rowIndex}][to_destination]">
@@ -384,7 +384,7 @@
                 balochFields.show(); // show baloch fields
             }
 
-            // ✅ Purchase Case
+            // Purchase Case
             else if (tripType === "Purchase") {
                 fromHtml = `<select class="form-select" name="trip_details[${rowIndex}][from_destination]">
                                 <option value="">Select From Station</option>
@@ -395,7 +395,7 @@
                 toHtml = `<input type="text" class="form-control" name="trip_details[${rowIndex}][to_destination]" value="Master Agro" readonly>`;
             }
 
-            // ✅ Default / Other Cases
+            // Default / Other Cases
             else {
                 fromHtml = `<select class="form-select" name="trip_details[${rowIndex}][from_destination]">
                                 <option value="">Select From Destination</option>
@@ -629,8 +629,6 @@
         //         weeklyLabourInput.val(total.toFixed(2));
         //     }
         // });
-
-       
     });
 
 </script>

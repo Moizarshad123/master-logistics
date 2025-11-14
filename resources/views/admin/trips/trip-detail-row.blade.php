@@ -36,7 +36,7 @@
             <label>From</label>
             <select class="form-select" name="trip_details[{{ $index }}][from_destination]">
                 @foreach ($destinations as $item)
-                    <option value="{{ $item->id }}" {{ $detail->from_destination == $item->name ? "selected" : ""}}>{{ $item->name }}</option>
+                    <option value="{{ $item->name }}" {{ $detail->from_destination == $item->name ? "selected" : ""}}>{{ $item->name }}</option>
                 @endforeach
             </select>
         </div>
@@ -44,7 +44,7 @@
             <label>To</label>
             <select class="form-select" name="trip_details[{{ $index }}][to_destination]">
                 @foreach ($destinations as $item)
-                    <option value="{{ $item->id }}" {{ $detail->to_destination == $item->name ? "selected" : ""}}>{{ $item->name }}</option>
+                    <option value="{{ $item->name }}" {{ $detail->to_destination == $item->name ? "selected" : ""}}>{{ $item->name }}</option>
                 @endforeach
             </select>
         </div>
