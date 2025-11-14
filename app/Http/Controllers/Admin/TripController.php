@@ -190,22 +190,24 @@ class TripController extends Controller
         $sales        = SaleSheet::orderByDESC("id")->get();
         $purchases    = PurchaseSheet::orderByDESC("id")->get();
         $materials    = Material::orderBy("name", "ASC")->get();
+        $expense_froms = ExpenseFrom::orderBy("name", "ASC")->get();
+        $customers     = Customer::all();
 
-        return view('admin.trips.edit', compact("sales", "purchases", "materials", 'trip', 'vehicles', 'drivers', 'expenses', 'payments', 'expensesTypes', 'destinations'));
+
+        return view('admin.trips.edit', compact( "customers", "expense_froms", "sales", "purchases", "materials", 'trip', 'vehicles', 'drivers', 'expenses', 'payments', 'expensesTypes', 'destinations'));
     }
 
     public function update(Request $request, Trip $trip)
     {
         try {
             $request->validate([
-               'trip_type'  => 'required',
                'vehicle_id' => 'required',
                'driver_id'  => 'required',
             ]);
    
            DB::beginTransaction();
 
-           $trip->update($request->only('trip_no', 'trip_date', 'trip_type', 'vehicle_id', 'driver_id'));
+           $trip->update($request->only('trip_no', 'trip_date', 'vehicle_id', 'driver_id'));
 
             $paymentTypes   = $request->payment_type;
             $amounts        = $request->expense_amount;

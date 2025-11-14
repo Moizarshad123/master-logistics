@@ -13,7 +13,16 @@
         @csrf
         @method('PUT')
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-4">
+                <label>Customer Head:</label>
+                <select name="customer_head_id" class="form-select">
+                    @foreach($customerHeads as $head)
+                        <option value="{{ $head->id }}" {{ $head->id == $customer->customer_head_id ? "selected" : ""}}>{{ $head->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="col-md-4">
                 <label>Name:</label>
                 <input type="text" name="name" value="{{ old('name', $customer->name) }}" class="form-control">
                 @error('name') <p style="color:red">{{ $message }}</p> @enderror
@@ -29,5 +38,4 @@
 @endsection
 
 @section('js')
- 
 @endsection

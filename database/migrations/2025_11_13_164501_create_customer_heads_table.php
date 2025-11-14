@@ -4,20 +4,29 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCustomersTable extends Migration
+class CreateCustomerHeadsTable extends Migration
 {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     public function up()
     {
-        Schema::create('customers', function (Blueprint $table) {
+        Schema::create('customer_heads', function (Blueprint $table) {
             $table->id();
-            $table->Integer('customer_head_id');
             $table->string('name');
             $table->timestamps();
         });
     }
 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
     public function down()
     {
-        Schema::dropIfExists('customers');
+        Schema::dropIfExists('customer_heads');
     }
 }

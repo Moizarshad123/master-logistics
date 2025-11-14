@@ -122,6 +122,14 @@
         let index = 0;
         let extraExpenseIndex = 1000;
 
+        // Generate expense options from $expenses
+        const expenseOptions = `
+                                <option value="">Select Expense</option>
+                                @foreach($expenses as $expense)
+                                    <option value="{{ $expense->name }}">{{ $expense->name }}</option>
+                                @endforeach
+                            `;
+
         function calculateBalance() {
             let totalPayments = 0;
             let totalExpenses = 0;
@@ -154,15 +162,6 @@
         // Watch for changes in both payments and expenses
         $(document).on("input", "input[name='expense_amount[]'], input[name^='expenses'][name$='[amount]']", calculateBalance);
 
-
-          // Generate expense options from $expenses
-        const expenseOptions = `
-                                <option value="">Select Expense</option>
-                                @foreach($expenses as $expense)
-                                    <option value="{{ $expense->name }}">{{ $expense->name }}</option>
-                                @endforeach
-                            `;
-
         $(document).on('click', "#addExpenseRow", function(e) {
             e.preventDefault();
             const newRow = `
@@ -178,7 +177,7 @@
                                 class="form-control" 
                                 placeholder="Enter amount">
                         </td>
-                         <td>
+                        <td>
                             <select name="expenses[${extraExpenseIndex}][expense_from]" class="form-select">
                                 <option value="">Select Expense From</option>
                                 @foreach ($expense_froms as $item)
@@ -561,29 +560,7 @@
             }
         });
 
-        // $(document).on('change keyup', '.workers, .total-bags, .labour-rate', function () {
-            
-        //     let row = $(this).closest('.trip-row');
-        //     console.log(row);
-            
-        //     let workers = parseInt(row.find('.workers').val()) || 0;
-        //     let bags = parseFloat(row.find('.total-bags').val()) || 0;
-        //     let rate = parseFloat(row.find('.labour-rate').val()) || 0;
-
-        //     let weeklyLabourInput = row.find('.weekly-labour');
-
-        //     // Rule 1: Editable only if workers = 1
-        //     if (workers === 1) {
-        //         weeklyLabourInput.prop('readonly', false);
-        //     } else {
-        //         weeklyLabourInput.prop('readonly', true);
-        //         // Rule 2: Auto calculate (bags * rate)
-        //         let total = bags * rate;
-        //         weeklyLabourInput.val(total.toFixed(2));
-        //     }
-        // });
-
-        $(document).on("click", ".removeRow", function () {
+         $(document).on("click", ".removeRow", function () {
             $(this).closest(".trip-detail").remove();
         });
 
@@ -630,6 +607,30 @@
                 }
             });
         });
+
+        // $(document).on('change keyup', '.workers, .total-bags, .labour-rate', function () {
+            
+        //     let row = $(this).closest('.trip-row');
+        //     console.log(row);
+            
+        //     let workers = parseInt(row.find('.workers').val()) || 0;
+        //     let bags = parseFloat(row.find('.total-bags').val()) || 0;
+        //     let rate = parseFloat(row.find('.labour-rate').val()) || 0;
+
+        //     let weeklyLabourInput = row.find('.weekly-labour');
+
+        //     // Rule 1: Editable only if workers = 1
+        //     if (workers === 1) {
+        //         weeklyLabourInput.prop('readonly', false);
+        //     } else {
+        //         weeklyLabourInput.prop('readonly', true);
+        //         // Rule 2: Auto calculate (bags * rate)
+        //         let total = bags * rate;
+        //         weeklyLabourInput.val(total.toFixed(2));
+        //     }
+        // });
+
+       
     });
 
 </script>

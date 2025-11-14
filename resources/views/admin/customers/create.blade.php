@@ -14,7 +14,8 @@
         <table class="table table-bordered">
             <thead class="table-light">
                 <tr>
-                    <th style="width: 80%">Customer Name</th>
+                    <th style="width: 40%">Customer Head</th>
+                    <th style="width: 40%">Customer Name</th>
                     <th style="width: 20%">Action</th>
                 </tr>
             </thead>
@@ -42,6 +43,13 @@
                 e.preventDefault();
                 let row = `
                     <tr>
+                        <td>
+                            <select name="customer_head_id[]" class="form-select">
+                                @foreach($customerHeads as $head)
+                                    <option value="{{ $head->id }}">{{ $head->name }}</option>
+                                @endforeach
+                            </select>
+                        </td>
                         <td>
                             <input type="text" name="name[]" class="form-control" placeholder="Enter Customer Name" required>
                         </td>
