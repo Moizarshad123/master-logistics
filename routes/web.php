@@ -61,6 +61,10 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
     Route::POST('endtrip', [TripController::class, 'endTrip']);
     Route::get('trip-vehicle-report', [ReportController::class, 'tripVehicleReport'])->name("tripVehicleReport");
     Route::get('profit-and-loss-report', [ReportController::class, 'profit_and_loss'])->name("profitAndLossReport");
+    Route::get('weekly-labour-report', [ReportController::class, 'weekly_labour_report'])->name("weeklyLabourReport");
+    Route::get('baloch-labour-report', [ReportController::class, 'baloch_labour_report'])->name("balochLabourReport");
+    
+
     Route::get('view-trip-vehicle-report/{id}', [ReportController::class, 'viewTripVehicleReport'])->name("viewTripVehicleReport");
     Route::get('/vehicles/{vehicle}/expenses', [VehicleController::class, 'expenses'])->name('vehicles.expenses');
     Route::post('{vehicle}/expenses', [VehicleController::class, 'storeExpense'])->name('vehicles.expenses.store');

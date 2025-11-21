@@ -87,6 +87,12 @@
                     <li>
                         <a href="{{ route('admin.profitAndLossReport') }}">Profit and Loss Report</a>
                     </li>
+                    <li>
+                        <a href="{{ route('admin.weeklyLabourReport') }}">Weekly Labour Report</a>
+                    </li>
+                     <li>
+                        <a href="{{ route('admin.balochLabourReport') }}">Baloch  Labour Report</a>
+                    </li>
                     
                 </ul>
             </li>

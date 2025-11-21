@@ -26,12 +26,67 @@
         </div>
     </div>
 
-    <div class="row mt-2">
-        <div class="col-md-6 from-container"></div>
-        <div class="col-md-6 to-container"></div>
-    </div>
+    {{-- <div class="row mt-2">
+        <div class="col-md-6 from-container">
 
-    <div class="row mt-2">
+        </div>
+        <div class="col-md-6 to-container">
+
+        </div>
+    </div> --}}
+
+    @if($detail->trip_type == "Feed Sell")
+        <div class="row mt-2">
+            <div class="col-md-6 from-container">
+                <input type="text" class="form-control" name="trip_details[{{ $index }}][from_destination]" value="Master Agro" readonly>
+            </div>
+            <div class="col-md-6 to-container">
+                <select class="form-select" name="trip_details[{{ $index }}][to_destination]">
+                    <option value="">Select To Station</option>
+                    @foreach ($sales as $item)
+                        <option value="{{ $item->station }}" {{ $detail->to_destination == $item->station ? "selected" : ""}}>{{ $item->station }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+    @elseif ($detail->trip_type === "Purchase")
+        <div class="row mt-2">
+            <div class="col-md-6 from-container">
+                <select class="form-select" name="trip_details[{{ $index }}][from_destination]">
+                    <option value="">Select From Station</option>
+                    @foreach ($purchases as $item)
+                        <option value="{{ $item->station }}" {{ $detail->from_destination == $item->station ? "selected" : ""}}>{{ $item->station }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-6 to-container">
+                <input type="text" class="form-control" name="trip_details[{{ $index }}][to_destination]" value="Master Agro" readonly>
+            </div>
+        </div>
+    @else
+        <div class="row mt-2">
+            <div class="col-md-6 from-container">
+                <select class="form-select" name="trip_details[{{ $index }}][from_destination]">
+                    <option value="">Select From Destination</option>
+                    @foreach ($destinations as $item)
+                        <option value="{{ $item->name }}" {{ $detail->from_destination == $item->name ? "selected" : ""}}>{{ $item->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-6 to-container">
+                <select class="form-select" name="trip_details[{{ $index }}][to_destination]">
+                    <option value="">Select To Destination</option>
+                    @foreach ($destinations as $item)
+                        <option value="{{ $item->name }}" {{ $detail->to_destination == $item->name ? "selected" : ""}}>{{ $item->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+    @endif
+
+
+
+    {{-- <div class="row mt-2">
         <div class="col-md-6">
             <label>From</label>
             <select class="form-select" name="trip_details[{{ $index }}][from_destination]">
@@ -48,7 +103,7 @@
                 @endforeach
             </select>
         </div>
-    </div>
+    </div> --}}
     
     <div class="row mt-2">
         <div class="col-md-3">
