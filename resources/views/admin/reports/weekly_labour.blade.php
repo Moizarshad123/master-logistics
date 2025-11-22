@@ -13,7 +13,8 @@
             <thead>
                 <tr>
                     <th>Trip No</th>
-                    <th>Customer</th>
+                    <th>Vehicle</th>
+                    {{-- <th>Customer</th> --}}
                     <th>Trip Type</th>
                     <th>Start Date</th>
                     <th>End Date</th>
@@ -27,20 +28,21 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($reports as $trip)
+                @foreach($reports as $item)
                     <tr>
-                        <td>{{ $trip->trip_id }}</td>
-                        <td>{{ $trip->customer->name ?? '-' }}</td>
-                        <td>{{ $trip->trip_type ?? '-' }}</td>
-                        <td>{{ date('d M Y', strtotime($trip->start_date)) ?? "" }}</td>
-                        <td>{{ date('d M Y', strtotime($trip->end_date)) ?? "" }}</td>
-                        <td>{{ $trip->from_destination.' - '.$trip->to_destination ?? '-' }}</td>
-                        <td>{{ $trip->material ?? '-' }}</td>
-                        <td>{{ $trip->total_bags ?? '-' }}</td>
-                        <td>{{ $trip->rate ?? ""}}</td>
-                        <td>{{ $trip->weekly_labour ?? ""}}</td>
-                        <td>{{ $trip->no_of_labour ?? ""}}</td>
-                        <td>{{ $trip->rent}}</td>
+                        <td>{{ $item->trip_id }}</td>
+                        <td>{{ $item->trip->vehicle->vehicle_no ?? '-' }}</td>
+                        {{-- <td>{{ $item->customer->name ?? '-' }}</td> --}}
+                        <td>{{ $item->trip_type ?? '-' }}</td>
+                        <td>{{ date('d M Y', strtotime($item->start_date)) ?? "" }}</td>
+                        <td>{{ date('d M Y', strtotime($item->end_date)) ?? "" }}</td>
+                        <td>{{ $item->from_destination.' - '.$item->to_destination ?? '-' }}</td>
+                        <td>{{ $item->material ?? '-' }}</td>
+                        <td>{{ $item->total_bags ?? '-' }}</td>
+                        <td>{{ $item->rate ?? ""}}</td>
+                        <td>{{ $item->weekly_labour ?? ""}}</td>
+                        <td>{{ $item->no_of_labour ?? ""}}</td>
+                        <td>{{ $item->rent}}</td>
                     </tr>
                 @endforeach
             </tbody>

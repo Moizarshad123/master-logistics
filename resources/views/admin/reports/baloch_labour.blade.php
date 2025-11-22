@@ -13,7 +13,7 @@
             <thead>
                 <tr>
                     <th>Trip No</th>
-                    <th>Customer</th>
+                    <th>Vehicle</th>
                     <th>Trip Type</th>
                     {{-- <th>Start Date</th> --}}
                     {{-- <th>End Date</th> --}}
@@ -30,7 +30,7 @@
                 @foreach($reports as $trip)
                     <tr>
                         <td>{{ $trip->trip_id }}</td>
-                        <td>{{ $trip->customer->name ?? '-' }}</td>
+                        <td>{{ $trip->trip->vehicle->vehicle_no ?? '-' }}</td>
                         <td>{{ $trip->trip_type ?? '-' }}</td>
                         {{-- <td>{{ date('d M Y', strtotime($trip->start_date)) ?? "" }}</td> --}}
                         {{-- <td>{{ date('d M Y', strtotime($trip->end_date)) ?? "" }}</td> --}}

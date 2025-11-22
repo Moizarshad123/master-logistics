@@ -67,7 +67,7 @@ class ReportController extends Controller
     public function weekly_labour_report(Request $request) {
 
         // $date    = $request->input('date', Carbon::today()->toDateString());
-        $reports = TripDetail::with('trip', "customer")
+        $reports = TripDetail::with('trip.vehicle', "customer")
                             ->whereNotNull('weekly_labour')
                             ->where('weekly_labour', '!=', 0)
                             ->orderByDESC('id')
@@ -78,7 +78,10 @@ class ReportController extends Controller
     public function baloch_labour_report(Request $request) {
 
         // $date    = $request->input('date', Carbon::today()->toDateString());
-        $reports = TripDetail::with('trip', "customer")
+        $reports = TripDetail::with([
+                                    'trip.vehicle',
+                                    'customer'
+                                ])
                             ->whereNotNull('baloch_labour')
                             ->where('baloch_labour', '!=', 0)
                             ->orderByDESC('id')
