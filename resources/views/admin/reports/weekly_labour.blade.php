@@ -6,6 +6,7 @@
 <div class="content">
     <div class="mb-4">
         <h3>Weekly Labour Report</h3>
+        <a href="{{ route("admin.viewWeeklyLabourReport") }}" class="btn btn-info">View Report</a>
     </div>
     
     <div class="table-responsive">
@@ -23,8 +24,9 @@
                     <th>Total Bags</th>
                     <th>Weekly Labour Rate</th>
                     <th>Weekly Labour</th>
-                    <th>No of Labour</th>
-                    <th>Rent</th>
+                    {{-- <th>No of Labour</th> --}}
+                    {{-- <th>Rent</th> --}}
+                    {{-- <th>Action</th> --}}
                 </tr>
             </thead>
             <tbody>
@@ -41,8 +43,9 @@
                         <td>{{ $item->total_bags ?? '-' }}</td>
                         <td>{{ $item->rate ?? ""}}</td>
                         <td>{{ $item->weekly_labour ?? ""}}</td>
-                        <td>{{ $item->no_of_labour ?? ""}}</td>
-                        <td>{{ $item->rent}}</td>
+                        {{-- <td>{{ $item->no_of_labour ?? ""}}</td> --}}
+                        {{-- <td>{{ $item->rent}}</td> --}}
+                        {{-- <th></th> --}}
                     </tr>
                 @endforeach
             </tbody>

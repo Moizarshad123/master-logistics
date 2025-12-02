@@ -67,13 +67,29 @@ class ReportController extends Controller
     public function weekly_labour_report(Request $request) {
 
         // $date    = $request->input('date', Carbon::today()->toDateString());
-        $reports = TripDetail::with('trip.vehicle', "customer")
-                            ->whereNotNull('weekly_labour')
-                            ->where('weekly_labour', '!=', 0)
-                            ->orderByDESC('id')
-                            ->paginate(15);
+        $reports = TripDetail::with('trip.vehicle', 'customer')
+                                ->whereNotNull('weekly_labour')
+                                ->where('weekly_labour', '!=', 0)
+                                ->where('weekly_labour', '!=', '') // remove empty strings
+                                ->orderByDesc('id')
+                                ->paginate(15);
+
         return view('admin.reports.weekly_labour', compact('reports'));
     }
+
+    public function view_weekly_labour_report(Request $request) {
+
+        $reports = TripDetail::with('trip.vehicle', 'customer')
+                                ->whereNotNull('weekly_labour')
+                                ->where('weekly_labour', '!=', 0)
+                                ->where('weekly_labour', '!=', '') // remove empty strings
+                                ->orderByDesc('id')
+                                ->paginate(15);
+        return view('admin.reports.view_weekly_labour', compact('reports'));
+    }
+
+
+    
 
     public function baloch_labour_report(Request $request) {
 

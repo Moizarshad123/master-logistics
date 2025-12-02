@@ -62,6 +62,8 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
     Route::get('trip-vehicle-report', [ReportController::class, 'tripVehicleReport'])->name("tripVehicleReport");
     Route::get('profit-and-loss-report', [ReportController::class, 'profit_and_loss'])->name("profitAndLossReport");
     Route::get('weekly-labour-report', [ReportController::class, 'weekly_labour_report'])->name("weeklyLabourReport");
+    Route::get('view-weekly-labour-report', [ReportController::class, 'view_weekly_labour_report'])->name("viewWeeklyLabourReport");
+
     Route::get('baloch-labour-report', [ReportController::class, 'baloch_labour_report'])->name("balochLabourReport");
     
 
