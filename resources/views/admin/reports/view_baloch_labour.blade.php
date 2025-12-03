@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'Weekly Labour Report')
+@section('title', 'Baloch Labour Report')
 
 
 @section("css")
@@ -62,7 +62,7 @@
 
     <div class="content">
         <div class="table-responsive report-container">
-            <h3 class="report-title">Weekly Labour Report</h3>    
+            <h3 class="report-title">Baloch Labour Report</h3>    
         
             {{-- Trip 1 Details --}}
             @if(count($reports) > 0)
@@ -71,7 +71,7 @@
                         <tr>
                             <th style="background-color: #f8f9fa;"><strong>Trip ID</strong></th>
                             <th style="background-color: #f8f9fa;">Vehicle</th>
-                            <th style="background-color: #f8f9fa;">Weekly Labour Amount</th>
+                            <th style="background-color: #f8f9fa;">Baloch Labour Amount</th>
                         </tr>
                     </thead>
                         @foreach ($reports as $item)
@@ -79,9 +79,8 @@
                                 <tr>
                                     <th style="width: 25%;">{{ $item->trip_id }}</th>
                                     <td style="width: 25%;">{{ $item->trip->vehicle->vehicle_no ?? ""}}</td>
-                                    <td style="width: 25%;">{{ $item->total_weekly_labour ?? ""}}</td>
+                                    <td style="width: 25%;">{{ $item->total_baloch_labour ?? ""}}</td>
                                 </tr>
-                            
                             </tbody>
                         @endforeach
                 </table>

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Trip;
 use App\Models\TripDetail;
 use Carbon\Carbon;
+use DB;
 
 class ReportController extends Controller
 {
@@ -66,45 +67,107 @@ class ReportController extends Controller
 
     public function weekly_labour_report(Request $request) {
 
-        // $date    = $request->input('date', Carbon::today()->toDateString());
-        $reports = TripDetail::with('trip.vehicle', 'customer')
+
+        $query = TripDetail::with('trip.vehicle', 'customer')
                                 ->whereNotNull('weekly_labour')
                                 ->where('weekly_labour', '!=', 0)
-                                ->where('weekly_labour', '!=', '') // remove empty strings
-                                ->orderByDesc('id')
-                                ->paginate(15);
+                                ->where('weekly_labour', '!=', '');
+                                if ($request->trip_no) {
+                                    $query->where('trip_id', $request->trip_no);
+                                }
+                                // Filter: vehicle no
+                                if ($request->vehicle_no) {
+                                    $query->whereHas('trip.vehicle', function($q) use ($request) {
+                                    $q->where('vehicle_no', 'LIKE', '%'.$request->vehicle_no.'%');
+                                    });
+                                }
+
+                                // Filter: multi date range
+                                if ($request->start_date) {
+                                    $query->where('start_date', $request->start_date);
+                                }
+                                $reports = $query->orderByDesc('id')->paginate(15);
 
         return view('admin.reports.weekly_labour', compact('reports'));
     }
 
-    public function view_weekly_labour_report(Request $request) {
+    // public function view_weekly_labour_report(Request $request) {
 
+    //     $reports = TripDetail::with('trip.vehicle', 'customer')
+    //                             ->whereNotNull('weekly_labour')
+    //                             ->where('weekly_labour', '!=', 0)
+    //                             ->where('weekly_labour', '!=', '')
+    //                             ->orderByDesc('id')
+    //                             ->paginate(15);
+    //     return view('admin.reports.view_weekly_labour', compact('reports'));
+    // }
+
+    public function view_weekly_labour_report(Request $request)
+    {
         $reports = TripDetail::with('trip.vehicle', 'customer')
-                                ->whereNotNull('weekly_labour')
-                                ->where('weekly_labour', '!=', 0)
-                                ->where('weekly_labour', '!=', '') // remove empty strings
-                                ->orderByDesc('id')
-                                ->paginate(15);
+            ->select(
+                'trip_id',
+                DB::raw('SUM(weekly_labour) as total_weekly_labour'),
+                DB::raw('SUM(total_bags) as total_bags'),
+                DB::raw('MIN(start_date) as start_date'),
+                DB::raw('MAX(end_date) as end_date'),
+                DB::raw('GROUP_CONCAT(material SEPARATOR ", ") as material_list'),
+                DB::raw('GROUP_CONCAT(from_destination, " - ", to_destination SEPARATOR " , ") as destinations')
+            )
+            ->whereNotNull('weekly_labour')
+            ->where('weekly_labour', '!=', 0)
+            ->where('weekly_labour', '!=', '')
+            ->groupBy('trip_id')
+            ->orderByDesc('trip_id')
+            ->paginate(15);
+
         return view('admin.reports.view_weekly_labour', compact('reports'));
     }
 
 
-    
-
     public function baloch_labour_report(Request $request) {
 
-        // $date    = $request->input('date', Carbon::today()->toDateString());
-        $reports = TripDetail::with([
+        $query = TripDetail::with([
                                     'trip.vehicle',
                                     'customer'
                                 ])
                             ->whereNotNull('baloch_labour')
-                            ->where('baloch_labour', '!=', 0)
-                            ->orderByDESC('id')
-                            ->paginate(15);
+                            ->where('baloch_labour', '!=', 0);
+                            if ($request->trip_no) {
+                                $query->where('trip_id', $request->trip_no);
+                            }
+                            // Filter: vehicle no
+                            if ($request->vehicle_no) {
+                                $query->whereHas('trip.vehicle', function($q) use ($request) {
+                                $q->where('vehicle_no', 'LIKE', '%'.$request->vehicle_no.'%');
+                                });
+                            }
+                            if ($request->start_date) {
+                                $query->where('start_date', $request->start_date);
+                            }
+                            $reports = $query->orderByDesc('id')->paginate(15);
         return view('admin.reports.baloch_labour', compact('reports'));
     }
 
+    public function view_baloch_labour_report(Request $request)
+    {
+        $reports = TripDetail::with('trip.vehicle', 'customer')
+            ->select(
+                'trip_id',
+                DB::raw('SUM(baloch_labour) as total_baloch_labour'),
+                DB::raw('SUM(total_bags) as total_bags'),
+                DB::raw('MIN(start_date) as start_date'),
+                DB::raw('MAX(end_date) as end_date'),
+                DB::raw('GROUP_CONCAT(material SEPARATOR ", ") as material_list'),
+                DB::raw('GROUP_CONCAT(from_destination, " - ", to_destination SEPARATOR " , ") as destinations')
+            )
+            ->whereNotNull('baloch_labour')
+            ->where('baloch_labour', '!=', 0)
+            ->where('baloch_labour', '!=', '')
+            ->groupBy('trip_id')
+            ->orderByDesc('trip_id')
+            ->paginate(15);
 
-    
+        return view('admin.reports.view_baloch_labour', compact('reports'));
+    }
 }
