@@ -13,7 +13,7 @@ class MaintenanceController extends Controller
 {
    public function index()
     {
-        $maintenances = Maintenance::with('vehicle', 'expense')->get();
+        $maintenances = Maintenance::with('vehicle', 'expense')->paginate(25);
         return view('admin.maintenances.index', compact('maintenances'));
     }
 

@@ -1,6 +1,20 @@
 @extends('admin.layouts.app')
 @section('title', 'Maintenances')
 
+@section("css")
+<style>
+    table td, table th {
+        white-space: normal !important;
+        word-wrap: break-word;
+        max-width: 200px; /* You can adjust size */
+    }
+
+    td.comments-column {
+        max-width: 300px; /* specific width for comments column */
+    }
+</style>
+@endsection
+
 @section('content')
 
   <div class="mb-4">
@@ -22,6 +36,7 @@
                 <th>Vehicle No</th>
                 <th>Expense Type</th>
                 <th>Amount</th>
+                <th>Date</th>
                 <th>Comments</th>
                 <th>Actions</th>
             </tr>
@@ -33,7 +48,9 @@
                     <td>{{ $m->vehicle->vehicle_no ?? '' }}</td>
                     <td>{{ $m->expense->name ?? '' }}</td>
                     <td>{{ $m->amount }}</td>
-                    <td>{{ $m->comments }}</td>
+                    <td>{{ date('d-m-Y',strtotime($m->created_at)) ?? "" }}</td>
+
+                    <td class="comments-column">{{ $m->comments }}</td>
                     <td>
                         <a href="{{ route('admin.maintenances.edit', $m) }}" class="btn btn-warning btn-sm">Edit</a>
                         <form action="{{ route('admin.maintenances.destroy', $m) }}" method="POST" style="display:inline-block;">
@@ -45,4 +62,7 @@
             @endforeach
         </tbody>
     </table>
+    <div style="float:right">
+            {{ $maintenances->links() }}
+        </div>
 @endsection
