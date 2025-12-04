@@ -81,11 +81,24 @@ class ReportController extends Controller
                                     $q->where('vehicle_no', 'LIKE', '%'.$request->vehicle_no.'%');
                                     });
                                 }
+                                if ($request->date_range) {
+                                    $dates = explode(' - ', $request->date_range);
+
+                                    $start = Carbon::createFromFormat('m/d/Y', trim($dates[0]))->format('Y-m-d');
+                                    $end   = Carbon::createFromFormat('m/d/Y', trim($dates[1]))->format('Y-m-d');
+
+                                    $query->whereBetween('start_date', [$start, $end]);
+                                }
+
+
+                                // if ($request->start_date && $request->end_date) {
+                                //     $query->whereBetween('start_date', [$request->start_date, $request->end_date]);
+                                // }
 
                                 // Filter: multi date range
-                                if ($request->start_date) {
-                                    $query->where('start_date', $request->start_date);
-                                }
+                                // if ($request->start_date) {
+                                //     $query->where('start_date', $request->start_date);
+                                // }
                                 $reports = $query->orderByDesc('id')->paginate(15);
 
         return view('admin.reports.weekly_labour', compact('reports'));
