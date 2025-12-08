@@ -14,7 +14,7 @@
                     <h3>Weekly Labour Report</h3>
                 </div>
                 <div class="col-md-2">
-                    <a href="{{ route("admin.viewWeeklyLabourReport") }}" class="btn btn-info">View Report</a>
+                    <a href="{{ route("admin.viewWeeklyLabourReport", request()->query()) }}" class="btn btn-info">View Report</a>
                 </div>
             </div>
         </div>
@@ -22,27 +22,36 @@
         <!-- Filter Form -->
         <form method="GET" action="{{ route('admin.weeklyLabourReport') }}" class="mb-4">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label>Trip No</label>
                     <input type="text" name="trip_no" class="form-control" value="{{ request('trip_no') }}">
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label>Vehicle No</label>
                     <input type="text" name="vehicle_no" class="form-control" value="{{ request('vehicle_no') }}">
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label>Date Range</label>
                     <input type="text" name="date_range" id="date_range" class="form-control" value="{{ request('date_range') }}" placeholder="Select date range">
                     {{-- <input type="date" name="start_date" id="start_date" class="form-control" value="{{ request('start_date') }}" placeholder="Select date range"> --}}
                 </div>
+                <div class="col-md-3">
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-primary">Filter</button>
+                        <a href="{{ route('admin.weeklyLabourReport') }}" class="btn btn-secondary">Reset</a>
+                    </div>
+                </div>
+
         
             </div>
 
-            <div class="mt-3">
-                <button type="submit" class="btn btn-primary">Filter</button>
-                <a href="{{ route('admin.weeklyLabourReport') }}" class="btn btn-secondary">Reset</a>
-            </div>
         </form>
+        <div class="row">
+            <div class="col-md-10"></div>
+            <div class="col-md-2" style="float: right">
+                {{ $reports->links() }}
+            </div>
+        </div>
         
         <div class="table-responsive">
             <table class="table table-custom table-lg mb-0">
@@ -71,7 +80,7 @@
                             <td>{{ $item->trip->vehicle->vehicle_no ?? '-' }}</td>
                             <td>{{ $item->trip_type ?? '-' }}</td>
                             <td>{{ date('d M Y', strtotime($item->start_date)) ?? "" }}</td>
-                            <td>{{ date('d M Y', strtotime($item->end_date)) ?? "" }}</td>
+                            <td>{{ isset($item->end_date) ? date('d M Y', strtotime($item->end_date)) : "" }}</td>
                             <td>{{ $item->from_destination.' - '.$item->to_destination ?? '-' }}</td>
                             <td>{{ $item->material ?? '-' }}</td>
                             <td>{{ $item->total_bags ?? '-' }}</td>

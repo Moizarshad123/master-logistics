@@ -16,7 +16,7 @@ class ExpenseTypeController extends Controller
      */
     public function index()
     {
-        $expenseTypes = ExpenseType::orderByDESC('id')->paginate(10);
+        $expenseTypes = ExpenseType::orderByDESC('id')->paginate(50);
         return view('admin.expense_types.index', compact('expenseTypes'));
     }
 

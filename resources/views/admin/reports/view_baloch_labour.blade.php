@@ -69,7 +69,7 @@
                 <table class="table table-custom table-bordered table-sm mb-4 report-table">
                     <thead>
                         <tr>
-                            <th style="background-color: #f8f9fa;"><strong>Trip ID</strong></th>
+                            {{-- <th style="background-color: #f8f9fa;"><strong>Trip ID</strong></th> --}}
                             <th style="background-color: #f8f9fa;">Vehicle</th>
                             <th style="background-color: #f8f9fa;">Baloch Labour Amount</th>
                         </tr>
@@ -77,7 +77,7 @@
                         @foreach ($reports as $item)
                             <tbody>
                                 <tr>
-                                    <th style="width: 25%;">{{ $item->trip_id }}</th>
+                                    {{-- <th style="width: 25%;">{{ $item->trip_id }}</th> --}}
                                     <td style="width: 25%;">{{ $item->trip->vehicle->vehicle_no ?? ""}}</td>
                                     <td style="width: 25%;">{{ $item->total_baloch_labour ?? ""}}</td>
                                 </tr>

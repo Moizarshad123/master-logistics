@@ -11,14 +11,61 @@ use Illuminate\Support\Facades\Storage;
 class DriverController extends Controller
 {
     public function driver_payments($driverId) {
-        $payments = TripPayment::where("driver_id", $driverId)->orderByDESC("id")->paginate(10);
+        $payments = TripPayment::where("driver_id", $driverId)->orderByDESC("id")->paginate(50);
         return view('admin.drivers.payments', compact('payments'));
 
     }
     public function index()
     {
-        $drivers = Driver::latest()->paginate(10);
-        return view('admin.drivers.index', compact('drivers'));
+        
+        try {
+            if (request()->ajax()) {
+                $drivers = Driver::latest();
+                return datatables()->eloquent($drivers->orderByDesc('id'))
+                    ->addColumn('myImage', function ($data) {
+                        if($data->image != null) {
+                            return' <img src="'.$data->image.'" width="100" height="100" style="border-radius: 50%">';
+                        } else {
+                            return "";
+                        }
+                    })
+                    ->editColumn('cnic_expiry_date', function ($data) {
+                        if(isset($data->cnic_expiry_date)) {
+                            return date('d m Y', strtotime($data->cnic_expiry_date));
+                        } else {
+                            return '';
+                        }
+                    })
+                    ->editColumn('license_expiry_date', function ($data) {
+                        if(isset($data->license_expiry_date)) {
+                            return date('d m Y', strtotime($data->license_expiry_date));
+                        } else {
+                            return '';
+                        }
+                    })
+                    ->addColumn('action', function ($data) {
+
+                        $viewUrl    = route('admin.drivers.show', $data->id);
+                        $editUrl    = route('admin.drivers.edit', $data->id);
+                        $deleteUrl  = route('admin.drivers.destroy', $data->id);
+
+                        return '
+                            <a href="'.$viewUrl.'" class="btn btn-sm btn-info">View</a> |
+                            <a href="'.$editUrl.'" class="btn btn-sm btn-warning">Edit</a> |
+                            <form action="'.$deleteUrl.'" method="POST" style="display:inline;">
+                                '.csrf_field().'
+                                '.method_field('DELETE').'
+                                <button type="submit" class="btn btn-sm btn-danger deleteExpenseType" onclick="return confirm(\'Are you sure?\')">Delete</button>
+                            </form>';
+                    })
+                    ->rawColumns(['action', 'myImage'])->make(true);
+
+            }
+        } catch (\Exception $ex) {
+            return redirect('admin/drivers')->with('error', $ex->getMessage());
+        }
+
+        return view('admin.drivers.index');
     }
 
     public function create()
@@ -100,6 +147,8 @@ class DriverController extends Controller
             'address'               => $request->address,
             'cnic_front'            => $cnic_front,
             'cnic_back'             => $cnic_back,
+            'cnic_expiry_date'      => $request->cnic_expiry_date,
+            'license_expiry_date'   => $request->license_expiry_date,
             'driving_license_front' => $driving_license_front,
             'driving_license_back'  => $driving_license_back,
             'image'                 => $image,
@@ -110,7 +159,12 @@ class DriverController extends Controller
 
     public function show($id)
     {
-        //
+        try {
+           $driver = Driver::findOrFail($id);
+           return view("admin.drivers.show", compact('driver'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with("error", $e->getMessage());
+        }
     }
 
     public function edit(Driver $driver)

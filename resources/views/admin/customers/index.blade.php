@@ -21,7 +21,7 @@
     </div>
 
     <div class="table-responsive">
-        <table class="table table-custom table-lg mb-0" id="ordersTable">
+        <table class="table table-custom table-lg mb-0" id="customersTable">
             <thead>
                 <tr>
                     <th>Customer Head</th>
@@ -30,7 +30,7 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse ($customers as $item)
+                {{-- @forelse ($customers as $item)
                     <tr>
                         <td>{{ $item->customerHead->name ?? '' }}</td>
                         <td>{{ $item->name }}</td>
@@ -51,18 +51,59 @@
                             <p class="text-center">No Customers Found</p>
                         </th>
                     </tr>
-                @endforelse
+                @endforelse --}}
             </tbody>
         </table>
-        <div style="float:right">
-            {{ $customers->links() }}
-        </div>
     </div>
 @endsection
 
 @section('js')
 <script>
     $(document).ready(function () {
+
+        var DataTable = $("#customersTable").DataTable({
+            buttons: [{
+                extend: "csv",
+                className: "btn-sm"
+            }],
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            pageLength: 50,
+            ajax: {
+                url: `{{route('admin.customers.index')}}`,
+            },
+            dom: '<"top d-flex justify-content-between"f p>rt<"bottom"p>',
+            columns: [
+
+                {
+                    data: 'customerHead',
+                    name: 'customerHead'
+                },
+                {
+                    data: 'name',
+                    name: 'name'
+                },
+                {
+                    data: 'action',
+                    name: 'action'
+                }
+            ],
+            order: [[0, 'desc']],
+
+            createdRow: function(row, data, dataIndex) {
+                // Check if order_nature is 'urgent'
+                if (data.order_nature == 'urgent' && data.outstanding_amount == 0) {
+                    $(row).css('background-color', 'rgb(253 136 136)');
+                } if(data.order_nature == 'normal' && data.outstanding_amount != 0) {
+                    $(row).css('background-color', 'rgb(191 204 181)');
+                } else if(data.order_nature == 'urgent' && data.outstanding_amount != 0) {
+                    $(row).css('background-color', 'rgb(241 240 129)');
+                }
+            }
+
+        });
+
         $('.deleteExpenseType').on('click', function (e) {
 
             e.preventDefault();

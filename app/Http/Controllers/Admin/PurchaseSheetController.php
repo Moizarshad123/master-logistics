@@ -8,13 +8,7 @@ use App\Models\PurchaseSheet;
 
 class PurchaseSheetController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-
-     public function show_sheet($id)
+    public function show_sheet($id)
     {
         $purchase = PurchaseSheet::where('station', 'LIKE', '%' . $id . '%')->first();
 
@@ -32,8 +26,35 @@ class PurchaseSheetController extends Controller
 
     public function index()
     {
-        $purchases = PurchaseSheet::orderByDESC("id")->paginate(50);
-        return view("admin.purchases.index", compact("purchases"));
+
+        try {
+            if (request()->ajax()) {
+                $purchases = PurchaseSheet::orderByDESC("id");
+
+                return datatables()->eloquent($purchases)
+                    ->addColumn('action', function ($data) {
+
+                        $viewUrl    = route('admin.purchases.show', $data->id);
+                        $editUrl    = route('admin.purchases.edit', $data->id);
+                        $deleteUrl  = route('admin.purchases.destroy', $data->id);
+
+                        return '
+                            <a href="'.$viewUrl.'" class="btn btn-sm btn-info">View</a> |
+                            <a href="'.$editUrl.'" class="btn btn-sm btn-warning">Edit</a> |
+                            <form action="'.$deleteUrl.'" method="POST" style="display:inline;">
+                                '.csrf_field().'
+                                '.method_field('DELETE').'
+                                <button type="submit" class="btn btn-sm btn-danger deleteExpenseType" onclick="return confirm(\'Are you sure?\')">Delete</button>
+                            </form>';
+                    })
+                    ->rawColumns(['action'])->make(true);
+
+            }
+        } catch (\Exception $ex) {
+            return redirect('admin/purchases')->with('error', $ex->getMessage());
+        }
+
+        return view("admin.purchases.index");
     }
 
     /**

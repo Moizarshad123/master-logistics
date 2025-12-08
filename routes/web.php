@@ -34,6 +34,9 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
     Route::controller(AdminController::class)->group(function() {
         Route::get('dashboard', 'dashboard')->name('dashboard');
     });
+
+
+
     Route::resource('expense-from', ExpenseFromController::class);
     Route::resource('expense-types', ExpenseTypeController::class);
     Route::resource('drivers', DriverController::class);
@@ -56,22 +59,22 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
     Route::get('end-actual-trip/{id}', [TripController::class, 'endActualTrip'])->name('endActualTrip');
     Route::get('closed-trips', [TripController::class, 'closedTrips'])->name('closedTrips');
 
+    Route::controller(ReportController::class)->group(function() {
+        Route::get('trip-vehicle-report', 'tripVehicleReport')->name("tripVehicleReport");
+        Route::get('profit-and-loss-report', 'profit_and_loss')->name("profitAndLossReport");
+        Route::get('weekly-labour-report', 'weekly_labour_report')->name("weeklyLabourReport");
+        Route::get('view-weekly-labour-report', 'view_weekly_labour_report')->name("viewWeeklyLabourReport");
+        Route::get('baloch-labour-report', 'baloch_labour_report')->name("balochLabourReport");
+        Route::get('view-baloch-labour-report', 'view_baloch_labour_report')->name("viewBalochLabourReport");
+        Route::get('view-trip-vehicle-report/{id}', 'viewTripVehicleReport')->name("viewTripVehicleReport");
+    });
 
     // Route::get('/endtrip/{vehicle}/expenses', [VehicleController::class, 'expenses'])->name('vehicles.expenses');
     Route::POST('endtrip', [TripController::class, 'endTrip']);
-    Route::get('trip-vehicle-report', [ReportController::class, 'tripVehicleReport'])->name("tripVehicleReport");
-    Route::get('profit-and-loss-report', [ReportController::class, 'profit_and_loss'])->name("profitAndLossReport");
-    Route::get('weekly-labour-report', [ReportController::class, 'weekly_labour_report'])->name("weeklyLabourReport");
-    Route::get('view-weekly-labour-report', [ReportController::class, 'view_weekly_labour_report'])->name("viewWeeklyLabourReport");
-
-    Route::get('baloch-labour-report', [ReportController::class, 'baloch_labour_report'])->name("balochLabourReport");
-    Route::get('view-baloch-labour-report', [ReportController::class, 'view_baloch_labour_report'])->name("viewBalochLabourReport");
-
-    
-
-    Route::get('view-trip-vehicle-report/{id}', [ReportController::class, 'viewTripVehicleReport'])->name("viewTripVehicleReport");
-    Route::get('/vehicles/{vehicle}/expenses', [VehicleController::class, 'expenses'])->name('vehicles.expenses');
-    Route::post('{vehicle}/expenses', [VehicleController::class, 'storeExpense'])->name('vehicles.expenses.store');
-    Route::put('{vehicle}/expenses/{expense}', [VehicleController::class, 'updateExpense'])->name('vehicles.expenses.update');
-    Route::delete('{vehicle}/expenses/{expense}', [VehicleController::class, 'deleteExpense'])->name('vehicles.expenses.delete');
+    Route::controller(VehicleController::class)->group(function() {
+        Route::get('/vehicles/{vehicle}/expenses', 'expenses')->name('vehicles.expenses');
+        Route::post('{vehicle}/expenses', 'storeExpense')->name('vehicles.expenses.store');
+        Route::put('{vehicle}/expenses/{expense}', 'updateExpense')->name('vehicles.expenses.update');
+        Route::delete('{vehicle}/expenses/{expense}', 'deleteExpense')->name('vehicles.expenses.delete');
+    });
 });

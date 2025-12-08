@@ -15,8 +15,33 @@ class DestinationController extends Controller
      */
     public function index()
     {
-        $destinations = Destination::orderByDESC('id')->paginate(20);
-        return view('admin.destinations.index', compact('destinations'));
+
+        try {
+            if (request()->ajax()) {
+                $destinations = Destination::orderByDESC('id');
+
+                return datatables()->eloquent($destinations)
+                    ->addColumn('action', function ($data) {
+
+                        $viewUrl    = route('admin.destinations.show', $data->id);
+                        $editUrl    = route('admin.destinations.edit', $data->id);
+                        $deleteUrl  = route('admin.destinations.destroy', $data->id);
+
+                        return '<a href="'.$editUrl.'" class="btn btn-sm btn-warning">Edit</a> |
+                            <form action="'.$deleteUrl.'" method="POST" style="display:inline;">
+                                '.csrf_field().'
+                                '.method_field('DELETE').'
+                                <button type="submit" class="btn btn-sm btn-danger deleteExpenseType" onclick="return confirm(\'Are you sure?\')">Delete</button>
+                            </form>';
+                    })
+                    ->rawColumns(['action'])->make(true);
+
+            }
+        } catch (\Exception $ex) {
+            return redirect('admin/destinations')->with('error', $ex->getMessage());
+        }
+
+        return view('admin.destinations.index');
     }
 
     /**

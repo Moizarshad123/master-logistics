@@ -8,8 +8,6 @@ use App\Models\Vehicle;
 use App\Models\ExpenseType;
 use App\Models\Wheeler;
 use App\Models\ExpenseFrom;
-
-
 use DB;
 
 class VehicleController extends Controller
@@ -86,8 +84,49 @@ class VehicleController extends Controller
 
     public function index()
     {
-        $vehicles = Vehicle::with("wheeler")->orderByDESC("id")->paginate(10);
-        return view('admin.vehicles.index', compact('vehicles'));
+
+        try {
+            if (request()->ajax()) {
+
+                $vehicles = Vehicle::with("wheeler");
+                return datatables()->eloquent($vehicles->orderByDesc('id'))
+                    ->addColumn('vehicleImage', function ($data) {
+                        return '<img src="'.$data->image.'" width="100" height="100" style="border-radius: 50%">';
+                        
+                    })
+                    ->addColumn('wheeler', function ($data) {
+                        if($data->wheeler != null) {
+                            return $data?->wheeler?->name;
+                        } else {
+                            return "";
+                        }
+                    })
+                    // ->editColumn('created_at', function ($data) {
+                    //     return  date('d M Y', strtotime($data->created_at));
+                    // })   
+                    ->addColumn('action', function ($data) {
+
+                        $viewUrl    = route('admin.vehicles.show', $data->id);
+                        $editUrl    = route('admin.vehicles.edit', $data->id);
+                        $deleteUrl  = route('admin.vehicles.destroy', $data->id);
+
+                        return '
+                            <a href="'.$viewUrl.'" class="btn btn-sm btn-info">View</a> |
+                            <a href="'.$editUrl.'" class="btn btn-sm btn-warning">Edit</a> |
+                            <form action="'.$deleteUrl.'" method="POST" style="display:inline;">
+                                '.csrf_field().'
+                                '.method_field('DELETE').'
+                                <button type="submit" class="btn btn-sm btn-danger deleteExpenseType" onclick="return confirm(\'Are you sure?\')">Delete</button>
+                            </form>';
+                    })
+                    ->rawColumns(['action', 'vehicleImage', 'wheeler'])->make(true);
+
+            }
+        } catch (\Exception $ex) {
+            return redirect('admin/vehicles')->with('error', $ex->getMessage());
+        }
+
+        return view('admin.vehicles.index');
     }
 
     public function expenses($id)
@@ -140,7 +179,6 @@ class VehicleController extends Controller
     public function store(Request $request)
     {
         
-
         try {
             $request->validate([
                 'vehicle_no'  => 'required|unique:vehicles',
@@ -153,11 +191,60 @@ class VehicleController extends Controller
     
             if ($request->hasFile('image')) {
                 $file     = $request->file('image');
-                $fileName = time() . '-' . uniqid() . '-driver.' . $file->getClientOriginalExtension();
+                $fileName = time() . '-' . uniqid() . '-vehicle.' . $file->getClientOriginalExtension();
                 $file->move($dir, $fileName);
                 $fileName = $dir.$fileName;
     
                 $data['image'] = asset($fileName);
+            }
+
+            if ($request->hasFile('route_permit_sindh')) {
+                $file     = $request->file('route_permit_sindh');
+                $fileName = time() . '-' . uniqid() . '-vehicle.' . $file->getClientOriginalExtension();
+                $file->move($dir, $fileName);
+                $fileName = $dir.$fileName;
+    
+                $data['route_permit_sindh'] = asset($fileName);
+            }
+            if ($request->hasFile('route_permit_punjab')) {
+                $file     = $request->file('route_permit_punjab');
+                $fileName = time() . '-' . uniqid() . '-vehicle.' . $file->getClientOriginalExtension();
+                $file->move($dir, $fileName);
+                $fileName = $dir.$fileName;
+    
+                $data['route_permit_punjab'] = asset($fileName);
+            }
+            if ($request->hasFile('fitness_certificate')) {
+                $file     = $request->file('fitness_certificate');
+                $fileName = time() . '-' . uniqid() . '-vehicle.' . $file->getClientOriginalExtension();
+                $file->move($dir, $fileName);
+                $fileName = $dir.$fileName;
+    
+                $data['fitness_certificate'] = asset($fileName);
+            }
+            if ($request->hasFile('insurance_certificate')) {
+                $file     = $request->file('insurance_certificate');
+                $fileName = time() . '-' . uniqid() . '-vehicle.' . $file->getClientOriginalExtension();
+                $file->move($dir, $fileName);
+                $fileName = $dir.$fileName;
+    
+                $data['insurance_certificate'] = asset($fileName);
+            }
+            if ($request->hasFile('tax_token')) {
+                $file     = $request->file('tax_token');
+                $fileName = time() . '-' . uniqid() . '-vehicle.' . $file->getClientOriginalExtension();
+                $file->move($dir, $fileName);
+                $fileName = $dir.$fileName;
+    
+                $data['tax_token'] = asset($fileName);
+            }
+            if ($request->hasFile('vehicle_file')) {
+                $file     = $request->file('vehicle_file');
+                $fileName = time() . '-' . uniqid() . '-vehicle.' . $file->getClientOriginalExtension();
+                $file->move($dir, $fileName);
+                $fileName = $dir.$fileName;
+    
+                $data['vehicle_file'] = asset($fileName);
             }
     
             $vehicle = Vehicle::create($data);
@@ -169,14 +256,14 @@ class VehicleController extends Controller
             return redirect()->route('admin.vehicles.index')->with('success', 'Vehicle added successfully.');
         } catch (\Exception $e) {
             DB::rollback();
-
             return redirect()->back()->with("error", $e->getMessage());
         }
     }
 
     public function show($id)
     {
-        //
+        $vehicle  = Vehicle::with("wheeler")->findOrFail($id);
+        return view('admin.vehicles.show', compact('vehicle'));
     }
 
     public function edit(Vehicle $vehicle)

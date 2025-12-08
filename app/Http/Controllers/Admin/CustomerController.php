@@ -11,8 +11,37 @@ class CustomerController extends Controller
 {
     public function index()
     {
-        $customers = Customer::with("customerHead")->orderByDESC("id")->paginate(25);
-        return view('admin.customers.index', compact('customers'));
+        try {
+            if (request()->ajax()) {
+                $customers = Customer::with("customerHead");
+                return datatables()->eloquent($customers->orderByDesc('id'))
+                    ->addColumn('customerHead', function ($data) {
+                        return $data->customerHead->name ?? '';
+                    })
+                    
+                    ->addColumn('action', function ($data) {
+
+                        $viewUrl    = route('admin.customers.show', $data->id);
+                        $editUrl    = route('admin.customers.edit', $data->id);
+                        $deleteUrl  = route('admin.customers.destroy', $data->id);
+
+                        return '
+                            <a href="'.$viewUrl.'" class="btn btn-sm btn-info">View</a> |
+                            <a href="'.$editUrl.'" class="btn btn-sm btn-warning">Edit</a> |
+                            <form action="'.$deleteUrl.'" method="POST" style="display:inline;">
+                                '.csrf_field().'
+                                '.method_field('DELETE').'
+                                <button type="submit" class="btn btn-sm btn-danger deleteExpenseType" onclick="return confirm(\'Are you sure?\')">Delete</button>
+                            </form>';
+                    })
+                    ->rawColumns(['action', 'customerHead'])->make(true);
+
+            }
+        } catch (\Exception $ex) {
+            return redirect('admin/customers')->with('error', $ex->getMessage());
+        }
+
+        return view('admin.customers.index');
     }
 
     public function create()

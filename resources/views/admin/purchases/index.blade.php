@@ -21,7 +21,7 @@
     </div>
 
     <div class="table-responsive">
-        <table class="table table-custom table-lg mb-0" id="ordersTable">
+        <table class="table table-custom table-lg mb-0" id="customersTable">
             <thead>
                 <tr>
                     <th>Station</th>
@@ -31,32 +31,8 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse ($purchases as $item)
-                    <tr>
-                        <td>{{ $item->station }}</td>
-                        <td>{{ $item->per_ton_rate }}</td>
-                        <td>{{ $item->type }}</td>
-                        <td>
-                            <a href="{{ route('admin.purchases.edit', $item)}}" class="btn btn-success btn-sm">Edit</a>
-                            <form action="{{ route('admin.purchases.destroy', $item) }}"  method="POST" style="display:inline-block;">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-sm btn-danger deleteExpenseType" >Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                @empty
-                <tr>
-                    <th colspan="2">
-                        <p class="text-center">No Purchase Found</p>
-                    </th>
-                </tr>
-                @endforelse
             </tbody>
         </table>
-        <div style="float:right">
-            {{ $purchases->links() }}
-        </div>
     </div>
 
 
@@ -66,6 +42,54 @@
 @section('js')
 <script>
     $(document).ready(function () {
+
+        var DataTable = $("#customersTable").DataTable({
+            buttons: [{
+                extend: "csv",
+                className: "btn-sm"
+            }],
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            pageLength: 50,
+            ajax: {
+                url: `{{route('admin.purchases.index')}}`,
+            },
+            dom: '<"top d-flex justify-content-between"f p>rt<"bottom"p>',
+            columns: [
+
+                {
+                    data: 'station',
+                    name: 'station'
+                },
+                {
+                    data: 'per_ton_rate',
+                    name: 'per_ton_rate'
+                },
+                {
+                    data: 'type',
+                    name: 'type'
+                },
+                {
+                    data: 'action',
+                    name: 'action'
+                }
+            ],
+            order: [[0, 'desc']],
+
+            createdRow: function(row, data, dataIndex) {
+                // Check if order_nature is 'urgent'
+                if (data.order_nature == 'urgent' && data.outstanding_amount == 0) {
+                    $(row).css('background-color', 'rgb(253 136 136)');
+                } if(data.order_nature == 'normal' && data.outstanding_amount != 0) {
+                    $(row).css('background-color', 'rgb(191 204 181)');
+                } else if(data.order_nature == 'urgent' && data.outstanding_amount != 0) {
+                    $(row).css('background-color', 'rgb(241 240 129)');
+                }
+            }
+
+        });
+
         $('.deleteExpenseType').on('click', function (e) {
 
             e.preventDefault();

@@ -15,6 +15,8 @@ class CreateDriversTable extends Migration
             $table->double('salary')->default(0);
             $table->string('cnic_front')->nullable();
             $table->string('cnic_back')->nullable();
+            $table->string('cnic_expiry_date')->nullable();
+            $table->string('license_expiry_date')->nullable();
             $table->string('driving_license_front')->nullable();
             $table->string('driving_license_back')->nullable();
             $table->string('image')->nullable();

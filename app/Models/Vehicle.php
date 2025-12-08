@@ -15,7 +15,18 @@ class Vehicle extends Model
         'vehicle_type',
         'make',
         'model',
-        'image',
+        'route_permit_sindh',
+        'route_permit_sindh_expiry',
+        'route_permit_punjab',
+        'route_permit_punjab_expiry',
+        'fitness_certificate',
+        'fitness_certificate_expiry',
+        'insurance_certificate',
+        'insurance_certificate_expiry',
+        'tax_token',
+        'tax_token_expiry',
+        'vehicle_file',
+        'image'
     ];
 
     public function expenseTypes()

@@ -14,7 +14,7 @@ class MaterialController extends Controller
      */
     public function index()
     {
-        $materials = Material::orderByDESC("id")->paginate(10);
+        $materials = Material::orderByDESC("id")->paginate(50);
         return view("admin.materials.index", compact("materials"));
     }
 

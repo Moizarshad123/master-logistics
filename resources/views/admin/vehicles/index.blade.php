@@ -20,7 +20,7 @@
     </div>
 
     <div class="table-responsive">
-        <table class="table table-custom table-lg mb-0" id="ordersTable">
+        <table class="table table-custom table-lg mb-0" id="maintenanceTable">
             <thead>
                 <tr>
                     <th>Image</th>
@@ -34,7 +34,7 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse ($vehicles as $vehicle)
+                {{-- @forelse ($vehicles as $vehicle)
                     <tr>
                         <td>
                             @if($vehicle->image)
@@ -45,8 +45,7 @@
                         <td>{{ $vehicle?->wheeler?->name ?? "" }}</td>
                         <td>{{ $vehicle->chachis_no }}</td>
                         <td>{{ $vehicle->engine_no }}</td>
-                        {{-- <td>{{ $vehicle->make }}</td>
-                        <td>{{ $vehicle->model }}</td> --}}
+                     
                         <td style="text-align: center">
                             <a href="{{ route('admin.vehicles.edit', $vehicle->id) }}" class="btn btn-sm btn-warning">Edit</a>
                             <form action="{{ route('admin.vehicles.destroy', $vehicle->id) }}" method="POST" style="display:inline-block;">
@@ -63,12 +62,12 @@
                         <p class="text-center">No Vehicle</p>
                     </th>
                 </tr>
-                @endforelse
+                @endforelse --}}
             </tbody>
         </table>
-        <div style="float:right">
+        {{-- <div style="float:right">
             {{ $vehicles->links() }}
-        </div>
+        </div> --}}
     </div>
 
 </div>
@@ -96,6 +95,62 @@
                   form.submit();
                 }
             });
+        });
+
+        var DataTable = $("#maintenanceTable").DataTable({
+            buttons: [{
+                extend: "csv",
+                className: "btn-sm"
+            }],
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            pageLength: 50,
+            ajax: {
+                url: `{{route('admin.vehicles.index')}}`,
+            },
+            dom: '<"top d-flex justify-content-between"f p>rt<"bottom"p>',
+
+
+            columns: [
+                {
+                    data: 'vehicleImage',
+                    name: 'vehicleImage'
+                },
+                {
+                    data: 'vehicle_no',
+                    name: 'vehicle_no'
+                },
+                {
+                    data: 'wheeler',
+                    name: 'wheeler'
+                },
+                {
+                    data: 'chachis_no',
+                    name: 'chachis_no'
+                },
+                {
+                    data: 'engine_no',
+                    name: 'engine_no'
+                },
+                {
+                    data: 'action',
+                    name: 'action'
+                }
+            ],
+            order: [[0, 'desc']],
+
+            createdRow: function(row, data, dataIndex) {
+                // Check if order_nature is 'urgent'
+                if (data.order_nature == 'urgent' && data.outstanding_amount == 0) {
+                    $(row).css('background-color', 'rgb(253 136 136)');
+                } if(data.order_nature == 'normal' && data.outstanding_amount != 0) {
+                    $(row).css('background-color', 'rgb(191 204 181)');
+                } else if(data.order_nature == 'urgent' && data.outstanding_amount != 0) {
+                    $(row).css('background-color', 'rgb(241 240 129)');
+                }
+            }
+
         });
     });
 

@@ -14,6 +14,8 @@ class Driver extends Model
         "salary",
         'cnic_front',
         'cnic_back',
+        'cnic_expiry_date',
+        'license_expiry_date',
         'driving_license_front',
         'driving_license_back',
         'image',

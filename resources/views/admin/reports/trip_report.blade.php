@@ -27,7 +27,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($trips as $trip)
+                {{-- @foreach($trips as $trip)
                     <tr>
                         <td>{{ $trip->trip_no }}</td>
                         <td>{{ $trip->vehicle->vehicle_no ?? '-' }}</td>
@@ -38,17 +38,71 @@
                             <a href="{{ route('admin.viewTripVehicleReport', $trip->id) }}" class="btn btn-sm btn-info">View Report</a>                           
                         </td>
                     </tr>
-                @endforeach
+                @endforeach --}}
             </tbody>
         </table>
     </div>
-
-
-    {{ $trips->links() }}
 </div>
 @endsection
 
 @section('js')
 
+<script>
+    $(document).ready(function() {
+        var DataTable = $("#ordersTable").DataTable({
+            buttons: [{
+                extend: "csv",
+                className: "btn-sm"
+            }],
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            pageLength: 50,
+            ajax: {
+                url: `{{route('admin.tripVehicleReport')}}`,
+            },
+            dom: '<"top d-flex justify-content-between"f p>rt<"bottom"p>',
+            columns: [
 
+                {
+                    data: 'id',
+                    name: 'id'
+                },
+                {
+                    data: 'vehicle',
+                    name: 'vehicle'
+                },
+                {
+                    data: 'driver',
+                    name: 'driver'
+                },
+                {
+                    data: 'total_journeys',
+                    name: 'total_journeys'
+                },
+                {
+                    data: 'created_at',
+                    name: 'created_at'
+                },
+                {
+                    data: 'action',
+                    name: 'action'
+                }
+            ],
+            order: [[0, 'desc']],
+
+            createdRow: function(row, data, dataIndex) {
+                // Check if order_nature is 'urgent'
+                if (data.order_nature == 'urgent' && data.outstanding_amount == 0) {
+                    $(row).css('background-color', 'rgb(253 136 136)');
+                } if(data.order_nature == 'normal' && data.outstanding_amount != 0) {
+                    $(row).css('background-color', 'rgb(191 204 181)');
+                } else if(data.order_nature == 'urgent' && data.outstanding_amount != 0) {
+                    $(row).css('background-color', 'rgb(241 240 129)');
+                }
+            }
+        });
+      
+    });
+</script>
 @endsection

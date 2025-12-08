@@ -67,6 +67,73 @@
     </div>
 </div>
 
+
+
+<div class="row" style="margin-bottom:15px">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label>Route Permit Sindh</label>
+            <input type="file" name="route_permit_sindh" class="form-control">
+        </div>
+    </div>
+     <div class="col-md-6">
+        <label>Route Permit Sindh Expiry Date</label>
+        <input type="date" name="route_permit_sindh_expiry" class="form-control" value="{{ old('route_permit_sindh_expiry', $vehicle->route_permit_sindh_expiry ?? '') }}">
+    </div>
+</div>
+
+<div class="row" style="margin-bottom:15px">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label>Route Permit Punjab</label>
+            <input type="file" name="route_permit_punjab" class="form-control">
+        </div>
+    </div>
+     <div class="col-md-6">
+        <label>Route Permit Punjab Expiry Date</label>
+        <input type="date" name="route_permit_punjab_expiry" class="form-control" value="{{ old('route_permit_punjab_expiry', $vehicle->route_permit_punjab_expiry ?? '') }}">
+    </div>
+</div>
+
+<div class="row" style="margin-bottom:15px">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label>Fitness Certificate</label>
+            <input type="file" name="fitness_certificate" class="form-control">
+        </div>
+    </div>
+     <div class="col-md-6">
+        <label>Fitness Certificate Expiry Date</label>
+        <input type="date" name="fitness_certificate_expiry" class="form-control" value="{{ old('fitness_certificate_expiry', $vehicle->fitness_certificate_expiry ?? '') }}">
+    </div>
+</div>
+
+<div class="row" style="margin-bottom:15px">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label>Insurance Certificate</label>
+            <input type="file" name="insurance_certificate" class="form-control">
+        </div>
+    </div>
+     <div class="col-md-6">
+        <label>Insurance Certificate Expiry Date</label>
+        <input type="date" name="insurance_certificate_expiry" class="form-control" value="{{ old('insurance_certificate_expiry', $vehicle->insurance_certificate_expiry ?? '') }}">
+    </div>
+</div>
+
+<div class="row" style="margin-bottom:15px">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label>Tax Token</label>
+            <input type="file" name="tax_token" class="form-control">
+        </div>
+    </div>
+     <div class="col-md-6">
+        <label>Tax Token Expiry Date</label>
+        <input type="date" name="tax_token_expiry" class="form-control" value="{{ old('tax_token_expiry', $vehicle->tax_token_expiry ?? '') }}">
+    </div>
+</div>
+
 <div class="row" style="margin-bottom:15px">
     <div class="col-md-6">
         <div class="form-group">
@@ -74,11 +141,24 @@
             <input type="file" name="image" class="form-control image-input" data-preview="driver_image_preview">
         </div>
     </div>
-     <div class="col-md-6">
+     {{-- <div class="col-md-6">
         <img id="driver_image_preview" 
             src="{{ isset($vehicle) && $vehicle->image ? $vehicle->image : ''}}" 
             alt="Driver" class="mt-2" height="150"
             style="{{ isset($vehicle) && $vehicle->image ? '' : 'display:none;' }}">
+    </div> --}}
+    <div class="col-md-6">
+        <div class="form-group">
+            <label>Vehicle File</label>
+            <input type="file" name="vehicle_file" class="form-control">
+        </div>
     </div>
 </div>
+
+<div class="row" style="margin-bottom:15px">
+    
+</div>
+
+
+
 

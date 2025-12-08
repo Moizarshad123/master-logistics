@@ -10,8 +10,34 @@ class SalesSheetController extends Controller
 {
     public function index()
     {
-        $sales = SaleSheet::orderByDESC("id")->paginate(50);
-        return view("admin.sales.index", compact("sales"));
+        try {
+            if (request()->ajax()) {
+                $sales = SaleSheet::orderByDESC("id");
+
+                return datatables()->eloquent($sales)
+                    ->addColumn('action', function ($data) {
+
+                        $viewUrl    = route('admin.sales.show', $data->id);
+                        $editUrl    = route('admin.sales.edit', $data->id);
+                        $deleteUrl  = route('admin.sales.destroy', $data->id);
+
+                        return '
+                            <a href="'.$viewUrl.'" class="btn btn-sm btn-info">View</a> |
+                            <a href="'.$editUrl.'" class="btn btn-sm btn-warning">Edit</a> |
+                            <form action="'.$deleteUrl.'" method="POST" style="display:inline;">
+                                '.csrf_field().'
+                                '.method_field('DELETE').'
+                                <button type="submit" class="btn btn-sm btn-danger deleteExpenseType" onclick="return confirm(\'Are you sure?\')">Delete</button>
+                            </form>';
+                    })
+                    ->rawColumns(['action'])->make(true);
+
+            }
+        } catch (\Exception $ex) {
+            return redirect('admin/sales')->with('error', $ex->getMessage());
+        }
+
+        return view("admin.sales.index");
     }
 
     public function show_sheet($id)

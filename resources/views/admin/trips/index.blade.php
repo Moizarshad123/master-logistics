@@ -32,9 +32,6 @@
             </tbody>
         </table>
     </div>
-
-{{-- 
-    {{ $trips->links() }} --}}
 </div>
 @endsection
 
@@ -65,7 +62,6 @@
 
     $(document).ready(function() {
         var DataTable = $("#tripsTable").DataTable({
-            dom: "Bfrtip",
             buttons: [{
                 extend: "csv",
                 className: "btn-sm"
@@ -73,10 +69,11 @@
             responsive: true,
             processing: true,
             serverSide: true,
-            pageLength: 20,
+            pageLength: 50,
             ajax: {
                 url: `{{route('admin.trips.index')}}`,
             },
+            dom: '<"top d-flex justify-content-between"f p>rt<"bottom"p>',
             columns: [
 
                 {
@@ -178,6 +175,5 @@
         });
     });
     </script>
-
 
 @endsection

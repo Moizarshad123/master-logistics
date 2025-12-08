@@ -2,6 +2,11 @@
 @section('title', 'Add Driver')
 
 @section('css')
+<style>
+    .row{
+        margin-bottom: 10px
+    }
+</style>
 @endsection
 
 @section('content')
@@ -22,23 +27,23 @@
 @section('js')
 
 <script>
-document.querySelectorAll('.image-input').forEach(input => {
-    input.addEventListener('change', function(e) {
-        let previewId = this.getAttribute('data-preview');
-        let previewImg = document.getElementById(previewId);
-        if (this.files && this.files[0]) {
-            let reader = new FileReader();
-            reader.onload = function(e) {
-                previewImg.src = e.target.result;
-                previewImg.style.display = 'block';
+    document.querySelectorAll('.image-input').forEach(input => {
+        input.addEventListener('change', function(e) {
+            let previewId = this.getAttribute('data-preview');
+            let previewImg = document.getElementById(previewId);
+            if (this.files && this.files[0]) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    previewImg.style.display = 'block';
+                }
+                reader.readAsDataURL(this.files[0]);
+            } else {
+                previewImg.src = '';
+                previewImg.style.display = 'none';
             }
-            reader.readAsDataURL(this.files[0]);
-        } else {
-            previewImg.src = '';
-            previewImg.style.display = 'none';
-        }
+        });
     });
-});
     $(document).ready(function () {
         $('#addExpenseType').on('click', function (e) {
 
