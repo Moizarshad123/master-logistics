@@ -28,10 +28,170 @@ class TripController extends Controller
     {
         try {
             if (request()->ajax()) {
-            
-                $trips = Trip::with('tripDetails', 'vehicle', 'driver')->where('status', "Active")->latest()->get();
 
-                return datatables()->of($trips)
+                $trips = Trip::with('tripDetails', 'vehicle', "vehicle.new_wheeler", 'driver')
+                                ->where('status', "Active")
+                                ->whereHas('vehicle.new_wheeler', function($q) {
+                                    $q->where('name', '!=',  'Trailers');
+                                });
+                                
+                return datatables()->eloquent($trips->orderByDesc('id'))
+                    ->addColumn('vehicle', function ($data) {
+                        if($data->vehicle != null) {
+                            return $data->vehicle->vehicle_no;
+                        } else {
+                            return "";
+                        }
+                    })
+                    ->editColumn('trip_date', function ($data) {
+                       
+                        return date("d-m-Y", strtotime($data->trip_date));
+                        
+                    })
+
+                    
+                    ->addColumn('driver', function ($data) {
+                        if($data->driver != null) {
+                            return $data->driver->name;
+                        } else {
+                            return "";
+                        }
+                    })
+                    ->addColumn('journey_count', function ($data) {
+                        return  $data->tripDetails->count() ?? 0;
+                    })
+                    ->editColumn('created_at', function ($data) {
+                        return  date('d M Y', strtotime($data->created_at));
+                    })   
+                    ->addColumn('action', function ($data) {
+
+                        $viewUrl    = route('admin.trips.show', $data->id);
+                        $editUrl    = route('admin.trips.edit', $data->id);
+                        $deleteUrl  = route('admin.trips.destroy', $data->id);
+                        $endtripUrl = route('admin.endActualTrip', $data->id);
+                        
+                        
+                        // <a href="'.$endtripUrl.'" class="btn btn-sm btn-success endTripBtn">End Trip</a>
+
+                        return '
+                            <a href="'.$viewUrl.'" class="btn btn-sm btn-info">View</a> |
+                            <a href="'.$editUrl.'" class="btn btn-sm btn-warning">Edit</a> |
+                            <form action="'.$deleteUrl.'" method="POST" style="display:inline;">
+                                '.csrf_field().'
+                                '.method_field('DELETE').'
+                                <button type="submit" class="btn btn-sm btn-danger deleteExpenseType" onclick="return confirm(\'Are you sure?\')">Delete</button>
+                            </form> | 
+                            <button type="button"
+                                    class="btn btn-sm btn-success tripEndBtn"
+                                    data-id="'.$data->id.'"
+                                    data-balance="'.$data->balance.'"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#endTripModal">
+                                End Trip
+                            </button>
+
+                        ';
+                    })
+                    ->rawColumns(['action', 'vehicle', 'driver', 'journey_count'])->make(true);
+
+            }
+
+        } catch (\Exception $ex) {
+            return redirect('/')->with('error', $ex->getMessage());
+        }
+
+        return view('admin.trips.index');
+    }
+
+    public function activeTrailersTrips()
+    {
+        try {
+            if (request()->ajax()) {
+            
+                $trips = Trip::with('tripDetails', 'vehicle', "vehicle.new_wheeler", 'driver')
+                                ->where('status', "Active")
+                                ->whereHas('vehicle.new_wheeler', function($q) {
+                                    $q->where('name', 'Trailers');
+                                });
+                return datatables()->eloquent($trips->orderByDesc('id'))
+
+                    ->addColumn('vehicle', function ($data) {
+                        if($data->vehicle != null) {
+                            return $data->vehicle->vehicle_no;
+                        } else {
+                            return "";
+                        }
+                    })
+                    ->editColumn('trip_date', function ($data) {
+                       
+                        return date("d-m-Y", strtotime($data->trip_date));
+                        
+                    })
+
+                    
+                    ->addColumn('driver', function ($data) {
+                        if($data->driver != null) {
+                            return $data->driver->name;
+                        } else {
+                            return "";
+                        }
+                    })
+                    ->addColumn('journey_count', function ($data) {
+                        return  $data->tripDetails->count() ?? 0;
+                    })
+                    ->editColumn('created_at', function ($data) {
+                        return  date('d M Y', strtotime($data->created_at));
+                    })   
+                    ->addColumn('action', function ($data) {
+
+                        $viewUrl   = route('admin.trips.show', $data->id);
+                        $editUrl   = route('admin.trips.edit', $data->id);
+                        $deleteUrl = route('admin.trips.destroy', $data->id);
+                        $endtripUrl = route('admin.endActualTrip', $data->id);
+
+
+                        return '
+                            <a href="'.$viewUrl.'" class="btn btn-sm btn-info">View</a> |
+                            <a href="'.$editUrl.'" class="btn btn-sm btn-warning">Edit</a> |
+                            <form action="'.$deleteUrl.'" method="POST" style="display:inline;">
+                                '.csrf_field().'
+                                '.method_field('DELETE').'
+                                <button type="submit" class="btn btn-sm btn-danger deleteExpenseType" onclick="return confirm(\'Are you sure?\')">Delete</button>
+                            </form> | 
+                            <button type="button"
+                                    class="btn btn-sm btn-success tripEndBtn"
+                                    data-id="'.$data->id.'"
+                                    data-balance="'.$data->balance.'"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#endTripModal">
+                                End Trip
+                            </button>
+
+                        ';
+                    })
+                    ->rawColumns(['action', 'vehicle', 'driver', 'journey_count'])->make(true);
+
+            }
+
+        } catch (\Exception $ex) {
+            return redirect('/')->with('error', $ex->getMessage());
+        }
+
+        return view('admin.trips.active_trailers_trips');
+    }
+
+    public function closedTrailersTrips()
+    {
+        try {
+            if (request()->ajax()) {
+            
+                $trips = Trip::with('tripDetails', 'vehicle', "vehicle.new_wheeler", 'driver')
+                                ->where('status', "Ended")
+                                ->whereHas('vehicle.new_wheeler', function($q) {
+                                    $q->where('name', 'Trailers');
+                                });
+                return datatables()->eloquent($trips->orderByDesc('id'))
+
                     ->addColumn('vehicle', function ($data) {
                         if($data->vehicle != null) {
                             return $data->vehicle->vehicle_no;
@@ -87,16 +247,21 @@ class TripController extends Controller
             return redirect('/')->with('error', $ex->getMessage());
         }
 
-        return view('admin.trips.index');
+        return view('admin.trips.ended_trailers_trips');
     }
 
     public function closedTrips() {
         try {
             if (request()->ajax()) {
             
-                $trips = Trip::with('tripDetails', 'vehicle', 'driver')->where('status', "Ended")->latest()->get();
 
-                return datatables()->of($trips)
+                $trips = Trip::with('tripDetails', 'vehicle', 'vehicle.new_wheeler', 'driver')
+                                ->where('status', "Ended")
+                                ->whereHas('vehicle.new_wheeler', function($q) {
+                                    $q->where('name', '!=',  'Trailers');
+                                });
+                return datatables()->eloquent($trips->orderByDesc('id'))
+
                     ->addColumn('vehicle', function ($data) {
                         if($data->vehicle != null) {
                             return $data->vehicle->vehicle_no;
@@ -136,13 +301,13 @@ class TripController extends Controller
 
     public function create()
     {
-        $vehicles     = Vehicle::all();
-        $drivers      = Driver::all();
-        $expenses     = ExpenseType::all();
-        $destinations = Destination::all();
-        $sales        = SaleSheet::orderByDESC("id")->get();
-        $purchases    = PurchaseSheet::orderByDESC("id")->get();
-        $materials    = Material::orderBy("name", "ASC")->get();
+        $vehicles      = Vehicle::all();
+        $drivers       = Driver::all();
+        $expenses      = ExpenseType::all();
+        $destinations  = Destination::all();
+        $sales         = SaleSheet::orderByDESC("id")->get();
+        $purchases     = PurchaseSheet::orderByDESC("id")->get();
+        $materials     = Material::orderBy("name", "ASC")->get();
         $expense_froms = ExpenseFrom::orderBy("name", "ASC")->get();
         $customers     = Customer::all();
 
@@ -159,7 +324,6 @@ class TripController extends Controller
             ]);
 
             DB::beginTransaction();
-    
             $trip_no = str_pad(Trip::max('id') + 1, 2, '0', STR_PAD_LEFT);
             
             $trip = Trip::create([
@@ -168,6 +332,7 @@ class TripController extends Controller
                                 'vehicle_id' => $request->vehicle_id,
                                 'driver_id'  => $request->driver_id,
                                 "balance"    => $request->balance,
+                                "total_rent" => $request->total_rent,
                                 "trip_date"  => $request->trip_date,
                                 "status"     => "Active"
                             ]);
@@ -272,12 +437,13 @@ class TripController extends Controller
    
            DB::beginTransaction();
 
-           $trip->update($request->only('trip_no', 'trip_date', 'vehicle_id', 'driver_id'));
+           $trip->update($request->only('trip_no', 'trip_date', 'vehicle_id', 'driver_id', 'total_rent'));
 
             $paymentTypes   = $request->payment_type;
             $amounts        = $request->expense_amount;
             $dates          = $request->date;
             $comments       = $request->comments;
+            
             $paymentIds     = $request->payment_id ?? []; // may not exist for new rows
 
             for ($i = 0; $i < count($paymentTypes); $i++) {
@@ -373,14 +539,38 @@ class TripController extends Controller
 
     }
 
-    public function endActualTrip($trip_id) {
+    public function endActualTrip(Request $request) {
 
-        $trip           = Trip::findOrFail($trip_id);
-        $trip->trip_end_date = date('Y-m-d');
-        $trip->status   = "Ended";
-        $trip->save();
-        return redirect()->route('admin.trips.index')->with('success', 'Trip ended successfully!');
+        try {
+            //code...
+            $trip                    = Trip::findOrFail($request->trip_id_input);
+            $trip->trip_end_date     = $request->end_date;
+            $trip->total_expense     = $request->total_expense;
+            $trip->remaining_balance = $request->remaining_amount;
+            $trip->status            = "Ended";
+            $trip->save();
+    
+            return redirect()->route('admin.trips.index')->with('success', 'Trip ended successfully!');
+        } catch (\Exception $e) {
+            //throw $th;
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
 
+    public function endActualTrailerTrip(Request $request) {
+
+        try {
+            $trip                    = Trip::findOrFail($request->trip_id_input);
+            $trip->trip_end_date     = $request->end_date;
+            $trip->total_expense     = $request->total_expense;
+            $trip->remaining_balance = $request->remaining_amount;
+            $trip->status            = "Ended";
+            $trip->save();
+    
+            return redirect()->route('admin.activeTrailersTrips')->with('success', 'Trailer Trip ended successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     public function destroy(Trip $trip)

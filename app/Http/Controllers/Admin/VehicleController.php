@@ -35,7 +35,7 @@ class VehicleController extends Controller
             <tbody id="expensesTableBody">';
             foreach ($expenses->expenseTypes as $expense) {
 
-                $new = '<select name="expenses['.$expense->id.'][expense_from]" class="form-select">
+                $new = '<select name="expenses['.$expense->id.'][expense_from]" class="form-select expense-from">
                     <option value="">Select Expense From</option>';
 
                 foreach ($expense_froms as $item) {

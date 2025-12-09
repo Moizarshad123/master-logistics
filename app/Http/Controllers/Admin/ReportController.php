@@ -147,6 +147,8 @@ class ReportController extends Controller
 
     public function view_weekly_labour_report(Request $request)
     {
+        $start = "";
+        $end = "";
 
         $query = TripDetail::with('trip.vehicle', 'customer')
             ->join('trips', 'trip_details.trip_id', '=', 'trips.id') // JOIN added
@@ -184,7 +186,7 @@ class ReportController extends Controller
             // ->orderByDesc('trip_id')
             
 
-        return view('admin.reports.view_weekly_labour', compact('reports'));
+        return view('admin.reports.view_weekly_labour', compact('reports', "start", "end"));
     }
 
     public function baloch_labour_report(Request $request) {
@@ -219,6 +221,10 @@ class ReportController extends Controller
 
     public function view_baloch_labour_report(Request $request)
     {
+
+        $start = "";
+        $end   = "";
+
         $query = TripDetail::with('trip.vehicle', 'customer')
             ->join('trips', 'trip_details.trip_id', '=', 'trips.id')
             ->select(
@@ -252,6 +258,6 @@ class ReportController extends Controller
             }
             $reports = $query->groupBy('trips.vehicle_id')->paginate(50);
 
-        return view('admin.reports.view_baloch_labour', compact('reports'));
+        return view('admin.reports.view_baloch_labour', compact('reports', 'start', 'end'));
     }
 }

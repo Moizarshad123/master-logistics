@@ -63,8 +63,15 @@
     <div class="content">
         <div class="table-responsive report-container">
             <h3 class="report-title">Baloch Labour Report</h3>    
+            <div class="row" style="float: right">
+                <div class="col" >
+                    <strong>Date Range: {{ $start != null ? date('d M Y', strtotime($start)).' - '.date('d M Y', strtotime($end)) : "All Records"}}</strong>
+                </div>
+            </div>
         
             {{-- Trip 1 Details --}}
+            @php $total = 0; @endphp
+
             @if(count($reports) > 0)
                 <table class="table table-custom table-bordered table-sm mb-4 report-table">
                     <thead>
@@ -74,15 +81,21 @@
                             <th style="background-color: #f8f9fa;">Baloch Labour Amount</th>
                         </tr>
                     </thead>
+                    <tbody>
                         @foreach ($reports as $item)
-                            <tbody>
-                                <tr>
-                                    {{-- <th style="width: 25%;">{{ $item->trip_id }}</th> --}}
-                                    <td style="width: 25%;">{{ $item->trip->vehicle->vehicle_no ?? ""}}</td>
-                                    <td style="width: 25%;">{{ $item->total_baloch_labour ?? ""}}</td>
-                                </tr>
-                            </tbody>
+                            <tr>
+                                {{-- <th style="width: 25%;">{{ $item->trip_id }}</th> --}}
+                                <td style="width: 25%;">{{ $item->trip->vehicle->vehicle_no ?? ""}}</td>
+                                <td style="width: 25%;">{{ $item->total_baloch_labour ?? ""}}</td>
+                            </tr>
+                            @php $total += $item->total_baloch_labour; @endphp
                         @endforeach
+                    </tbody>
+
+                        <tr>
+                            <th style="font-size: 16px"><strong>Total</strong></th>
+                            <td style="font-size: 16px">{{$total}}</td>
+                        </tr>
                 </table>
             @endif
 

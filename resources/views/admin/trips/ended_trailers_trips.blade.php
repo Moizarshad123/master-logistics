@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'Active Trips')
+@section('title', 'Ended Trailers Trips')
 
 @section('content')
 
@@ -7,10 +7,10 @@
     <div class="mb-4">
         <div class="row">
             <div class="col-md-10">
-                <h3>Active Trips</h3>
+                <h3>Ended Trailers Trips</h3>
             </div>
             <div class="col-md-2">
-                <a href="{{ route('admin.trips.create') }}" class="btn btn-sm btn-success">+ Add Trip</a>
+                {{-- <a href="{{ route('admin.trips.create') }}" class="btn btn-sm btn-success">+ Add Trip</a> --}}
             </div>
         </div>
     </div>
@@ -33,51 +33,6 @@
         </table>
     </div>
 </div>
-<div class="modal fade" id="endTripModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content" style="width: 150%;">
-
-            <div class="modal-header">
-                <h5 class="modal-title">End Trip</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-
-            <form id="endTripForm" method="POST" action="{{ route('admin.endActualTrip')}}">
-                @csrf
-                <input type="hidden" name="trip_id_input" id="trip_id_input">
-                <div class="modal-body">
-                    <div class="row" style="margin-top:15px">
-                        <div class="col-md-12">
-                            <label for="">End Trip Date</label>
-                            <input type="date" class="form-control" name="end_date" value="{{ date('Y-m-d')}}">
-                        </div>
-                    </div>
-                    <div class="row" style="margin-top:15px">
-                        <div class="col-md-4">
-                            <label for="">Advance Amount</label>
-                            <input type="number" class="form-control" readonly name="balance" id="balance">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="">Total Expense</label>
-                            <input type="number" class="form-control" name="total_expense" id="total_expense">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="">Remaining Amount</label>
-                            <input type="number" class="form-control" name="remaining_amount" id="remaining_amount">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-success">Yes, End Trip</button>
-                </div>
-            </form>
-
-        </div>
-    </div>
-</div>
-
 @endsection
 
 @section('js')
@@ -104,6 +59,7 @@
 </script>
 
 <script>
+
     $(document).ready(function() {
         var DataTable = $("#tripsTable").DataTable({
             buttons: [{
@@ -115,7 +71,7 @@
             serverSide: true,
             pageLength: 50,
             ajax: {
-                url: `{{route('admin.trips.index')}}`,
+                url: `{{route('admin.closeTrailersTrips')}}`,
             },
             dom: '<"top d-flex justify-content-between"f p>rt<"bottom"p>',
             columns: [
@@ -198,47 +154,26 @@
             })
         });
 
-        // $(document).on('click', '.endTripBtn', function (e) {
-        //     e.preventDefault();
+        $(document).on('click', '.endTripBtn', function (e) {
+            e.preventDefault();
 
-        //     let url = $(this).attr('href'); // get URL of that specific trip
+            let url = $(this).attr('href'); // get URL of that specific trip
 
-        //     Swal.fire({
-        //         title: 'Are you sure?',
-        //         text: "Do you want to end this trip?",
-        //         icon: 'warning',
-        //         showCancelButton: true,
-        //         confirmButtonColor: '#d33',
-        //         cancelButtonColor: '#6c757d',
-        //         confirmButtonText: 'Yes, end it!'
-        //     }).then((result) => {
-        //         if (result.isConfirmed) {
-        //             window.location.href = url; // redirect after confirm
-        //         }
-        //     });
-        // });
-
-
-        $(document).on('click', '.tripEndBtn', function () {
-            let tripId  = $(this).data("id");
-            let balance = $(this).data("balance");
-
-            $("#trip_id_input").val(tripId);
-            $("#balance").val(balance);
-
-            $('#endTripModal').modal('show');
-        });
-
-        $(document).on("keyup change", "#total_expense", function () {
-
-            let balance = parseFloat($("#balance").val()) || 0;
-            let expense = parseFloat($("#total_expense").val()) || 0;
-
-            let remaining = balance - expense;
-
-            $("#remaining_amount").val(remaining.toFixed(2));
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you want to end this trip?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, end it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url; // redirect after confirm
+                }
+            });
         });
     });
-</script>
+    </script>
 
 @endsection

@@ -1,22 +1,25 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Admin\ExpenseTypeController;
-use App\Http\Controllers\Admin\DriverController;
-use App\Http\Controllers\Admin\VehicleController;
-use App\Http\Controllers\Admin\WheelerController;
-use App\Http\Controllers\Admin\TripController;
-use App\Http\Controllers\Admin\ReportController;
-use App\Http\Controllers\Admin\DestinationController;
-use App\Http\Controllers\Admin\PurchaseSheetController;
-use App\Http\Controllers\Admin\SalesSheetController;
-use App\Http\Controllers\Admin\ExpenseFromController;
-use App\Http\Controllers\Admin\MaterialController;
-use App\Http\Controllers\Admin\ExpenseCategoryController;
-use App\Http\Controllers\Admin\CustomerController;
-use App\Http\Controllers\Admin\CustomerHeadController;
-use App\Http\Controllers\Admin\MaintenanceController;
+use App\Http\Controllers\Admin\{
+    AdminController,
+    ExpenseTypeController,
+    DriverController,
+    VehicleController,
+    WheelerController,
+    TripController,
+    ReportController,
+    DestinationController,
+    PurchaseSheetController,
+    SalesSheetController,
+    ExpenseFromController,
+    MaterialController,
+    ExpenseCategoryController,
+    CustomerController,
+    CustomerHeadController,
+    MaintenanceController,
+    DieselController,
+};
 
 
 
@@ -35,8 +38,7 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
         Route::get('dashboard', 'dashboard')->name('dashboard');
     });
 
-
-
+    Route::resource('diesel', DieselController::class);
     Route::resource('expense-from', ExpenseFromController::class);
     Route::resource('expense-types', ExpenseTypeController::class);
     Route::resource('drivers', DriverController::class);
@@ -56,8 +58,16 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
 
     Route::get('driver-payments/{id}', [DriverController::class, "driver_payments"])->name("driverPayments");
     Route::get('get-vehicle-expenses', [VehicleController::class, 'getVehicleExpenses'])->name('getVehicleExpenses');
-    Route::get('end-actual-trip/{id}', [TripController::class, 'endActualTrip'])->name('endActualTrip');
-    Route::get('closed-trips', [TripController::class, 'closedTrips'])->name('closedTrips');
+        
+    Route::controller(TripController::class)->group(function() {
+        Route::POST('end-actual-trip', 'endActualTrip')->name('endActualTrip');
+        Route::POST('end-actual-trailer-trip', 'endActualTrailerTrip')->name('endActualTrailerTrip');
+
+        Route::get('closed-trips', 'closedTrips')->name('closedTrips');
+        Route::get('active-trailers-trips', 'activeTrailersTrips')->name('activeTrailersTrips');
+        Route::get('closed-trailers-trips', 'closedTrailersTrips')->name('closeTrailersTrips');
+
+    });
 
     Route::controller(ReportController::class)->group(function() {
         Route::get('trip-vehicle-report', 'tripVehicleReport')->name("tripVehicleReport");

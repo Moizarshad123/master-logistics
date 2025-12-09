@@ -50,11 +50,15 @@
                         <div class="col-md-3">
                             <h5 class="mb-0">Trip Payments</h5>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label>Balance</label>
                             <input type="text" name="balance" class="form-control" readonly id="balance">
                         </div>
-                        <div class="col-md-5 text-end">
+                        <div class="col-md-3">
+                            <label>Total Rent</label>
+                            <input type="text" name="total_rent" class="form-control" id="totalRent" data-original-rent="">
+                        </div>
+                        <div class="col-md-3 text-end">
                             <button class="btn btn-success" id="addTripExpense">+</button>
                         </div>
                     </div>
@@ -130,11 +134,53 @@
                                 @endforeach
                             `;
 
-        function calculateBalance() {
-            let totalPayments = 0;
-            let totalExpenses = 0;
+        // function calculateBalance() {
+            
+        //     let totalPayments = 0;
+        //     let totalExpenses = 0;
+        //     let totalRent = parseFloat($("#totalRent").val()) || 0;
+            
 
-            // Sum all payment amounts
+        //     // Sum all payment amounts
+        //     $("input[name='expense_amount[]']").each(function () {
+        //         const val = parseFloat($(this).val());
+        //         if (!isNaN(val)) {
+        //             totalPayments += val;
+        //         }
+        //     });
+
+        //     // Sum all expense amounts
+        //     $("input[name^='expenses'][name$='[amount]']").each(function () {
+        //         const val = parseFloat($(this).val());
+        //         if (!isNaN(val)) {
+        //             totalExpenses += val;
+        //         }
+        //     });
+
+        //     const balance = totalPayments - totalExpenses;
+        //     if (balance < 0) {
+        //         $("#balance").addClass("text-danger").removeClass("text-success");
+        //     } else {
+        //         $("#balance").addClass("text-success").removeClass("text-danger");
+        //     }
+        //     $("#balance").val(balance.toFixed(2));
+        // }
+
+        
+        $(document).on("keyup", "#totalRent", function(e) {
+            e.preventDefault();
+            $(this).data("original-rent", parseFloat($(this).val()) || 0);
+        });
+
+        function calculateBalance() {
+
+            let totalPayments   = 0;
+            let totalRent       = parseFloat($("#totalRent").data("original-rent")) || 0;
+            let rentExpenses    = 0;
+            let advanceExpenses = 0;
+            let otherExpenses   = 0;
+
+            // Sum all payment amounts (assuming payments affect balance)
             $("input[name='expense_amount[]']").each(function () {
                 const val = parseFloat($(this).val());
                 if (!isNaN(val)) {
@@ -142,30 +188,58 @@
                 }
             });
 
-            // Sum all expense amounts
+            // Go through each expense row
             $("input[name^='expenses'][name$='[amount]']").each(function () {
                 const val = parseFloat($(this).val());
-                if (!isNaN(val)) {
-                    totalExpenses += val;
+                if (isNaN(val)) return;
+
+                // Find the corresponding 'expense_from' dropdown in the same row
+                const expenseFrom = $(this).closest('tr').find("select[name$='[expense_from]']").val();
+
+                if (expenseFrom === "From Rent Amount") {
+                    rentExpenses += val;
+                } else if(expenseFrom === "From Advance Amount") {
+                    advanceExpenses += val;
+                } else {
+                    otherExpenses += val;
                 }
             });
 
-            const balance = totalPayments - totalExpenses;
-            if (balance < 0) {
-                $("#balance").addClass("text-danger").removeClass("text-success");
+            if(totalRent >= rentExpenses) {
+                const remainingRent = totalRent - rentExpenses;
+                $("#totalRent").val(remainingRent.toFixed(2));
+
             } else {
-                $("#balance").addClass("text-success").removeClass("text-danger");
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Expense is more than the available rent!',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
             }
-            $("#balance").val(balance.toFixed(2));
+
+            if(totalPayments >= advanceExpenses) {
+
+                const balance = totalPayments - advanceExpenses;
+                $("#balance").val(balance.toFixed(2));
+
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Expense is more than the available advance balance!',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
         }
 
-        // Watch for changes in both payments and expenses
-        $(document).on("input", "input[name='expense_amount[]'], input[name^='expenses'][name$='[amount]']", calculateBalance);
+        // Bind input changes
+        $(document).on("input change", ".expense-from, input[name='expense_amount[]']", calculateBalance);
 
         $(document).on('click', "#addExpenseRow", function(e) {
             e.preventDefault();
             const newRow = `
-                    <tr>
+                    <tr class="expense-row">
                         <td>
                             <select name="expenses[${extraExpenseIndex}][name]" class="form-select">
                                 ${expenseOptions}
@@ -173,18 +247,19 @@
                         </td>
                         <td>
                             <input type="number" step="0.01" 
-                                name="expenses[${extraExpenseIndex}][amount]" 
-                                class="form-control" 
-                                placeholder="Enter amount">
-                        </td>
-                        <td>
-                            <select name="expenses[${extraExpenseIndex}][expense_from]" class="form-select">
-                                <option value="">Select Expense From</option>
-                                @foreach ($expense_froms as $item)
-                                    <option value="{{ $item->name }}">{{ $item->name }}</option>
-                                @endforeach
-                            </select>
-                        </td>
+                            name="expenses[${extraExpenseIndex}][amount]" 
+                            class="form-control expense-amount" 
+                            placeholder="Enter amount">
+                            </td>
+                            <td>
+                                <select name="expenses[${extraExpenseIndex}][expense_from]" class="form-select expense-from">
+                                    <option value="">Select Expense From</option>
+                                    @foreach ($expense_froms as $item)
+                                        <option value="{{ $item->name }}">{{ $item->name }}</option>
+                                    @endforeach
+                                </select>
+                            </td>
+                        
                         <td class="text-center">
                             <button type="button" style="border-radius: 25%;" class="btn btn-danger btn-sm removeExpenseRow">
                                 <i class="bi bi-trash"></i>

@@ -12,9 +12,13 @@ class Trip extends Model
         "trip_no",
         "trip_type",
         "trip_date",
+        "trip_end_date",
         "vehicle_id",
         "driver_id",
-        "balance"
+        "total_rent",
+        "balance",
+        "total_expense",
+        "remaining_balance"
     ];
 
     public function tripDetails()

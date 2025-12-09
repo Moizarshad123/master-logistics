@@ -38,4 +38,8 @@ class Vehicle extends Model
         return $this->hasOne(Wheeler::class, 'id', "vehicle_type");
     }
 
+    public function new_wheeler() {
+        return $this->belongsTo(Wheeler::class, 'vehicle_type', 'id');
+    }
+
 }

@@ -42,7 +42,7 @@
                 </a>
             </li> --}}
 
-             <li>
+            <li>
                 <a href="javascript:;">
                     <span class="nav-link-icon">
                         <i class="bi bi-receipt"></i>
@@ -56,6 +56,25 @@
 
                     <li>
                         <a href="{{ route('admin.closedTrips') }}">Closed Trips</a>
+                    </li>
+                    
+                </ul>
+            </li>
+
+            <li>
+                <a href="javascript:;">
+                    <span class="nav-link-icon">
+                        <i class="bi bi-receipt"></i>
+                    </span>
+                    <span>Trailers</span>
+                </a>
+                <ul>
+                    <li>
+                        <a href="{{ route('admin.activeTrailersTrips') }}">Active Trailers Trips</a>
+                    </li>
+
+                    <li>
+                        <a href="{{ route('admin.closeTrailersTrips') }}">Closed Trailers Trips</a>
                     </li>
                     
                 </ul>
@@ -124,6 +143,15 @@
                     </li>
                     
                 </ul>
+            </li>
+
+            <li>
+                <a  href="{{route('admin.diesel.index') }}">
+                    <span class="nav-link-icon">
+                        <i class="bi bi-person-badge"></i>
+                    </span>
+                    <span>Diesel</span>
+                </a>
             </li>
 
 
