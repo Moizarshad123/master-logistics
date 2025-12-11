@@ -41,7 +41,6 @@ class MaintenanceController extends Controller
                         $deleteUrl  = route('admin.maintenances.destroy', $data->id);
 
                         return '
-                            <a href="'.$viewUrl.'" class="btn btn-sm btn-info">View</a> |
                             <a href="'.$editUrl.'" class="btn btn-sm btn-warning">Edit</a> |
                             <form action="'.$deleteUrl.'" method="POST" style="display:inline;">
                                 '.csrf_field().'
