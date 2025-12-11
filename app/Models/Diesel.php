@@ -9,6 +9,7 @@ class Diesel extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'vehicle_id',
         'type',
         'date',
         'time',
@@ -21,5 +22,10 @@ class Diesel extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function vehicle()
+    {
+        return $this->belongsTo(Vehicle::class, 'vehicle_id');
     }
 }

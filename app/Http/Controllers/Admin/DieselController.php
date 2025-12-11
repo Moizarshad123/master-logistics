@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Diesel;
+use App\Models\Vehicle;
 use Auth;
 class DieselController extends Controller
 {
@@ -23,7 +24,15 @@ class DieselController extends Controller
                     })
                     ->addColumn('dateTime', function ($data) {
                         return  date('d M Y', strtotime($data->date)).' - '.date('H:i A', strtotime($data->time));
+                    }) 
+                     ->addColumn('vehicle', function ($data) {
+                        if($data->vehicle_id != null) {
+                            return $data->vehicle->vehicle_no;
+                        } else {
+                            return "";
+                        }
                     })   
+                    
                     ->addColumn('action', function ($data) {
 
                         $editUrl    = route('admin.diesel.edit', $data->id);
@@ -37,7 +46,7 @@ class DieselController extends Controller
                                 <button type="submit" class="btn btn-sm btn-danger deleteExpenseType" onclick="return confirm(\'Are you sure?\')">Delete</button>
                             </form>';
                     })
-                    ->rawColumns(['action', 'createdBy', 'dateTime'])->make(true);
+                    ->rawColumns(['action', 'createdBy', 'dateTime', 'vehicle'])->make(true);
 
             }
         } catch (\Exception $ex) {
@@ -50,7 +59,8 @@ class DieselController extends Controller
 
     public function create()
     {
-        return view('admin.diesel.create');
+        $vehicles = Vehicle::all();
+        return view('admin.diesel.create', compact("vehicles"));
     }
 
     public function store(Request $request)
@@ -65,6 +75,7 @@ class DieselController extends Controller
         ]);
 
         Diesel::create([
+            'vehicle_id'       => $request->vehicle_id,
             'type'             => $request->type,
             'date'             => $request->date,
             'time'             => $request->time,
@@ -85,19 +96,22 @@ class DieselController extends Controller
 
     public function edit($id)
     {
+        $vehicles = Vehicle::all();
+
         $diesel = Diesel::findOrFail($id);
-        return view('admin.diesel.edit', compact('diesel'));
+        return view('admin.diesel.edit', compact('diesel', 'vehicles'));
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
-            'type'   => 'required',
-            'date'   => 'required|date',
-            'time'   => 'required',
-            'litres' => 'required|numeric',
+            'vehicle_id' => 'required',
+            'type'       => 'required',
+            'date'       => 'required|date',
+            'time'       => 'required',
+            'litres'     => 'required|numeric',
             'per_litre_amount' => 'required|numeric',
-            'total_amount' => 'required|numeric',
+            'total_amount'     => 'required|numeric',
         ]);
 
         $diesel = Diesel::findOrFail($id);

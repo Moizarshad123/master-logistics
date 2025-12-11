@@ -33,6 +33,7 @@
         <thead>
             <tr>
                 <th>ID</th>
+                <th>Vehicle</th>
                 <th>Type</th>
                 <th>Created By</th>
                 <th>Date-TIme</th>
@@ -70,6 +71,10 @@
                 {
                     data: 'id',
                     name: 'id'
+                },
+                {
+                    data: 'vehicle',
+                    name: 'vehicle'
                 },
                 {
                     data: 'type',

@@ -17,7 +17,16 @@
         @csrf
         @method("PUT")
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-3">
+                <label>Vehicle<span style="color: red">*</span></label>
+                <select name="vehicle_id" id="vehicle_id" class="form-select select2" required>
+                    <option value="">Select Vehicle</option>
+                    @foreach($vehicles as $vehicle)
+                        <option value="{{ $vehicle->id }}" {{ $vehicle->id == $diesel->vehicle_id ? "selected" : ""}}>{{ $vehicle->vehicle_no }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-3">
                 <label>Type<span style="color: red">*</span></label>
                 <select name="type" class="form-control" required>
                     <option value="Diesel" {{ $diesel->type == "Diesel" ? "selected" : ""}}>Diesel</option>
@@ -25,11 +34,11 @@
                     <option value="Mobil oil" {{ $diesel->type == "Mobil oil" ? "selected" : ""}}>Mobil oil</option>
                 </select>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <label>Date<span style="color: red">*</span></label>
                 <input type="date" name="date" class="form-control" required value="{{ $diesel->date}}">
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <label>Time</label>
                 <input type="time" name="time" class="form-control" value="{{ $diesel->time}}">
             </div>
