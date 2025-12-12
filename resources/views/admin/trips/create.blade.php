@@ -361,6 +361,9 @@
                             <option value="Bags">Bags</option>
                             <option value="Tainki">Tainki</option>
                             <option value="LTR">LTR</option>
+                            <option value="Drums">Drums</option>
+                            <option value="Egg cartons">Egg cartons</option>
+
                         </select>
                     </div>
                      <div class="col-md-3">

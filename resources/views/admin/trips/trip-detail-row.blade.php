@@ -116,6 +116,8 @@
                 <option value="Bags" {{ $detail->material_type == "Bags" ? "selected" : "" }}>Bags</option>
                 <option value="Tainki" {{ $detail->material_type == "Tainki" ? "selected" : "" }}>Tainki</option>
                 <option value="LTR" {{ $detail->material_type == "LTR" ? "selected" : "" }}>LTR</option>
+                <option value="Drums" {{ $detail->material_type == "Drums" ? "selected" : "" }}>Drums</option>
+                <option value="Egg cartons" {{ $detail->material_type == "Egg cartons" ? "selected" : "" }}>Egg cartons</option>
             </select>
         </div>
         <div class="col-md-3 baloch-labour-field">
