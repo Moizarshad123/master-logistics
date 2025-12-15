@@ -33,15 +33,6 @@
                 </a>
             </li>
 
-            {{-- <li>
-                <a  class="{{ request()->IS('admin/trips') ? 'active' : '' }}"  href="{{ route('admin.trips.index') }}">
-                    <span class="nav-link-icon">
-                        <i class="bi bi-bar-chart"></i>
-                    </span>
-                    <span>Trips</span>
-                </a>
-            </li> --}}
-
             <li>
                 <a href="javascript:;">
                     <span class="nav-link-icon">
@@ -79,7 +70,6 @@
                     
                 </ul>
             </li>
-
 
             <li>
                 <a  class="{{ request()->IS('admin/maintenances') ? 'active' : '' }}"  href="{{ route('admin.maintenances.index') }}">
@@ -121,22 +111,51 @@
                     <span class="nav-link-icon">
                         <i class="bi bi-receipt"></i>
                     </span>
-                    <span>Settings</span>
+                    <span>Customer Section</span>
                 </a>
                 <ul>
                     <li>
                         <a href="{{ route('admin.customer-heads.index')}}">Customer Heads</a>
+                    </li>
+                    <li>
                         <a href="{{ route('admin.customers.index')}}">Customers</a>
+                    </li>
+                </ul>
+            </li>
 
-                        
+            <li>
+                <a href="javascript:;">
+                    <span class="nav-link-icon">
+                        <i class="bi bi-receipt"></i>
+                    </span>
+                    <span>Expenses Section</span>
+                </a>
+                <ul>
+                    <li>
+                        <a href="{{ route('admin.expense-categories.index') }}">Expense Category</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.expense-types.index') }}">Expense Types</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.expense-from.index')}}">Expense From</a>
+                    </li>
+                </ul>
+            </li>
+
+            <li>
+                <a href="javascript:;">
+                    <span class="nav-link-icon">
+                        <i class="bi bi-receipt"></i>
+                    </span>
+                    <span>Data Entry Section</span>
+                </a>
+                <ul>
+                    <li>
                         <a href="{{ route('admin.sales.index') }}">Sell Sheet</a>
                         <a href="{{ route('admin.purchases.index') }}">Purchase Sheet</a>
                         <a href="{{ route('admin.destinations.index') }}">Destinations</a>
                         <a href="{{ route('admin.materials.index') }}">Materials</a>
-                        
-                        <a href="{{ route('admin.expense-from.index')}}">Expense From</a>
-                        <a href="{{ route('admin.expense-categories.index') }}">Expense Category</a>
-                        <a href="{{ route('admin.expense-types.index') }}">Expense Types</a>
                         <a href="{{ route('admin.drivers.index') }}">Drivers</a>
                         <a href="{{ route('admin.vehicles.index') }}">Vehicles</a>
                         <a href="{{ route('admin.wheelers.index') }}">Wheelers</a>
@@ -150,12 +169,9 @@
                     <span class="nav-link-icon">
                         <i class="bi bi-person-badge"></i>
                     </span>
-                    <span>Diesel</span>
+                    <span>Fueling</span>
                 </a>
             </li>
-
-
-        
 
             <li>
                 <a  href="{{route('admin.logout') }}">
