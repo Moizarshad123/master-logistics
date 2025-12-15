@@ -15,15 +15,9 @@ class MaintenanceController extends Controller
     {
         try {
             if (request()->ajax()) {
-                $maintenances = Maintenance::with('vehicle', 'expense');
+                $maintenances = Maintenance::with('expense');
                 return datatables()->eloquent($maintenances->orderByDesc('id'))
-                    ->addColumn('vehicle', function ($data) {
-                        if($data->vehicle != null) {
-                            return $data->vehicle->vehicle_no;
-                        } else {
-                            return "";
-                        }
-                    })
+                   
                     ->editColumn('expense', function ($data) {
                         if($data->expense != null) {
                             return $data->expense->name;
@@ -48,7 +42,7 @@ class MaintenanceController extends Controller
                                 <button type="submit" class="btn btn-sm btn-danger deleteExpenseType" onclick="return confirm(\'Are you sure?\')">Delete</button>
                             </form>';
                     })
-                    ->rawColumns(['action', 'vehicle', 'expense'])->make(true);
+                    ->rawColumns(['action', 'expense'])->make(true);
 
             }
         } catch (\Exception $ex) {

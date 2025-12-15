@@ -91,12 +91,14 @@
                     name: 'id'
                 },
                 {
-                    data: 'vehicle',
-                    name: 'vehicle'
+                    data: 'vehicle_id',
+                    name: 'vehicle_id'
                 },
                 {
                     data: 'expense',
-                    name: 'expense'
+                    name: 'expense',
+                    orderable: false,
+                    searchable: false
                 },
                 {
                     data: 'amount',

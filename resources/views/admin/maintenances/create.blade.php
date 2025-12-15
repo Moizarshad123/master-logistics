@@ -14,7 +14,7 @@
                     <select name="vehicle_id" class="form-select" required>
                         <option value="">Select Vehicle</option>
                         @foreach($vehicles as $v)
-                            <option value="{{ $v->id }}">{{ $v->vehicle_no }}</option>
+                            <option value="{{ $v->vehicle_no }}">{{ $v->vehicle_no }}</option>
                         @endforeach
                     </select>
                 </div>

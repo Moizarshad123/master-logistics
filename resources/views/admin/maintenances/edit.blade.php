@@ -15,7 +15,7 @@
                     <select name="vehicle_id" class="form-select" required>
                         <option value="">Select Vehicle</option>
                         @foreach($vehicles as $v)
-                            <option value="{{ $v->id }}" {{ $maintenance->vehicle_id == $v->id ? 'selected' : '' }}>
+                            <option value="{{ $v->vehicle_no }}" {{ $maintenance->vehicle_no == $v->vehicle_no ? 'selected' : '' }}>
                                 {{ $v->vehicle_no }}
                             </option>
                         @endforeach
