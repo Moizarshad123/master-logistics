@@ -36,9 +36,23 @@ class TripController extends Controller
                                 });
                                 
                 return datatables()->eloquent($trips->orderByDesc('id'))
+
+
+                    ->filterColumn('vehicle', function($query, $keyword) {
+                        $query->whereHas('vehicle', function($q) use ($keyword) {
+                            $q->where('vehicle_no', 'like', "%{$keyword}%");
+                        });
+                    })
+
+                    ->filterColumn('driver', function($query, $keyword) {
+                        $query->whereHas('driver', function($q) use ($keyword) {
+                            $q->where('name', 'like', "%{$keyword}%");
+                        });
+                    })
+
                     ->addColumn('vehicle', function ($data) {
                         if($data->vehicle != null) {
-                            return $data->vehicle->vehicle_no;
+                            return $data->vehicle->vehicle_no ?? "";
                         } else {
                             return "";
                         }
@@ -114,6 +128,19 @@ class TripController extends Controller
                                     $q->where('name', 'Trailers');
                                 });
                 return datatables()->eloquent($trips->orderByDesc('id'))
+
+                    ->filterColumn('vehicle', function($query, $keyword) {
+                        $query->whereHas('vehicle', function($q) use ($keyword) {
+                            $q->where('vehicle_no', 'like', "%{$keyword}%");
+                        });
+                    })
+
+                    ->filterColumn('driver', function($query, $keyword) {
+                        $query->whereHas('driver', function($q) use ($keyword) {
+                            $q->where('name', 'like', "%{$keyword}%");
+                        });
+                    })
+
 
                     ->addColumn('vehicle', function ($data) {
                         if($data->vehicle != null) {
@@ -192,6 +219,18 @@ class TripController extends Controller
                                 });
                 return datatables()->eloquent($trips->orderByDesc('id'))
 
+                   ->filterColumn('vehicle', function($query, $keyword) {
+                        $query->whereHas('vehicle', function($q) use ($keyword) {
+                            $q->where('vehicle_no', 'like', "%{$keyword}%");
+                        });
+                    })
+
+                    ->filterColumn('driver', function($query, $keyword) {
+                        $query->whereHas('driver', function($q) use ($keyword) {
+                            $q->where('name', 'like', "%{$keyword}%");
+                        });
+                    })
+
                     ->addColumn('vehicle', function ($data) {
                         if($data->vehicle != null) {
                             return $data->vehicle->vehicle_no;
@@ -262,13 +301,22 @@ class TripController extends Controller
                                 });
                 return datatables()->eloquent($trips->orderByDesc('id'))
 
-                    ->addColumn('vehicle', function ($data) {
-                        if($data->vehicle != null) {
-                            return $data->vehicle->vehicle_no;
-                        } else {
-                            return "";
-                        }
+                    ->filterColumn('vehicle', function($query, $keyword) {
+                        $query->whereHas('vehicle', function($q) use ($keyword) {
+                            $q->where('vehicle_no', 'like', "%{$keyword}%");
+                        });
                     })
+
+                    ->filterColumn('driver', function($query, $keyword) {
+                        $query->whereHas('driver', function($q) use ($keyword) {
+                            $q->where('name', 'like', "%{$keyword}%");
+                        });
+                    })
+
+                    ->addColumn('vehicle', function ($data) {
+                        return $data->vehicle->vehicle_no ?? '';
+                    })
+                    
                     ->editColumn('trip_date', function ($data) {
                         return date("d-m-Y", strtotime($data->trip_date));
                     })
@@ -579,5 +627,9 @@ class TripController extends Controller
         $trip->delete();
 
         return redirect()->route('admin.trips.index')->with('success', 'Trip deleted successfully!');
+    }
+
+    public function disbursement_slip() {
+        return view("admin.tirps.disbursement_slip");
     }
 }

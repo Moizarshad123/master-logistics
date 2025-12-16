@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 
 class MaintenanceController extends Controller
 {
-   public function index()
+    public function index()
     {
         try {
             if (request()->ajax()) {
@@ -34,13 +34,24 @@ class MaintenanceController extends Controller
                         $editUrl    = route('admin.maintenances.edit', $data->id);
                         $deleteUrl  = route('admin.maintenances.destroy', $data->id);
 
-                        return '
-                            <a href="'.$editUrl.'" class="btn btn-sm btn-warning">Edit</a> |
-                            <form action="'.$deleteUrl.'" method="POST" style="display:inline;">
-                                '.csrf_field().'
-                                '.method_field('DELETE').'
-                                <button type="submit" class="btn btn-sm btn-danger deleteExpenseType" onclick="return confirm(\'Are you sure?\')">Delete</button>
-                            </form>';
+                        if(auth()->user()->role_id == 2) {
+                            return '<form action="'.$deleteUrl.'" method="POST" style="display:inline;">
+                                        '.csrf_field().'
+                                        '.method_field('DELETE').'
+                                        <button type="submit" class="btn btn-sm btn-danger deleteExpenseType" onclick="return confirm(\'Are you sure?\')">Delete</button>
+                                    </form>';
+
+                        } else {
+                            return '<a href="'.$editUrl.'" class="btn btn-sm btn-warning">Edit</a> |
+                                    <form action="'.$deleteUrl.'" method="POST" style="display:inline;">
+                                        '.csrf_field().'
+                                        '.method_field('DELETE').'
+                                        <button type="submit" class="btn btn-sm btn-danger deleteExpenseType" onclick="return confirm(\'Are you sure?\')">Delete</button>
+                                    </form>';
+
+                        }
+
+                        
                     })
                     ->rawColumns(['action', 'expense'])->make(true);
 
@@ -61,14 +72,19 @@ class MaintenanceController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'vehicle_id' => 'required|exists:vehicles,id',
-            'amount'     => 'required|numeric',
-            'comments'   => 'nullable|string',
-        ]);
-
-        Maintenance::create($request->only('vehicle_id', 'expense_id', 'amount', 'comments'));
-        return redirect()->route('admin.maintenances.index')->with('success', 'Maintenance added successfully.');
+        try {
+            //code...
+            $request->validate([
+                'vehicle_id' => 'required',
+                'amount'     => 'required|numeric',
+                'comments'   => 'nullable|string',
+            ]);
+    
+            Maintenance::create($request->only('vehicle_id', 'expense_id', 'amount', 'comments'));
+            return redirect()->route('admin.maintenances.index')->with('success', 'Maintenance added successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     public function edit(Maintenance $maintenance)
