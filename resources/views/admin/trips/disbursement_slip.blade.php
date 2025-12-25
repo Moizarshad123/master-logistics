@@ -1,114 +1,127 @@
 @extends('admin.layouts.app')
-@section('title', 'Disbursement Slip')
-
+@section('title', 'Trip Cash Allowance Slip')
 
 @section("css")
-    <style>
-        /* ===== Print-Friendly Styling ===== */
-        .report-container {
-            background: #fff;
-            padding: 15px;
-            border: 1px solid #000;
-            margin: 0 auto;
-        }
-        table.report-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 15px;
-        }
-        table.report-table th,
-        table.report-table td {
-            border: 1px solid #000 !important;
-            padding: 6px 10px;
-            font-size: 14px;
-            text-align: left;
-            vertical-align: middle;
-        }
-        table.report-table th {
-            background: #f5f5f5;
-            font-weight: bold;
-        }
-        .trip-header th,
-        .trip-header td {
-            border: none !important;
-            font-weight: bold;
-            font-size: 15px;
-            background: transparent;
-            padding: 5px 8px;
-        }
-        h3.report-title {
-            text-align: center;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-        @media print {
-            body {
-                margin: 0;
-                background: #fff;
-            }
-            .no-print {
-                display: none !important;
-            }
-            .report-container {
-                border: none;
-                box-shadow: none;
-                padding: 0;
-            }
-        }
-    </style>
+<style>
+    body { background:#fff; }
+    .slip-box {
+        border: 2px solid #000;
+        padding: 15px;
+        margin-bottom: 25px;
+        page-break-after: always;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+    th, td {
+        border: 1px solid #000;
+        padding: 6px 8px;
+        vertical-align: middle;
+    }
+    .no-border td {
+        border: none !important;
+        padding: 4px;
+    }
+    h3 {
+        text-align: center;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+    }
+    @media print {
+        .no-print { display: none; }
+    }
+</style>
 @endsection
+
 @section('content')
 
-    <div class="content">
-        <div class="table-responsive report-container">
-            <h3 class="report-title">Trip Cash Allowance</h3>    
-           
-            @if(count($reports) > 0)
-                <table class="table table-custom table-bordered table-sm mb-4 report-table">
-                    <thead>
-                        <tr>
-                            {{-- <th style="background-color: #f8f9fa;"><strong>Trip ID</strong></th> --}}
-                            <th style="background-color: #f8f9fa;">Vehicle</th>
-                            <th style="background-color: #f8f9fa;">Baloch Labour Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($reports as $item)
-                            <tr>
-                                {{-- <th style="width: 25%;">{{ $item->trip_id }}</th> --}}
-                                <td style="width: 25%;">{{ $item->trip->vehicle->vehicle_no ?? ""}}</td>
-                                <td style="width: 25%;">{{ $item->total_baloch_labour ?? ""}}</td>
-                            </tr>
-                            @php $total += $item->total_baloch_labour; @endphp
-                        @endforeach
-                    </tbody>
+<div class="content">
 
-                        <tr>
-                            <th style="font-size: 16px"><strong>Total</strong></th>
-                            <td style="font-size: 16px">{{$total}}</td>
-                        </tr>
-                </table>
-            @endif
+@foreach($trips as $trip)
+<div class="slip-box">
 
-            {{-- Remarks --}}
-            <table class="table table-custom table-sm mb-0">
-                <tr>
-                    <th><strong>Remarks:</strong></th>
-                    <td></td> {{-- Leave blank for remarks --}}
-                </tr>
-            </table>
+    <h3>Trip Cash Allowance Disbursement Slip</h3>
 
-            <div class="no-print" style="text-align:center; margin-top:10px;">
-                <button onclick="window.print()" style="padding: 6px 12px; background:#007bff; color:#fff; border:none; border-radius:4px; cursor:pointer;">
-                    🖨 Print
-                </button>
-            </div>
-        </div>
-    </div>
-@endsection
+    {{-- BASIC INFO --}}
+    <table class="no-border">
+        <tr>
+            <td><strong>Vehicle No:</strong> {{ $trip->vehicle->vehicle_no ?? '-' }}</td>
+            <td><strong>Date:</strong> {{ date('d-m-Y', strtotime($trip->trip_date)) }}</td>
+        </tr>
+        <tr>
+            <td><strong>Trip ID:</strong> {{ $trip->trip_no ?? $trip->id }}</td>
+            <td><strong>Driver:</strong> {{ $trip->driver->name ?? '-' }}</td>
+        </tr>
+    </table>
 
-@section('js')
+    <br>
 
+    {{-- TRIP DETAILS --}}
+    <table>
+        <thead>
+            <tr>
+                <th style="width:25%">From → To</th>
+                <th style="width:25%">Material</th>
+                <th style="width:15%">Qty / Weight</th>
+                <th style="width:35%">Remarks</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($trip->tripDetails as $detail)
+            <tr>
+                <td>
+                    {{ $detail->tripDetails->from_destination ?? '-' }}
+                    →
+                    {{ $detail->tripDetails->to_destination ?? '-' }}
+                </td>
+                <td>{{ $detail->material ?? '-' }}</td>
+                <td>
+                    {{ $detail->total_bags ?? $detail->weight ?? '-' }}
+                </td>
+                <td>{{ $detail->comments ?? '-' }}</td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="4" class="text-center">No Trip Details Found</td>
+            </tr>
+            @endforelse
+        </tbody>
+    </table>
 
+    <br>
+
+    {{-- CASH ALLOWANCE --}}
+    <table>
+        <tr>
+            <th style="width:40%">Cash Allowance Amount</th>
+            <td style="width:60%">
+                {{ number_format($trip->total_expense ?? 0, 2) }}
+            </td>
+        </tr>
+    </table>
+
+    <br><br>
+
+    {{-- SIGNATURE --}}
+    <table class="no-border">
+        <tr>
+            <td style="width:60%">
+                <strong>Supervisor Sign & Stamp:</strong>
+            </td>
+            <td style="width:40%">
+                ___________________________
+            </td>
+        </tr>
+    </table>
+
+</div>
+@endforeach
+
+<div class="no-print text-center">
+    <button onclick="window.print()" class="btn btn-primary">🖨 Print</button>
+</div>
+
+</div>
 @endsection

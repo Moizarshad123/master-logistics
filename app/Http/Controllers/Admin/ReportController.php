@@ -17,6 +17,20 @@ class ReportController extends Controller
             if (request()->ajax()) {
                 $trips = Trip::with('tripDetails', 'vehicle', 'driver');
                 return datatables()->eloquent($trips->orderByDesc('id'))
+
+                    ->filterColumn('vehicle', function($query, $keyword) {
+                        $query->whereHas('vehicle', function($q) use ($keyword) {
+                            $q->where('vehicle_no', 'like', "%{$keyword}%");
+                        });
+                    })
+
+                    ->filterColumn('driver', function($query, $keyword) {
+                        $query->whereHas('driver', function($q) use ($keyword) {
+                            $q->where('name', 'like', "%{$keyword}%");
+                        });
+                    })
+
+
                     ->addColumn('vehicle', function ($data) {
                         if($data->vehicle != null) {
                             return $data->vehicle->vehicle_no;

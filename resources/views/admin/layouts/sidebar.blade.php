@@ -99,9 +99,14 @@
                     <li>
                         <a href="{{ route('admin.weeklyLabourReport') }}">Weekly Labour Report</a>
                     </li>
-                     <li>
+                    <li>
                         <a href="{{ route('admin.balochLabourReport') }}">Baloch  Labour Report</a>
                     </li>
+                    <li>
+                        <a href="{{ route('admin.disbursementSlip') }}">Disbursement Slip</a>
+                    </li>
+
+                    
                     
                 </ul>
             </li>

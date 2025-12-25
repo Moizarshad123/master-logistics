@@ -66,7 +66,7 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
         Route::get('closed-trips', 'closedTrips')->name('closedTrips');
         Route::get('active-trailers-trips', 'activeTrailersTrips')->name('activeTrailersTrips');
         Route::get('closed-trailers-trips', 'closedTrailersTrips')->name('closeTrailersTrips');
-        Route::get('disbursement-slip', 'disbursement_slip')->name('disbursement_slip');
+        Route::get('disbursement-slip', 'disbursement_slip')->name('disbursementSlip');
 
     });
 

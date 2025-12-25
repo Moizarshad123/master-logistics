@@ -124,12 +124,12 @@
                             <th>{{ $item->material_type ?? ""}}</th>
                             <td>{{ $item->total_bags ?? ""}}</td>
                         </tr>
-                        {{-- <tr>
-                            <th>Baloch Labour</th>
-                            <td>{{ $item->baloch_labour ?? ""}}</td>
+                        <tr>
                             <th>Weekly Labour</th>
                             <td>{{ $item->weekly_labour ?? ""}}</td>
-                        </tr> --}}
+                            <th>Baloch Labour</th>
+                            <td>{{ $item->baloch_labour ?? ""}}</td>
+                        </tr>
                         <tr>
                             {{-- <th>Advance</th>
                             <td>{{ $item->advance ?? ""}}</td> --}}

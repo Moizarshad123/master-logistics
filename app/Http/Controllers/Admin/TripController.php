@@ -478,6 +478,7 @@ class TripController extends Controller
     public function update(Request $request, Trip $trip)
     {
         try {
+            dd($request->all());
             $request->validate([
                'vehicle_id' => 'required',
                'driver_id'  => 'required',
@@ -630,6 +631,10 @@ class TripController extends Controller
     }
 
     public function disbursement_slip() {
-        return view("admin.tirps.disbursement_slip");
+        
+        $trips = Trip::with('tripDetails', 'vehicle', "vehicle.new_wheeler", 'driver')
+                            ->where('status', "Active")
+                            ->orderByDESC("id")->get();
+        return view("admin.trips.disbursement_slip", compact("trips"));
     }
 }

@@ -172,7 +172,7 @@
         </div>
         <div class="col-md-4">
             <label>Comments</label>
-            <textarea  name="trip_details[${index}][comments]" class="form-control">{{  $detail->comments ?? '' }}</textarea>
+            <textarea  name="trip_details[{{ $index }}][comments]" class="form-control">{{  $detail->comments ?? '' }}</textarea>
         </div>
     </div>
 </div>
