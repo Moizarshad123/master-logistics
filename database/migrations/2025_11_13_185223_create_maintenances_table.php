@@ -13,6 +13,8 @@ class CreateMaintenancesTable extends Migration
      */
     public function up()
     {
+        if (!Schema::hasTable('maintenances')) {
+
         Schema::create('maintenances', function (Blueprint $table) {
             $table->id();
             $table->foreignId('vehicle_id')->constrained('vehicles')->onDelete('cascade');
@@ -21,6 +23,7 @@ class CreateMaintenancesTable extends Migration
             $table->text('comments')->nullable();
             $table->timestamps();
         });
+    }
     }
 
     /**

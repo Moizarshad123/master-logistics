@@ -13,13 +13,16 @@ class CreateSaleSheetsTable extends Migration
      */
     public function up()
     {
-        Schema::create('sale_sheets', function (Blueprint $table) {
-            $table->id();
-            $table->String("station")->nullable();
-            $table->double("minimum_rent")->nullable();
-            $table->String('per_bag_rate')->nullable();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('sale_sheets')) {
+
+            Schema::create('sale_sheets', function (Blueprint $table) {
+                $table->id();
+                $table->String("station")->nullable();
+                $table->double("minimum_rent")->nullable();
+                $table->String('per_bag_rate')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

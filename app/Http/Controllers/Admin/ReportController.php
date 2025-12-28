@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Trip;
+use App\Models\Vehicle;
+
+
 use App\Models\TripDetail;
 use Carbon\Carbon;
 use DB;
@@ -110,6 +113,98 @@ class ReportController extends Controller
 
         return view('admin.reports.profit_loss', compact('tripData', 'date', 'totalIncome', 'totalExpenses', 'grandProfit'));
     }
+
+    public function vehicleSummaryReport(Request $request)
+    {
+        $query = Trip::with(['vehicle.new_wheeler', 'tripExpenses']);
+
+        if ($request->filled('from_date') && $request->filled('to_date')) {
+            $query->whereBetween('trip_date', [
+                Carbon::parse($request->from_date)->startOfDay(),
+                Carbon::parse($request->to_date)->endOfDay(),
+            ]);
+        }
+
+        $trips = $query->get();
+
+        // Expense ID → DB Name mapping (DB ko touch nahi kar rahe)
+        $expenseMap = [
+            1 => 'Meal',
+            2 => 'Fueling',
+            3 => 'Service',
+            4 => 'Route',
+            5 => 'Toll Tax',
+            6 => 'Tyre Punc/Air',
+            7 => 'Labor',
+            8 => 'Repair',
+            9 => 'Misc',
+        ];
+
+        $report = [];
+
+        // Grand total initialize
+        $grandTotal = [
+            'trips' => 0,
+            'Meal' => 0,
+            'Fueling' => 0,
+            'Service' => 0,
+            'Route' => 0,
+            'Toll Tax' => 0,
+            'Tyre Punc/Air' => 0,
+            'Labor' => 0,
+            'Repair' => 0,
+            'Misc' => 0,
+        ];
+
+        foreach ($trips as $trip) {
+
+            // Safety checks
+            if (!$trip->vehicle || !$trip->vehicle->new_wheeler) {
+                continue;
+            }
+
+            $category  = $trip->vehicle->new_wheeler->name;
+            $vehicleNo = $trip->vehicle->vehicle_no;
+
+            // Initialize vehicle row
+            if (!isset($report[$category][$vehicleNo])) {
+                $report[$category][$vehicleNo] = [
+                    'trips' => 0,
+                    'Meal' => 0,
+                    'Fueling' => 0,
+                    'Service' => 0,
+                    'Route' => 0,
+                    'Toll Tax' => 0,
+                    'Tyre Punc/Air' => 0,
+                    'Labor' => 0,
+                    'Repair' => 0,
+                    'Misc' => 0,
+                ];
+            }
+
+            // Count trips
+            $report[$category][$vehicleNo]['trips']++;
+            $grandTotal['trips']++;
+
+            // Expenses
+            foreach ($trip->tripExpenses as $expense) {
+
+                if (!isset($expenseMap[$expense->expense])) {
+                    continue;
+                }
+
+                $key = $expenseMap[$expense->expense];
+
+                $report[$category][$vehicleNo][$key] += (float) $expense->amount;
+                $grandTotal[$key] += (float) $expense->amount;
+            }
+        }
+
+        return view('admin.reports.vehicle__summary_report', compact('report', 'grandTotal'));
+    }
+
+
+    
 
     public function weekly_labour_report(Request $request) {
 

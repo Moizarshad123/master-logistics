@@ -418,6 +418,7 @@ class TripController extends Controller
             // Save trip details
             if ($request->trip_details) {
                 foreach ($request->trip_details as $detail) {
+
                     TripDetail::create([
                         "trip_id"           => $trip->id,
                         "customer_id"       => $detail['customer_id'] ?? null,
@@ -437,6 +438,10 @@ class TripController extends Controller
                         "comments"          => $detail['comments'] ?? null,
                         "weight"            => $detail['weight'] ?? 0,
                     ]);
+
+                    $customer = Customer::findOrFail($detail['customer_id']);
+                    $customer->outstanding_amount += $detail['rent'];
+                    $customer->save();
                     // $trip->tripDetails()->create($detail);
                 }
             }

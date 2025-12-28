@@ -13,11 +13,14 @@ class CreateMaterialsTable extends Migration
      */
     public function up()
     {
+        if (!Schema::hasTable('materials')) {
+
         Schema::create('materials', function (Blueprint $table) {
             $table->id();
             $table->String("name")->nullable();
             $table->timestamps();
         });
+    }
     }
 
     /**

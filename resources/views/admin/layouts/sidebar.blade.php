@@ -76,7 +76,7 @@
                     <span class="nav-link-icon">
                         <i class="bi bi-bar-chart"></i>
                     </span>
-                    <span>Maintenance</span>
+                    <span>Maintenance (Workshop)</span>
                 </a>
             </li>
           
@@ -88,6 +88,12 @@
                     <span>Reports</span>
                 </a>
                 <ul>
+
+                    
+
+                     <li>
+                        <a href="{{ route('admin.vehicleSummaryReport') }}">Vehicle Summary Report</a>
+                    </li>
                     
                     <li>
                         <a href="{{ route('admin.tripVehicleReport') }}">Trip Vehicle Report</a>
@@ -123,8 +129,16 @@
                         <a href="{{ route('admin.customer-heads.index')}}">Customer Heads</a>
                     </li>
                     <li>
+                        <a href="{{ route('admin.customerHeadReport')}}">Customer Heads Report</a>
+                    </li>
+                    <li>
                         <a href="{{ route('admin.customers.index')}}">Customers</a>
                     </li>
+                    <li>
+                        <a href="{{ route('admin.amount-receivables.index')}}">Amount Receivables</a>
+                    </li>
+
+                    
                 </ul>
             </li>
 

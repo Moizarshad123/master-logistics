@@ -17,7 +17,7 @@
         @csrf
         @method("PUT")
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <label>Vehicle<span style="color: red">*</span></label>
                 <select name="vehicle_id" id="vehicle_id" class="form-select select2" required>
                     <option value="">Select Vehicle</option>
@@ -26,7 +26,18 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-md-3">
+            
+            <div class="col-md-4">
+                <label>Date<span style="color: red">*</span></label>
+                <input type="date" name="date" class="form-control" required value="{{ $diesel->date}}">
+            </div>
+            <div class="col-md-4">
+                <label>Time</label>
+                <input type="time" name="time" class="form-control" value="{{ $diesel->time}}">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
                 <label>Type<span style="color: red">*</span></label>
                 <select name="type" class="form-control" required>
                     <option value="Diesel" {{ $diesel->type == "Diesel" ? "selected" : ""}}>Diesel</option>
@@ -34,13 +45,23 @@
                     <option value="Mobil oil" {{ $diesel->type == "Mobil oil" ? "selected" : ""}}>Mobil oil</option>
                 </select>
             </div>
-            <div class="col-md-3">
-                <label>Date<span style="color: red">*</span></label>
-                <input type="date" name="date" class="form-control" required value="{{ $diesel->date}}">
+            <div class="col-md-4">
+                <label>Trip</label>
+                <select name="trip_id" id="trip_id" class="form-select select2">
+                    <option value="">Select Trip</option>
+                    @foreach($trips as $trip)
+                        <option value="{{ $trip->id }}" {{ $trip->id == $diesel->trip_id ? "selected" : ""}}>{{ $trip->id }}</option>
+                    @endforeach
+                </select>
             </div>
-            <div class="col-md-3">
-                <label>Time</label>
-                <input type="time" name="time" class="form-control" value="{{ $diesel->time}}">
+            <div class="col-md-4">
+                <label>Source<span style="color: red">*</span></label>
+                <select name="source" class="form-select" required>
+                    <option value="">Select Source</option>
+                    <option value="Master Sweetner" {{ $diesel->source == "Master Sweetner" ? "selected" : ""}}>Master Sweetner</option>
+                    <option value="PSO Pump Karachi" {{ $diesel->source == "PSO Pump Karachi" ? "selected" : ""}}>PSO Pump Karachi</option>
+                    <option value="From Outside" {{ $diesel->source == "From Outside" ? "selected" : ""}}>From Outside</option>
+                </select>
             </div>
         </div>
         <div class="row">

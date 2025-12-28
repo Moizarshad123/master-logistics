@@ -13,6 +13,8 @@ class CreateDieselsTable extends Migration
      */
     public function up()
     {
+        if (!Schema::hasTable('diesels')) {
+
         Schema::create('diesels', function (Blueprint $table) {
             $table->id();
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
@@ -25,6 +27,8 @@ class CreateDieselsTable extends Migration
             $table->unsignedBigInteger('created_by');
             $table->timestamps();
         });
+    }
+        
     }
 
     /**

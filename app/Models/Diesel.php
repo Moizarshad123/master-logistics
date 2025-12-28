@@ -10,10 +10,12 @@ class Diesel extends Model
     use HasFactory;
     protected $fillable = [
         'vehicle_id',
+        'trip_id',
         'type',
         'date',
         'time',
         'litres',
+        'source',
         'per_litre_amount',
         'total_amount',
         'created_by',

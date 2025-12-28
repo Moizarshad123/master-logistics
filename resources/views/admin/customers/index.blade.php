@@ -26,6 +26,7 @@
                 <tr>
                     <th>Customer Head</th>
                     <th>Customer Name</th>
+                    <th>Outstanding Amount</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -83,6 +84,10 @@
                 {
                     data: 'name',
                     name: 'name'
+                },
+                {
+                    data: 'outstanding_amount',
+                    name: 'outstanding_amount'
                 },
                 {
                     data: 'action',

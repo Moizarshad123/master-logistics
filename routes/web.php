@@ -19,16 +19,15 @@ use App\Http\Controllers\Admin\{
     CustomerHeadController,
     MaintenanceController,
     DieselController,
+    AmountReceivableController
 };
-
-
 
 Route::match(['get', 'post'], 'login', [AdminController::class, 'login'])->name('login');
 Route::match(['get', 'post'], 'register', [AdminController::class, 'register'])->name('register');
 Route::get('logout', function (){
-    auth()->logout();
-    return redirect('/');
-})->name('admin.logout');
+            auth()->logout();
+            return redirect('/');
+        })->name('admin.logout');
 Route::get('/', function (){
     return redirect('login');
 });
@@ -38,6 +37,7 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
         Route::get('dashboard', 'dashboard')->name('dashboard');
     });
 
+    Route::resource('amount-receivables', AmountReceivableController::class);
     Route::resource('diesel', DieselController::class);
     Route::resource('expense-from', ExpenseFromController::class);
     Route::resource('expense-types', ExpenseTypeController::class);
@@ -55,22 +55,26 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
     Route::resource('maintenances', MaintenanceController::class);
     Route::get('salesheets/{id}', [SalesSheetController::class, 'show_sheet']);
     Route::get('purchasesheets/{id}', [PurchaseSheetController::class, 'show_sheet']);
-
     Route::get('driver-payments/{id}', [DriverController::class, "driver_payments"])->name("driverPayments");
     Route::get('get-vehicle-expenses', [VehicleController::class, 'getVehicleExpenses'])->name('getVehicleExpenses');
         
     Route::controller(TripController::class)->group(function() {
         Route::POST('end-actual-trip', 'endActualTrip')->name('endActualTrip');
         Route::POST('end-actual-trailer-trip', 'endActualTrailerTrip')->name('endActualTrailerTrip');
-
         Route::get('closed-trips', 'closedTrips')->name('closedTrips');
         Route::get('active-trailers-trips', 'activeTrailersTrips')->name('activeTrailersTrips');
         Route::get('closed-trailers-trips', 'closedTrailersTrips')->name('closeTrailersTrips');
         Route::get('disbursement-slip', 'disbursement_slip')->name('disbursementSlip');
-
     });
 
+    Route::controller(CustomerHeadController::class)->group(function() {
+        Route::get('customer-head-report', 'customerHeadReport')->name('customerHeadReport');
+    });
+
+
+
     Route::controller(ReportController::class)->group(function() {
+        Route::get('vehicle-summary-report', 'vehicleSummaryReport')->name("vehicleSummaryReport");
         Route::get('trip-vehicle-report', 'tripVehicleReport')->name("tripVehicleReport");
         Route::get('profit-and-loss-report', 'profit_and_loss')->name("profitAndLossReport");
         Route::get('weekly-labour-report', 'weekly_labour_report')->name("weeklyLabourReport");

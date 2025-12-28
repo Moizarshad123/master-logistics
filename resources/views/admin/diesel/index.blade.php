@@ -36,6 +36,7 @@
                 <th>Vehicle</th>
                 <th>Type</th>
                 <th>Created By</th>
+                <th>Source</th>
                 <th>Date-TIme</th>
                 <th>Total Litres</th>
                 <th>Per Litre Amount</th>
@@ -83,6 +84,10 @@
                 {
                     data: 'createdBy',
                     name: 'createdBy'
+                },
+                {
+                    data: 'source',
+                    name: 'source'
                 },
                 {
                     data: 'dateTime',

@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Diesel;
 use App\Models\Vehicle;
-use Auth;
+use App\Models\Trip;
+use App\Models\TripVehicleExpense;
+use DB, Auth;
+
 class DieselController extends Controller
 {
     public function index()
@@ -60,32 +63,53 @@ class DieselController extends Controller
     public function create()
     {
         $vehicles = Vehicle::all();
-        return view('admin.diesel.create', compact("vehicles"));
+        $trips    = Trip::Select("id")->orderBy('id', 'ASC')->get();
+        return view('admin.diesel.create', compact("vehicles", "trips"));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'type'             => 'required',
-            'date'             => 'required|date',
-            'time'             => 'required',
-            'litres'           => 'required|numeric',
-            'per_litre_amount' => 'required|numeric',
-            'total_amount'     => 'required|numeric',
-        ]);
+        try {
+            $request->validate([
+                'type'             => 'required',
+                'date'             => 'required|date',
+                'time'             => 'required',
+                'litres'           => 'required|numeric',
+                'per_litre_amount' => 'required|numeric',
+                'total_amount'     => 'required|numeric',
+                'source'           => 'required',
 
-        Diesel::create([
-            'vehicle_id'       => $request->vehicle_id,
-            'type'             => $request->type,
-            'date'             => $request->date,
-            'time'             => $request->time,
-            'litres'           => $request->litres,
-            'per_litre_amount' => $request->per_litre_amount,
-            'total_amount'     => $request->total_amount,
-            'created_by'       => Auth::id(),
-        ]);
+            ]);
+    
+            DB::beginTransaction();
+            Diesel::create([
+                'vehicle_id'       => $request->vehicle_id,
+                'trip_id'          => $request->trip_id,
+                'type'             => $request->type,
+                'date'             => $request->date,
+                'time'             => $request->time,
+                'litres'           => $request->litres,
+                'per_litre_amount' => $request->per_litre_amount,
+                'total_amount'     => $request->total_amount,
+                'created_by'       => Auth::id(),
+                'source'           => $request->source,
+            ]);
 
-        return redirect()->route('admin.diesel.index')->with('success', 'Record created successfully.');
+            if($request->trip_id != null) {
+                TripVehicleExpense::create([
+                    'trip_id'      => $request->trip_id,
+                    'vehicle_id'   => $request->vehicle_id,
+                    'expense'      => "Diesel",
+                    'expense_from' => "From Advance Amount",
+                    'amount'       => $request->total_amount,
+                ]);
+            }
+            DB::Commit();
+    
+            return redirect()->route('admin.diesel.index')->with('success', 'Record created successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     public function show($id)
@@ -97,21 +121,23 @@ class DieselController extends Controller
     public function edit($id)
     {
         $vehicles = Vehicle::all();
+        $trips    = Trip::Select("id")->orderBy('id', 'ASC')->get();
 
         $diesel = Diesel::findOrFail($id);
-        return view('admin.diesel.edit', compact('diesel', 'vehicles'));
+        return view('admin.diesel.edit', compact('diesel', 'vehicles', 'trips'));
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
-            'vehicle_id' => 'required',
-            'type'       => 'required',
-            'date'       => 'required|date',
-            'time'       => 'required',
-            'litres'     => 'required|numeric',
+            'vehicle_id'       => 'required',
+            'type'             => 'required',
+            'date'             => 'required|date',
+            'time'             => 'required',
+            'litres'           => 'required|numeric',
             'per_litre_amount' => 'required|numeric',
             'total_amount'     => 'required|numeric',
+            'source'           => 'required',
         ]);
 
         $diesel = Diesel::findOrFail($id);

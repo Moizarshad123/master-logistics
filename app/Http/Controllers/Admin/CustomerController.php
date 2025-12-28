@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Customer;
+use App\Models\AmountReceivable;
 use App\Models\CustomerHead;
 
 class CustomerController extends Controller
@@ -18,7 +19,9 @@ class CustomerController extends Controller
                     ->addColumn('customerHead', function ($data) {
                         return $data->customerHead->name ?? '';
                     })
-                    
+                    ->editColumn('outstanding_amount', function ($data) {
+                        return number_format($data->outstanding_amount) ?? '';
+                    })
                     ->addColumn('action', function ($data) {
 
                         $viewUrl    = route('admin.customers.show', $data->id);
@@ -26,8 +29,8 @@ class CustomerController extends Controller
                         $deleteUrl  = route('admin.customers.destroy', $data->id);
 
                         return '
-                            <a href="'.$viewUrl.'" class="btn btn-sm btn-info">View</a> |
-                            <a href="'.$editUrl.'" class="btn btn-sm btn-warning">Edit</a> |
+                        <a href="'.$viewUrl.'" class="btn btn-sm btn-info">View Payment History</a> |
+                        <a href="'.$editUrl.'" class="btn btn-sm btn-warning">Edit</a> |
                             <form action="'.$deleteUrl.'" method="POST" style="display:inline;">
                                 '.csrf_field().'
                                 '.method_field('DELETE').'
@@ -69,7 +72,8 @@ class CustomerController extends Controller
 
     public function show(Customer $customer)
     {
-        return view('admin.customers.show', compact('customer'));
+        $payments = AmountReceivable::where("customer_id", $customer->id)->orderByDESC("id")->get();
+        return view('admin.customers.show', compact('payments'));
     }
 
     public function edit(Customer $customer)
@@ -85,7 +89,7 @@ class CustomerController extends Controller
             'customer_head_id' => 'required|exists:customer_heads,id',
         ]);
 
-        $customer->update($request->only('customer_head_id', 'name'));
+        $customer->update($request->only('customer_head_id', 'name', 'outstanding_amount'));
         return redirect()->route('admin.customers.index')->with('success', 'Customer updated successfully.');
     }
 

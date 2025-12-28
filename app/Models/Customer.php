@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Customer extends Model
 {
     use HasFactory;
-    protected $fillable = ["customer_head_id", 'name'];
+    protected $fillable = ["customer_head_id", 'name', "outstanding_amount"];
 
     public function customerHead()
     {

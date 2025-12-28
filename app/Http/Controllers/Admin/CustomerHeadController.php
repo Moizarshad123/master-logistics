@@ -14,6 +14,21 @@ class CustomerHeadController extends Controller
         return view('admin.customer_heads.index', compact('customerHeads'));
     }
 
+    public function customerHeadReport() {
+
+         $report = CustomerHead::with('customers')
+                                ->get()
+                                ->map(function ($head) {
+                                    return [
+                                        'id'                => $head->id,
+                                        'customer_head'     => $head->name,
+                                        'total_outstanding' => $head->customers->sum('outstanding_amount'),
+                                    ];
+                                });
+        return view('admin.customer_heads.report', compact('report'));
+
+    }
+
     public function create()
     {
         return view('admin.customer_heads.create');

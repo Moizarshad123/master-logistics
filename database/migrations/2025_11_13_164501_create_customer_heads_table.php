@@ -13,11 +13,14 @@ class CreateCustomerHeadsTable extends Migration
      */
     public function up()
     {
+        if (!Schema::hasTable('customer_heads')) {
+
         Schema::create('customer_heads', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->timestamps();
         });
+    }
     }
 
     /**

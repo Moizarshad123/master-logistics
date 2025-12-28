@@ -78,7 +78,8 @@
             </tr>
         </table>
 
-        Payments
+        <h5 style="margin-top: 20px;">Payments</h5>
+        
         @if(count($trip->tripPayments) > 0)
             <table class="table table-custom table-bordered table-sm mb-4 report-table">
                 <thead>
@@ -98,6 +99,39 @@
                             <td>{{ $item->comments ?? ""}}</td>
                         </tr>
                     @endforeach
+                </tbody>
+            </table>
+        @endif
+
+        <h5 style="margin-top: 20px;">Trip Expenses</h5>
+        @if(count($trip->tripExpenses) > 0)
+            <table class="table table-custom table-bordered table-sm mb-4 report-table">
+                <thead>
+                    <tr>
+                        <th>Expense Name</th>
+                        <th>Expense From</th>
+                        <th>Expense Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @php $tot = 0; @endphp
+                    @forelse($trip->tripExpenses as $expense)
+                        <tr>
+                            <td>{{ $expense->expense ?? "" }}</td>
+                            <td>{{ $expense->expense_from ?? "" }}</td>
+                            <td>{{ $expense->amount }}</td>
+                        </tr>
+                        @php $tot += $expense->amount; @endphp
+
+                    @empty
+                        <tr><td colspan="3" class="text-center">No expenses added.</td></tr>
+                    @endforelse
+                    @if(count($trip->tripExpenses) > 0)
+                        <tr style="font-size:18px">
+                            <th colspan="2">Total</th>
+                            <th>{{ $tot }}</th>
+                        </tr>
+                    @endif
                 </tbody>
             </table>
         @endif

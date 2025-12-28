@@ -117,15 +117,24 @@
             </tr>
         </thead>
         <tbody>
+            @php $tot = 0; @endphp
             @forelse($trip->tripExpenses as $expense)
                 <tr>
                     <td>{{ $expense->expense ?? "" }}</td>
                     <td>{{ $expense->expense_from ?? "" }}</td>
                     <td>{{ $expense->amount }}</td>
                 </tr>
+                @php $tot += $expense->amount; @endphp
+
             @empty
-                <tr><td colspan="2" class="text-center">No expenses added.</td></tr>
+                <tr><td colspan="3" class="text-center">No expenses added.</td></tr>
             @endforelse
+            @if(count($trip->tripExpenses) > 0)
+                <tr style="font-size:18px">
+                    <th colspan="2">Total</th>
+                    <th>{{ $tot }}</th>
+                </tr>
+            @endif
         </tbody>
     </table>
 

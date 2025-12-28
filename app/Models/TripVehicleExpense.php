@@ -21,7 +21,6 @@ class TripVehicleExpense extends Model
         return $this->belongsTo(Trip::class);
     }
 
-
     public function vehicle()
     {
         return $this->hasOne(Vehicle::class, 'id', 'vehicle_id');

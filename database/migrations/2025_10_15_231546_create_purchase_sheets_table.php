@@ -13,13 +13,16 @@ class CreatePurchaseSheetsTable extends Migration
      */
     public function up()
     {
-        Schema::create('purchase_sheets', function (Blueprint $table) {
-            $table->id();
-            $table->String("station")->nullable();
-            $table->double("per_ton_rate")->nullable();
-            $table->String('type')->nullable();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('purchase_sheets')) {
+
+            Schema::create('purchase_sheets', function (Blueprint $table) {
+                $table->id();
+                $table->String("station")->nullable();
+                $table->double("per_ton_rate")->nullable();
+                $table->String('type')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

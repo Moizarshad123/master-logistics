@@ -28,6 +28,12 @@
                 @error('name') <p style="color:red">{{ $message }}</p> @enderror
             </div>
             <div class="col-md-4">
+                <label>Outstanding Amount:</label>
+                <input type="text" name="outstanding_amount" value="{{ old('outstanding_amount', $customer->outstanding_amount) }}" class="form-control">
+                @error('outstanding_amount') <p style="color:red">{{ $message }}</p> @enderror
+            </div>
+            
+            <div class="col-md-4">
                 <button type="submit"  style="margin-top: 25px;" class="btn btn-success" id="addExpenseType">Update</button>
             </div>
         </div>

@@ -13,11 +13,14 @@ class CreateExpenseFromsTable extends Migration
      */
     public function up()
     {
+        if (!Schema::hasTable('expense_froms')) {
+
         Schema::create('expense_froms', function (Blueprint $table) {
             $table->id();
             $table->String("name")->nullable();
             $table->timestamps();
         });
+    }
     }
 
     /**

@@ -13,16 +13,18 @@ class CreateTripPaymentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('trip_payments', function (Blueprint $table) {
-            $table->id();
-            $table->Integer("trip_id");
-            $table->Integer("driver_id");
-            $table->String("payment_type")->default("Cash");
-            $table->double("amount")->default(0);
-            $table->date("date")->nullable();
-            $table->text("comments")->nullable();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('trip_payments')) {
+            Schema::create('trip_payments', function (Blueprint $table) {
+                $table->id();
+                $table->Integer("trip_id");
+                $table->Integer("driver_id");
+                $table->String("payment_type")->default("Cash");
+                $table->double("amount")->default(0);
+                $table->date("date")->nullable();
+                $table->text("comments")->nullable();
+                $table->timestamps();
+            });
+        }
     }
     
     public function down()
