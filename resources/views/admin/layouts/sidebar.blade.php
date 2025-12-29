@@ -183,14 +183,32 @@
                 </ul>
             </li>
 
-            <li>
-                <a  href="{{route('admin.diesel.index') }}">
+
+              <li>
+                <a href="javascript:;">
                     <span class="nav-link-icon">
-                        <i class="bi bi-person-badge"></i>
+                        <i class="bi bi-receipt"></i>
                     </span>
-                    <span>Fueling</span>
+                    <span>Fueling Section</span>
                 </a>
+                <ul>
+                    <li>
+                        <a href="{{ route('admin.diesel.index')}}">Fueling</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.fuel-suppliers.index')}}">Fuel Suppliers</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.master-sweetners.index')}}">Master Sweetners</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.amount-payables.index')}}">Amount Payable</a>
+                    </li>
+
+                    
+                </ul>
             </li>
+            
 
             <li>
                 <a  href="{{route('admin.logout') }}">

@@ -417,21 +417,59 @@
                         <label>Comments</label>
                         <textarea  name="trip_details[${index}][comments]" class="form-control"></textarea>
                     </div>
-                    <div class="col-md-4 d-flex align-items-end">
-                        <button type="button" class="btn btn-danger removeRow">Remove</button>
+                </div>
+                <div class="row mt-2 align-items-end">
+                    <div class="col-md-4">
+                        <label>Is Payment Received?</label>
+                        <select name="trip_details[${index}][payment_receive]" class="form-select payment_receive">
+                            <option value="No">No</option>
+                            <option value="Yes">Yes</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 receive-fields" style="display:none;">
+                        <label>Received Amount</label>
+                        <input type="number" step="0.01"
+                            name="trip_details[${index}][receive_amount]"
+                            class="form-control receive_amount">
+                    </div>
+
+                    <div class="col-md-4 receive-fields" style="display:none;">
+                        <label>Received By</label>
+                        <input type="text"
+                            name="trip_details[${index}][receive_by]"
+                            class="form-control receive_by">
                     </div>
                 </div>
+            
                 <div class="row mt-2">
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button type="button" class="btn btn-danger removeRow">Remove</button>
+                        </div>
                 </div>
             </div>`;
 
             $("#tripDetailsContainer").append(row);
             index++;
-            // <div class="col-md-3">
-            //             <label>Advance</label>
-            //             <input type="number" name="trip_details[${index}][advance]" class="form-control">
-            //         </div>
         });
+
+        $(document).on('change', '.payment_receive', function () {
+
+            let selectedValue = $(this).val();
+
+            // current row ka parent container
+            let currentRow = $(this).closest('.trip-detail');
+
+            if (selectedValue === 'Yes') {
+                currentRow.find('.receive-fields').slideDown();
+            } else {
+                currentRow.find('.receive-fields').slideUp();
+
+                // optional: clear values when No selected
+                currentRow.find('.receive_amount').val('');
+                currentRow.find('.receive_by').val('');
+            }
+        });
+
 
 
         // Listen for Trip Type change dynamically

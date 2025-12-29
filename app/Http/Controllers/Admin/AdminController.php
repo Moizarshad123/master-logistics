@@ -7,12 +7,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Setting;
+
 use Auth, Mail;
 
 class AdminController extends Controller
 {
     public function dashboard() {
-        return view('admin.dashboard');
+        $setting = Setting::findOrFail(1);
+        return view('admin.dashboard', compact("setting"));
     }
 
     public function login(Request $request) {

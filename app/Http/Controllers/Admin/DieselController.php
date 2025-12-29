@@ -8,6 +8,8 @@ use App\Models\Diesel;
 use App\Models\Vehicle;
 use App\Models\Trip;
 use App\Models\TripVehicleExpense;
+use App\Models\Setting;
+
 use DB, Auth;
 
 class DieselController extends Controller
@@ -104,6 +106,16 @@ class DieselController extends Controller
                     'amount'       => $request->total_amount,
                 ]);
             }
+
+            if($request->source == "Master Sweetner") {
+                $setting = Setting::findOrFail(1);
+                if($request->type == "Petrol") {
+                    $setting->total_petrol -= $request->litres;
+                } elseif($request->type == "Diesel") {
+                    $setting->total_diesel -= $request->litres;
+                }   
+                $setting->save();
+            }   
             DB::Commit();
     
             return redirect()->route('admin.diesel.index')->with('success', 'Record created successfully.');

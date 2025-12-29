@@ -19,7 +19,10 @@ use App\Http\Controllers\Admin\{
     CustomerHeadController,
     MaintenanceController,
     DieselController,
-    AmountReceivableController
+    AmountReceivableController,
+    FuelSupplierController,
+    MasterSweetnerController,
+    AmountPayableController
 };
 
 Route::match(['get', 'post'], 'login', [AdminController::class, 'login'])->name('login');
@@ -36,7 +39,9 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
     Route::controller(AdminController::class)->group(function() {
         Route::get('dashboard', 'dashboard')->name('dashboard');
     });
-
+    Route::resource('amount-payables', AmountPayableController::class);
+    Route::resource('master-sweetners', MasterSweetnerController::class);
+    Route::resource('fuel-suppliers', FuelSupplierController::class);
     Route::resource('amount-receivables', AmountReceivableController::class);
     Route::resource('diesel', DieselController::class);
     Route::resource('expense-from', ExpenseFromController::class);

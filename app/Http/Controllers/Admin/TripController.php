@@ -17,9 +17,7 @@ use App\Models\SaleSheet;
 use App\Models\Material;
 use App\Models\ExpenseFrom;
 use App\Models\Customer;
-
-
-
+use App\Models\AmountReceivable;
 use DB, DataTables;
 
 class TripController extends Controller
@@ -435,13 +433,29 @@ class TripController extends Controller
                         "baloch_labour_rate"=> $detail['baloch_labour_rate'] ?? 0,
                         "no_of_labour"      => $detail['no_of_labour'] ?? 0,
                         "rent"              => $detail['rent'] ?? 0,
+                        "is_payment_receive" => $detail['is_payment_receive'] ?? 'No',
+                        "receive_amount"     => $detail['receive_amount'] ?? 0,
+                        "receive_by"         => $detail['receive_by'] ?? null,
                         "comments"          => $detail['comments'] ?? null,
                         "weight"            => $detail['weight'] ?? 0,
                     ]);
 
                     $customer = Customer::findOrFail($detail['customer_id']);
-                    $customer->outstanding_amount += $detail['rent'];
+                    if($detail['is_payment_receive'] == "Yes") {
+                        $rem_amount = $detail['rent'] - $detail['receive_amount'];
+                        $customer->outstanding_amount += $rem_amount;
+                    } else {
+                        $customer->outstanding_amount += $detail['rent'];
+                    }
                     $customer->save();
+
+                    AmountReceivable::create([
+                        'trip_id'     => $trip->id,
+                        'customer_id' => $detail['customer_id'],
+                        'amount'      => $detail['receive_amount'],
+                        "date"        => date("Y-m-d"),
+                        'receipt'     => ""
+                    ]);
                     // $trip->tripDetails()->create($detail);
                 }
             }

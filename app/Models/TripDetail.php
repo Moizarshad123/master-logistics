@@ -24,6 +24,9 @@ class TripDetail extends Model
         "baloch_labour_rate",
         "no_of_labour",
         "rent",
+        "is_payment_receive",
+        "receive_amount",
+        "receive_by",
         "comments",
         "weight",
         "status"
