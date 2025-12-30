@@ -1,10 +1,10 @@
 @extends('admin.layouts.app')
-@section('title', 'Amount Receivables')
+@section('title', 'Account Receivables')
 
 @section('content')
 
 <div class="row mb-2">
-    <div class="col-md-10"><h3>Amount Receivables</h3></div>
+    <div class="col-md-10"><h3>Account Receivables</h3></div>
     <div class="col-md-2">
         <a href="{{ route('admin.amount-receivables.create') }}" class="btn btn-success btn-sm">
             + Add

@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'Update Amount Receivables')
+@section('title', 'Update Account Receivables')
 
 @section('css')
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -14,7 +14,7 @@
 <!-- Content -->
 
 <div class="container-xxl flex-grow-1 container-p-y">
-    <h3>Update Amount Receivable</h3>
+    <h3>Update Account Receivable</h3>
     <form action="{{ route('admin.amount-receivables.update', $receivable->id) }}" method="POST" enctype="multipart/form-data" id="expenseTypeForm">
         @csrf
         @method("PUT")

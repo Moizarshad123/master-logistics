@@ -9,7 +9,7 @@ use App\Models\Vehicle;
 use App\Models\Trip;
 use App\Models\TripVehicleExpense;
 use App\Models\Setting;
-
+use Carbon\Carbon;
 use DB, Auth;
 
 class DieselController extends Controller
@@ -162,5 +162,32 @@ class DieselController extends Controller
     {
         Diesel::findOrFail($id)->delete();
         return back()->with('success', 'Record deleted successfully.');
+    }
+
+    public function fuelConsumptionReport(Request $request) {
+        $from = $request->from_date ?? Carbon::today()->toDateString();
+        $to   = $request->to_date   ?? Carbon::today()->toDateString();
+
+        $records = Diesel::with('vehicle')
+            ->whereBetween('date', [$from, $to])
+            ->selectRaw('
+                vehicle_id,
+                type,
+                source,
+                SUM(litres) as total_litres,
+                SUM(total_amount) as total_amount,
+                MAX(id) as latest_id
+            ')
+            ->groupBy('vehicle_id', 'type', 'source')
+            ->get();
+
+        // latest per litre amount
+        $records->map(function ($row) {
+            $latest = Diesel::find($row->latest_id);
+            $row->per_litre_amount = $latest->per_litre_amount ?? 0;
+            return $row;
+        });
+
+        return view('admin.diesel.fuel_consumption_report', compact('records', 'from', 'to'));
     }
 }

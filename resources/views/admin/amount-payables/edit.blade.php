@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title','Amount Payable')
+@section('title','Account Payable')
 
 @section('content')
 

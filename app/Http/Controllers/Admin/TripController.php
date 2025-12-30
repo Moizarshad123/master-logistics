@@ -433,7 +433,7 @@ class TripController extends Controller
                         "baloch_labour_rate"=> $detail['baloch_labour_rate'] ?? 0,
                         "no_of_labour"      => $detail['no_of_labour'] ?? 0,
                         "rent"              => $detail['rent'] ?? 0,
-                        "is_payment_receive" => $detail['is_payment_receive'] ?? 'No',
+                        "is_payment_receive" => $detail['payment_receive'] ?? 'No',
                         "receive_amount"     => $detail['receive_amount'] ?? 0,
                         "receive_by"         => $detail['receive_by'] ?? null,
                         "comments"          => $detail['comments'] ?? null,
@@ -441,21 +441,23 @@ class TripController extends Controller
                     ]);
 
                     $customer = Customer::findOrFail($detail['customer_id']);
-                    if($detail['is_payment_receive'] == "Yes") {
+                    if($detail['payment_receive'] == "Yes") {
                         $rem_amount = $detail['rent'] - $detail['receive_amount'];
                         $customer->outstanding_amount += $rem_amount;
+
+                        AmountReceivable::create([
+                            'trip_id'     => $trip->id,
+                            'customer_id' => $detail['customer_id'],
+                            'amount'      => $detail['receive_amount'],
+                            "date"        => date("Y-m-d"),
+                            'receipt'     => ""
+                        ]);
                     } else {
                         $customer->outstanding_amount += $detail['rent'];
                     }
                     $customer->save();
 
-                    AmountReceivable::create([
-                        'trip_id'     => $trip->id,
-                        'customer_id' => $detail['customer_id'],
-                        'amount'      => $detail['receive_amount'],
-                        "date"        => date("Y-m-d"),
-                        'receipt'     => ""
-                    ]);
+                    
                     // $trip->tripDetails()->create($detail);
                 }
             }

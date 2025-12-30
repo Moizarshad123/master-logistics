@@ -34,22 +34,24 @@ class MaintenanceController extends Controller
                         $editUrl    = route('admin.maintenances.edit', $data->id);
                         $deleteUrl  = route('admin.maintenances.destroy', $data->id);
 
-                        if(auth()->user()->role_id == 2) {
-                            return '<form action="'.$deleteUrl.'" method="POST" style="display:inline;">
-                                        '.csrf_field().'
-                                        '.method_field('DELETE').'
-                                        <button type="submit" class="btn btn-sm btn-danger deleteExpenseType" onclick="return confirm(\'Are you sure?\')">Delete</button>
-                                    </form>';
-
-                        } else {
-                            return '<a href="'.$editUrl.'" class="btn btn-sm btn-warning">Edit</a> |
+                        if(auth()->user()->role_id == 1) {
+                            return '<a href="'.$editUrl.'" class="btn btn-sm btn-warning">Edit</a>
                                     <form action="'.$deleteUrl.'" method="POST" style="display:inline;">
                                         '.csrf_field().'
                                         '.method_field('DELETE').'
                                         <button type="submit" class="btn btn-sm btn-danger deleteExpenseType" onclick="return confirm(\'Are you sure?\')">Delete</button>
                                     </form>';
 
-                        }
+                        } 
+                        // else {
+                        //     return '<a href="'.$editUrl.'" class="btn btn-sm btn-warning">Edit</a> |
+                        //             <form action="'.$deleteUrl.'" method="POST" style="display:inline;">
+                        //                 '.csrf_field().'
+                        //                 '.method_field('DELETE').'
+                        //                 <button type="submit" class="btn btn-sm btn-danger deleteExpenseType" onclick="return confirm(\'Are you sure?\')">Delete</button>
+                        //             </form>';
+
+                        // }
 
                         
                     })

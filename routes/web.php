@@ -62,6 +62,8 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
     Route::get('purchasesheets/{id}', [PurchaseSheetController::class, 'show_sheet']);
     Route::get('driver-payments/{id}', [DriverController::class, "driver_payments"])->name("driverPayments");
     Route::get('get-vehicle-expenses', [VehicleController::class, 'getVehicleExpenses'])->name('getVehicleExpenses');
+    Route::get('fuel-consumption-report', [DieselController::class, 'fuelConsumptionReport'])->name('fuelConsumptionReport');
+
         
     Route::controller(TripController::class)->group(function() {
         Route::POST('end-actual-trip', 'endActualTrip')->name('endActualTrip');
@@ -75,8 +77,6 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
     Route::controller(CustomerHeadController::class)->group(function() {
         Route::get('customer-head-report', 'customerHeadReport')->name('customerHeadReport');
     });
-
-
 
     Route::controller(ReportController::class)->group(function() {
         Route::get('vehicle-summary-report', 'vehicleSummaryReport')->name("vehicleSummaryReport");

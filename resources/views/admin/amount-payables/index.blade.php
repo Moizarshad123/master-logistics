@@ -1,11 +1,11 @@
 @extends('admin.layouts.app')
-@section('title','Amount Payables')
+@section('title','Account Payables')
 
 @section('content')
 
 <div class="row mb-3">
     <div class="col-md-10">
-        <h3>Amount Payables</h3>
+        <h3>Account Payables</h3>
     </div>
     <div class="col-md-2">
         <a href="{{ route('admin.amount-payables.create') }}"

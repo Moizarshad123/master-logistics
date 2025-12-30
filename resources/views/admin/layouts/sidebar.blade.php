@@ -135,7 +135,7 @@
                         <a href="{{ route('admin.customers.index')}}">Customers</a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.amount-receivables.index')}}">Amount Receivables</a>
+                        <a href="{{ route('admin.amount-receivables.index')}}">Account Receiveable</a>
                     </li>
 
                     
@@ -175,7 +175,7 @@
                         <a href="{{ route('admin.purchases.index') }}">Purchase Sheet</a>
                         <a href="{{ route('admin.destinations.index') }}">Destinations</a>
                         <a href="{{ route('admin.materials.index') }}">Materials</a>
-                        <a href="{{ route('admin.drivers.index') }}">Drivers</a>
+                        <a href="{{ route('admin.drivers.index') }}">Drivers & Workshop Emp:</a>
                         <a href="{{ route('admin.vehicles.index') }}">Vehicles</a>
                         <a href="{{ route('admin.wheelers.index') }}">Wheelers</a>
                     </li>
@@ -202,10 +202,11 @@
                         <a href="{{ route('admin.master-sweetners.index')}}">Master Sweetners</a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.amount-payables.index')}}">Amount Payable</a>
+                        <a href="{{ route('admin.amount-payables.index')}}">Account Payable</a>
                     </li>
-
-                    
+                    <li>
+                        <a href="{{ route('admin.fuelConsumptionReport')}}">Fuel Consumption Report</a>
+                    </li>
                 </ul>
             </li>
             
