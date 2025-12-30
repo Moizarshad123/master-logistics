@@ -48,14 +48,6 @@ class MasterSweetnerController extends Controller
             $supplier->outstanding_amount += $data["total_amount"];
             $supplier->save();
 
-            $setting = Setting::findOrFail(1);
-            if($request->fuel_type == "Petrol") {
-                $setting->total_petrol += $data["total_litres"];
-            } elseif($request->fuel_type == "Diesel") {
-                $setting->total_diesel += $data["total_litres"];
-            }   
-            $setting->save();
-
             DB::commit();
     
             return redirect()->route('admin.master-sweetners.index')->with('success', 'Master Sweetner Added Successfully');
@@ -73,6 +65,9 @@ class MasterSweetnerController extends Controller
 
     public function update(Request $request, MasterSweetner $masterSweetner)
     {
+
+        $oldAmount = $masterSweetner->total_amount;
+
         $data = $request->validate([
             'supplier_id'        => 'required',
             'total_litres'       => 'required|numeric',
@@ -94,8 +89,14 @@ class MasterSweetnerController extends Controller
 
         $masterSweetner->update($data);
 
-        return redirect()->route('admin.master-sweetners.index')
-            ->with('success', 'Master Sweetner Updated Successfully');
+        $difference = $data['total_amount'] - $oldAmount;
+
+        
+        $supplier                     = FuelSupplier::findOrFail($data["supplier_id"]);
+        $supplier->outstanding_amount += $difference;
+        $supplier->save();
+
+        return redirect()->route('admin.master-sweetners.index')->with('success', 'Master Sweetner Updated Successfully');
     }
 
     public function destroy(MasterSweetner $masterSweetner)

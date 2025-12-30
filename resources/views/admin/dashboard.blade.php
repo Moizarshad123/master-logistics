@@ -17,7 +17,7 @@
                             <i class="bi bi-truck text-secondary"></i>
                         </div>
                         <h5 class="my-3">Petrol Balance</h5>
-                        <div class="text-muted">{{ number_format($setting->total_petrol) ?? 0 }}</div>
+                        <div class="text-muted">{{ number_format($petrolBalance) ?? 0 }}</div>
                         <div class="progress mt-3" style="height: 5px">
                             <div class="progress-bar bg-secondary" role="progressbar" style="width: 25%"
                                 aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
@@ -32,7 +32,7 @@
                             <i class="bi bi-receipt text-warning"></i>
                         </div>
                         <h5 class="my-3">Diesel Balance</h5>
-                        <div class="text-muted">{{ number_format($setting->total_diesel) ?? 0 }}</div>
+                        <div class="text-muted">{{ number_format($dieselBalance) ?? 0 }}</div>
                         <div class="progress mt-3" style="height: 5px">
                             <div class="progress-bar bg-warning" role="progressbar" style="width: 67%"
                                 aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>

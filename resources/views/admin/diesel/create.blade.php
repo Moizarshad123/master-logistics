@@ -31,11 +31,11 @@
 
                 <div class="col-md-4">
                     <label>Date<span style="color: red">*</span></label>
-                    <input type="date" name="date" class="form-control" required>
+                    <input type="date" name="date" class="form-control" required value="{{ date('Y-m-d') }}">
                 </div>
                 <div class="col-md-4">
                     <label>Time</label>
-                    <input type="time" name="time" class="form-control">
+                    <input type="time" name="time" class="form-control" value="{{ date('H:i:s') }}">
                 </div>
             </div>
             <div class="row">

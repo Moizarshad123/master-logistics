@@ -8,14 +8,23 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Setting;
-
+use App\Models\MasterSweetner;
+use App\Models\Diesel;
 use Auth, Mail;
 
 class AdminController extends Controller
 {
     public function dashboard() {
-        $setting = Setting::findOrFail(1);
-        return view('admin.dashboard', compact("setting"));
+        $petrolPurchased = MasterSweetner::where('fuel_type', 'Petrol')->sum('total_litres');
+        $dieselPurchased  = MasterSweetner::where('fuel_type', 'Diesel')->sum('total_litres');
+
+        $petrolConsumed = Diesel::where('type', 'Petrol')->where('source', 'Master Sweetner')->sum('litres');
+        $dieselConsumed = Diesel::where('type', 'Diesel')->where('source', 'Master Sweetner')->sum('litres');
+
+        $petrolBalance = $petrolPurchased - $petrolConsumed;
+        $dieselBalance = $dieselPurchased - $dieselConsumed;
+
+        return view('admin.dashboard', compact("petrolBalance", "dieselBalance"));
     }
 
     public function login(Request $request) {
