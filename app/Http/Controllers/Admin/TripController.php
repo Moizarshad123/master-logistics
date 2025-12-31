@@ -499,7 +499,6 @@ class TripController extends Controller
     public function update(Request $request, Trip $trip)
     {
         try {
-            dd($request->all());
             $request->validate([
                'vehicle_id' => 'required',
                'driver_id'  => 'required',
