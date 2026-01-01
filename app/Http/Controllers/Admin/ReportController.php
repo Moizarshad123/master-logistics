@@ -118,6 +118,11 @@ class ReportController extends Controller
     {
         $query = Trip::with(['vehicle.new_wheeler', 'tripExpenses']);
 
+        if (!$request->filled('from_date') && !$request->filled('to_date')) {
+            $query->whereDate('trip_date', Carbon::today());
+        }
+
+
         if ($request->filled('from_date') && $request->filled('to_date')) {
             $query->whereBetween('trip_date', [
                 Carbon::parse($request->from_date)->startOfDay(),
@@ -138,22 +143,22 @@ class ReportController extends Controller
             7 => 'Labor',
             8 => 'Repair',
             9 => 'Misc',
+            10=> "Brokerage"
         ];
-
         $report = [];
-
         // Grand total initialize
         $grandTotal = [
-            'trips' => 0,
-            'Meal' => 0,
-            'Fueling' => 0,
-            'Service' => 0,
-            'Route' => 0,
+            'trips'    => 0,
+            'Meal'     => 0,
+            'Fueling'  => 0,
+            'Service'  => 0,
+            'Route'    => 0,
             'Toll Tax' => 0,
             'Tyre Punc/Air' => 0,
-            'Labor' => 0,
-            'Repair' => 0,
-            'Misc' => 0,
+            'Labor'     => 0,
+            'Repair'    => 0,
+            'Misc'      => 0,
+            "Brokerage" => 0
         ];
 
         foreach ($trips as $trip) {
@@ -162,23 +167,22 @@ class ReportController extends Controller
             if (!$trip->vehicle || !$trip->vehicle->new_wheeler) {
                 continue;
             }
-
             $category  = $trip->vehicle->new_wheeler->name;
             $vehicleNo = $trip->vehicle->vehicle_no;
-
             // Initialize vehicle row
             if (!isset($report[$category][$vehicleNo])) {
                 $report[$category][$vehicleNo] = [
-                    'trips' => 0,
-                    'Meal' => 0,
-                    'Fueling' => 0,
-                    'Service' => 0,
-                    'Route' => 0,
+                    'trips'    => 0,
+                    'Meal'     => 0,
+                    'Fueling'  => 0,
+                    'Service'  => 0,
+                    'Route'    => 0,
                     'Toll Tax' => 0,
                     'Tyre Punc/Air' => 0,
-                    'Labor' => 0,
-                    'Repair' => 0,
-                    'Misc' => 0,
+                    'Labor'     => 0,
+                    'Repair'    => 0,
+                    'Misc'      => 0,
+                    "Brokerage" => 0
                 ];
             }
 
@@ -188,13 +192,11 @@ class ReportController extends Controller
 
             // Expenses
             foreach ($trip->tripExpenses as $expense) {
-
                 if (!isset($expenseMap[$expense->expense])) {
                     continue;
                 }
 
                 $key = $expenseMap[$expense->expense];
-
                 $report[$category][$vehicleNo][$key] += (float) $expense->amount;
                 $grandTotal[$key] += (float) $expense->amount;
             }
@@ -202,9 +204,6 @@ class ReportController extends Controller
 
         return view('admin.reports.vehicle__summary_report', compact('report', 'grandTotal'));
     }
-
-
-    
 
     public function weekly_labour_report(Request $request) {
 

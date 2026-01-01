@@ -46,6 +46,7 @@
                 <th>Labor</th>
                 <th>Repair</th>
                 <th>Misc</th>
+                <th>Brokerage</th>
             </tr>
 
             @foreach($vehicles as $vehicleNo => $data)
@@ -61,6 +62,9 @@
                     <td>{{ number_format($data['Labor']) }}</td>
                     <td>{{ number_format($data['Repair']) }}</td>
                     <td>{{ number_format($data['Misc']) }}</td>
+                    <td>{{ number_format($data['Brokerage']) }}</td>
+
+                    
                 </tr>
             @endforeach
         </table>
@@ -79,6 +83,9 @@
                 <td>{{ number_format($grandTotal['Labor']) }}</td>
                 <td>{{ number_format($grandTotal['Repair']) }}</td>
                 <td>{{ number_format($grandTotal['Misc']) }}</td>
+                <td>{{ number_format($grandTotal['Brokerage']) }}</td>
+
+                
             </tr>
         </table>
 
