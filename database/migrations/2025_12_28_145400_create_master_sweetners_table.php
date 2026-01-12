@@ -19,7 +19,7 @@ class CreateMasterSweetnersTable extends Migration
             $table->double('total_litres');
             $table->double('per_litre_price');
             $table->string('fuel_type');
-            $table->double('total_amount');
+            $table->double('total_amount', 15, 2);
             $table->date('date')->nullable();
             $table->string('receiving_receipt')->nullable();
             $table->string('delivery_challan')->nullable();

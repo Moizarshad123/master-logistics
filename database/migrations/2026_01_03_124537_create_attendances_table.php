@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFuelSuppliersTable extends Migration
+class CreateAttendancesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,14 @@ class CreateFuelSuppliersTable extends Migration
      */
     public function up()
     {
-        Schema::create('fuel_suppliers', function (Blueprint $table) {
+        Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->double('outstanding_amount', 15, 2)->default(0.0);
+            $table->foreignId('driver_id')->constrained()->onDelete('cascade');
+            $table->date('date');
+            $table->enum('status', ['present', 'absent', 'leave']);
             $table->timestamps();
+
+            $table->unique(['driver_id', 'date']);
         });
     }
 
@@ -28,6 +31,6 @@ class CreateFuelSuppliersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('fuel_suppliers');
+        Schema::dropIfExists('attendances');
     }
 }

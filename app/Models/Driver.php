@@ -21,4 +21,23 @@ class Driver extends Model
         'image',
         'address'
     ];
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
+
+    public function leaves()
+    {
+        return $this->hasMany(Leave::class);
+    }
+
+    public function advanceSalaries()
+    {
+        return $this->hasMany(AdvanceSalary::class);
+    }
+    public function loans()
+    {
+        return $this->hasMany(Loan::class);
+    }
 }

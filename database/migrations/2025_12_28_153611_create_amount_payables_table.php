@@ -16,7 +16,7 @@ class CreateAmountPayablesTable extends Migration
         Schema::create('amount_payables', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('supplier_id');
-            $table->double('amount');
+            $table->double('amount', 15, 2);
             $table->date('date')->nullable();
             $table->string('payment_via');
             $table->string('other_source')->nullable();

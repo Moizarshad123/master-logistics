@@ -14,6 +14,7 @@ class CreateCustomersTable extends Migration
             $table->id();
             $table->Integer('customer_head_id');
             $table->string('name');
+            $table->double('outstanding_amount', 15, 2);
             $table->timestamps();
         });
     }

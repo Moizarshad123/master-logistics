@@ -15,7 +15,7 @@ class CreateTripVehicleExpensesTable extends Migration
                 $table->integer('vehicle_id');
                 $table->string('expense')->nullable();
                 $table->string('expense_from')->nullable();
-                $table->double('amount')->nullable();
+                $table->double('amount', 15, 2)->nullable();
                 $table->timestamps();
             });
         }

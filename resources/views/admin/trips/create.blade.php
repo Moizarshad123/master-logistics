@@ -340,6 +340,8 @@
                             <option value="Feed Sell">Feed Sell</option>
                             <option value="Other Sell">Other Sell</option>
                             <option value="Local">Local</option>
+                            <option value="Return">Return</option>
+
                         </select>
                     </div>
                     <div class="col-md-4">

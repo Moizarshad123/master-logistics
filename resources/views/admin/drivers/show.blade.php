@@ -3,6 +3,7 @@
 
 @section('css')
 <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" crossorigin="anonymous">
 
 <style>
     .doc-img {
@@ -61,6 +62,32 @@
             </a>
         
         </div>
+
+        <h2>Current Month Attendance</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($attendances as $item)
+                    <tr>
+                        <td>{{ date('d M Y',strtotime($item->date)) }}</td>
+                        <td>
+                            @if($item->status == "present")
+                                <span class="badge badge-success">Present</span>
+                            @elseif($item->status == "absent")  
+                                <span class="badge badge-danger">Absent</span>
+                            @else
+                                <span class="badge badge-warning">Leave</span>
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 
 @endsection

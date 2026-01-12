@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Driver;
 use App\Models\TripPayment;
+use App\Models\Attendance;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class DriverController extends Controller
 {
@@ -15,6 +17,16 @@ class DriverController extends Controller
         return view('admin.drivers.payments', compact('payments'));
 
     }
+
+    public function getSalary($id)
+    {
+        $driver = Driver::findOrFail($id);
+
+        return response()->json([
+            'salary' => $driver->salary
+        ]);
+    }
+
     public function index()
     {
         
@@ -160,8 +172,20 @@ class DriverController extends Controller
     public function show($id)
     {
         try {
-           $driver = Driver::findOrFail($id);
-           return view("admin.drivers.show", compact('driver'));
+
+            $startDate = Carbon::now()->startOfMonth();
+            // Today (05 Jan)
+            $endDate = Carbon::now();
+            $attendances = Attendance::where('driver_id', $id)
+                                        ->whereBetween('date', [
+                                            $startDate->toDateString(),
+                                            $endDate->toDateString()
+                                        ])
+                                        ->orderBy('date', 'ASC')
+                                        ->get();
+
+            $driver = Driver::findOrFail($id);
+            return view("admin.drivers.show", compact('driver', "attendances"));
         } catch (\Exception $e) {
             return redirect()->back()->with("error", $e->getMessage());
         }

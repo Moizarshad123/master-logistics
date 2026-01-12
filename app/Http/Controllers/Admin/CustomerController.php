@@ -20,7 +20,7 @@ class CustomerController extends Controller
                         return $data->customerHead->name ?? '';
                     })
                     ->editColumn('outstanding_amount', function ($data) {
-                        return number_format($data->outstanding_amount) ?? '';
+                        return $data->outstanding_amount ?? '';
                     })
                     ->addColumn('action', function ($data) {
 

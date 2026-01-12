@@ -22,7 +22,13 @@ use App\Http\Controllers\Admin\{
     AmountReceivableController,
     FuelSupplierController,
     MasterSweetnerController,
-    AmountPayableController
+    AmountPayableController,
+    AttendanceController,
+    LeaveController,
+    PayrollController,
+    AdvanceSalaryController,
+    LoanController,
+    LoanInstallmentController
 };
 
 Route::match(['get', 'post'], 'login', [AdminController::class, 'login'])->name('login');
@@ -58,11 +64,33 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
     Route::resource('customers', CustomerController::class);
     Route::resource('customer-heads', CustomerHeadController::class);
     Route::resource('maintenances', MaintenanceController::class);
+    Route::resource('advance-salaries', AdvanceSalaryController::class)->only(['index','store','destroy']);
+
+
+    Route::resource('loans', LoanController::class);
+    Route::post('loan-installments/{id}/paid', [LoanInstallmentController::class, 'markPaid']);
+
+    Route::get('drivers/{id}/salary',
+                [DriverController::class, 'getSalary']
+            )->name('drivers.salary');
+
+
     Route::get('salesheets/{id}', [SalesSheetController::class, 'show_sheet']);
     Route::get('purchasesheets/{id}', [PurchaseSheetController::class, 'show_sheet']);
     Route::get('driver-payments/{id}', [DriverController::class, "driver_payments"])->name("driverPayments");
     Route::get('get-vehicle-expenses', [VehicleController::class, 'getVehicleExpenses'])->name('getVehicleExpenses');
     Route::get('fuel-consumption-report', [DieselController::class, 'fuelConsumptionReport'])->name('fuelConsumptionReport');
+
+    Route::get('/attendance', [AttendanceController::class, 'index'])->name("attendance");
+    Route::post('/attendance', [AttendanceController::class, 'store']);
+
+    Route::post('/leave', [LeaveController::class, 'store']);
+    Route::post('/leave/{id}/approve', [LeaveController::class, 'approve']);
+    Route::post('/leave/{id}/reject', [LeaveController::class, 'reject']);
+
+    Route::get('/payroll', [PayrollController::class, 'index'])->name("payroll");
+    Route::get('/payroll/pdf', [PayrollController::class, 'download'])->name("payroll.pdf");
+    Route::get('/deduct-loan', [PayrollController::class, 'deductLoan'])->name("deductLoan");
 
         
     Route::controller(TripController::class)->group(function() {

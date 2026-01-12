@@ -20,10 +20,8 @@
                     <div class="fw-bold">Master Logistics</div>
                 </div>
             </a>
-            
         </div>
         <ul>
-
             <li>
                 <a  class="{{ request()->IS('admin/dashboard') ? 'active' : '' }}"  href="{{ route('admin.dashboard') }}">
                     <span class="nav-link-icon">
@@ -88,10 +86,7 @@
                     <span>Reports</span>
                 </a>
                 <ul>
-
-                    
-
-                     <li>
+                    <li>
                         <a href="{{ route('admin.vehicleSummaryReport') }}">Vehicle Summary Report</a>
                     </li>
                     
@@ -111,9 +106,6 @@
                     <li>
                         <a href="{{ route('admin.disbursementSlip') }}">Disbursement Slip</a>
                     </li>
-
-                    
-                    
                 </ul>
             </li>
 
@@ -137,8 +129,6 @@
                     <li>
                         <a href="{{ route('admin.amount-receivables.index')}}">Account Receiveable</a>
                     </li>
-
-                    
                 </ul>
             </li>
 
@@ -183,8 +173,7 @@
                 </ul>
             </li>
 
-
-              <li>
+            <li>
                 <a href="javascript:;">
                     <span class="nav-link-icon">
                         <i class="bi bi-receipt"></i>
@@ -209,8 +198,34 @@
                     </li>
                 </ul>
             </li>
-            
 
+
+            <li>
+                <a href="javascript:;">
+                    <span class="nav-link-icon">
+                        <i class="bi bi-receipt"></i>
+                    </span>
+                    <span>Attendance & Payroll Section</span>
+                </a>
+                <ul>
+                    <li>
+                        <a href="{{ route('admin.attendance')}}">Attendance</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.payroll')}}">Payroll</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.loans.index')}}">Loans</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.amount-payables.index')}}">Account Payable</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.fuelConsumptionReport')}}">Fuel Consumption Report</a>
+                    </li>
+                </ul>
+            </li>
+        
             <li>
                 <a  href="{{route('admin.logout') }}">
                     <span class="nav-link-icon">
