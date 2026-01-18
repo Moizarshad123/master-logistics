@@ -19,7 +19,8 @@ class Driver extends Model
         'driving_license_front',
         'driving_license_back',
         'image',
-        'address'
+        'address',
+        'status'
     ];
 
     public function attendances()

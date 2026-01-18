@@ -44,7 +44,7 @@
 
     <!-- preloader -->
     <div class="preloader">
-        <img src="" alt="logo">
+        {{-- <img src="" alt="logo"> --}}
         <div class="preloader-icon"></div>
     </div>
     <!-- ./ preloader -->

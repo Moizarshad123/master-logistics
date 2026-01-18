@@ -31,6 +31,7 @@
                     <th>Salary</th>
                     <th>CNIC Expiry Date</th>
                     <th>License Expiry Date</th>
+                    <th>Status</th>
                     {{-- <th>Address</th> --}}
                     {{-- <th>CNIC Front</th>
                     <th>CNIC Back</th>
@@ -40,56 +41,6 @@
                 </tr>
             </thead>
             <tbody>
-                {{-- @forelse ($drivers as $driver)
-                    <tr>
-                        <td>
-                            @if($driver->image)
-                                <img src="{{ $driver->image}}" width="100" height="100" style="border-radius: 50%">
-                            @endif
-                        </td>
-                        <td>{{ $driver->name }}</td>
-                        <td>{{ $driver->phone }}</td>
-                        <td>{{ $driver->salary }}</td>
-                        <td>{{ $driver->address }}</td>
-                        <td>
-                            @if($driver->cnic_front)
-                                <img src="{{ $driver->cnic_front}}" width="80" height="80" class="rounded">
-                            @endif
-                        </td>
-                        <td>
-                            @if($driver->cnic_back)
-                                <img src="{{ $driver->cnic_back}}" width="80" height="80" class="rounded">
-                            @endif
-                        </td>
-                        <td>
-                            @if($driver->driving_license_front)
-                                <img src="{{ $driver->driving_license_front}}" width="80" height="80" class="rounded">
-                            @endif
-                        </td>
-                        <td>
-                            @if($driver->driving_license_back)
-                                <img src="{{ $driver->driving_license_back}}" width="80" height="80" class="rounded">
-                            @endif
-                        </td>
-                        <td>
-                            <a href="{{ route('admin.driverPayments', $driver->id) }}" class="btn btn-info btn-sm">View Payments</a>
-                            <a href="{{ route('admin.drivers.edit', $driver) }}" class="btn btn-warning btn-sm">Edit</a>
-                            <form action="{{ route('admin.drivers.destroy', $driver) }}" method="POST"
-                                style="display:inline-block;">
-                                @csrf @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm deleteExpenseType">
-                                    Delete
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                @empty
-                <tr>
-                    <th colspan="9">
-                        <p class="text-center">No Drivers Found</p>
-                    </th>
-                </tr>
-                @endforelse --}}
             </tbody>
         </table>
     </div>
@@ -141,6 +92,10 @@
                 {
                     data: 'license_expiry_date',
                     name: 'license_expiry_date'
+                },
+                {
+                    data: 'status',
+                    name: 'status'
                 },
                 {
                     data: 'action',

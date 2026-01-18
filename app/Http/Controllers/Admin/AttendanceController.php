@@ -12,7 +12,7 @@ class AttendanceController extends Controller
 {
     public function index()
     {
-        $drivers = Driver::orderBy('name')->get();
+        $drivers = Driver::where('status', 'active')->orderBy('name')->get();
         return view('admin.attendance.index', compact('drivers'));
     }
 

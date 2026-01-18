@@ -29,7 +29,6 @@ class DriverController extends Controller
 
     public function index()
     {
-        
         try {
             if (request()->ajax()) {
                 $drivers = Driver::latest();
@@ -54,6 +53,9 @@ class DriverController extends Controller
                         } else {
                             return '';
                         }
+                    })
+                    ->editColumn('status', function ($data) {
+                        return ucfirst($data->status);
                     })
                     ->addColumn('action', function ($data) {
 
@@ -262,6 +264,7 @@ class DriverController extends Controller
         $driver->salary              = $request->salary;
         $driver->cnic_expiry_date    = $request->cnic_expiry_date;
         $driver->license_expiry_date = $request->license_expiry_date;
+        $driver->status              = $request->status;
         $driver->save();
 
         return redirect()->route('admin.drivers.index')->with('success', 'Driver updated successfully.');
@@ -275,7 +278,6 @@ class DriverController extends Controller
             }
         }
         $driver->delete();
-
         return redirect()->route('admin.drivers.index')->with('success', 'Driver deleted successfully.');
     }
 }

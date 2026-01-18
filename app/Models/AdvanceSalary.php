@@ -12,7 +12,8 @@ class AdvanceSalary extends Model
         'driver_id',
         'month',
         'year',
-        'amount'
+        'amount',
+        'status'
     ];
 
     public function driver()

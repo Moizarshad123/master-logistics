@@ -111,15 +111,21 @@
                 </thead>
                 <tbody id="expensesTableBody">
                     @foreach ($expenses as $expense)
+
                         <tr>
                             <td>
-                                <input type="text" name="expenses[{{$expense->id}}][name]" value="{{$expense->expense ?? ""}}" class="form-control" readonly>
+                                <select name="expenses[{{$expense->id}}][name]" id="" class="form-select">
+                                    <option value="">Select Expense</option>
+                                    @foreach($expensesTypes as $type)
+                                        
+                                        <option value="{{ $type->name }}" {{$expense->expense == $type->name ? "selected" : ""}}>{{ $type->name }}</option>
+                                    @endforeach
+                                </select>
                             </td>
                             <td>
                                 <input type="number" step="0.01" 
                                     name="expenses[{{$expense->id}}][amount]" 
                                     class="form-control"  value="{{ $expense->amount }}">
-
                                 <input type="hidden" name="expenses[{{$expense->id}}][id]" value="{{$expense->id}}">
                             </td>
                             <td>

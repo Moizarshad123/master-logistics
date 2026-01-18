@@ -348,7 +348,7 @@ class TripController extends Controller
     public function create()
     {
         $vehicles      = Vehicle::all();
-        $drivers       = Driver::all();
+        $drivers       = Driver::where('status', 'active')->get();
         $expenses      = ExpenseType::all();
         $destinations  = Destination::all();
         $sales         = SaleSheet::orderByDESC("id")->get();
@@ -481,7 +481,7 @@ class TripController extends Controller
             $query->whereNull('end_date');
         }]);
         $vehicles      = Vehicle::all();
-        $drivers       = Driver::all();
+        $drivers       = Driver::where('status', 'active')->get();
         $expensesTypes = ExpenseType::all();
         $expenses      = TripVehicleExpense::with("expenseName")->where("trip_id", $trip->id)->get();
         $payments      = TripPayment::where("trip_id", $trip->id)->get();

@@ -20,16 +20,24 @@
 </div>
 
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-4">
         <label for="">CNIC Expiry Date</label>
         <input type="date" class="form-control" name="cnic_expiry_date" value="{{ old('cnic_expiry_date', $driver->cnic_expiry_date ?? '') }}">
     </div>
-    <div class="col-md-6">
+    <div class="col-md-4">
         <label for="">License Expiry Date</label>
         <input type="date" class="form-control" name="license_expiry_date" value="{{ old('license_expiry_date', $driver->license_expiry_date ?? '') }}">
     </div>
+    <div class="col-md-4">
+        <label for="">Driver Employment Status</label>
+        <select name="status" class="form-select">
+            <option value="left" {{ $driver->status == "left" ? "selected" : ""}}>Left</option>
+            <option value="resign" {{ $driver->status == "resign" ? "selected" : ""}}>Resign</option>
+            <option value="terminate" {{ $driver->status == "terminate" ? "selected" : ""}}>Terminate</option>
+            <option value="active" {{ $driver->status == "active" ? "selected" : ""}}>Active</option>
+        </select>
+    </div>
 </div>
-
 
 <div class="row">
     <div class="col-md-6">
@@ -83,7 +91,6 @@
     </div>
 </div>
 
-
 <div class="row">
     <div class="col-md-6">
         <label for="image" class="form-label">Driver Image</label>
@@ -95,10 +102,5 @@
             alt="Driver" class="mt-2" height="150"
             style="{{ isset($driver) && $driver->image ? '' : 'display:none;' }}">
     </div>
+    
 </div>
-   
-
-
-
-
-

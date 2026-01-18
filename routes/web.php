@@ -64,7 +64,7 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
     Route::resource('customers', CustomerController::class);
     Route::resource('customer-heads', CustomerHeadController::class);
     Route::resource('maintenances', MaintenanceController::class);
-    Route::resource('advance-salaries', AdvanceSalaryController::class)->only(['index','store','destroy']);
+    Route::resource('advance-salaries', AdvanceSalaryController::class)->only(['index','store','destroy', 'create', 'update', 'edit']);
 
 
     Route::resource('loans', LoanController::class);

@@ -26,7 +26,7 @@ class LoanController extends Controller
      */
     public function create()
     {
-        $drivers = Driver::orderBy("name", "ASC")->get();
+        $drivers = Driver::where('status', 'active')->orderBy("name", "ASC")->get();
         return view("admin.loan.create", compact("drivers"));
         
     }

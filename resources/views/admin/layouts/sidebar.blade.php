@@ -218,10 +218,7 @@
                         <a href="{{ route('admin.loans.index')}}">Loans</a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.amount-payables.index')}}">Account Payable</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.fuelConsumptionReport')}}">Fuel Consumption Report</a>
+                        <a href="{{ route('admin.advance-salaries.index') }}">Advance Salary</a>
                     </li>
                 </ul>
             </li>

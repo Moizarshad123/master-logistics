@@ -22,7 +22,7 @@ class PayrollController extends Controller
         $drivers = Driver::with(['attendances' => function ($q) use ($month, $year) {
                                 $q->whereMonth('date', $month)
                                 ->whereYear('date', $year);
-                            }])->orderBy("name", 'ASC')->get();
+                            }])->where('status', 'active')->orderBy("name", 'ASC')->get();
 
         $report = [];
 
@@ -78,7 +78,7 @@ class PayrollController extends Controller
         $drivers = Driver::with(['attendances' => function ($q) use ($month, $year) {
                             $q->whereMonth('date', $month)
                             ->whereYear('date', $year);
-                        }])->orderBy('name')->get();
+                        }])->where('status', 'active')->orderBy('name')->get();
 
         $report = [];
 
