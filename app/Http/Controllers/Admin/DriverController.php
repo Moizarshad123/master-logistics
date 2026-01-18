@@ -256,10 +256,12 @@ class DriverController extends Controller
             $driver->image = asset($fileName);
         }
 
-        $driver->name    = $request->name;
-        $driver->phone   = $request->phone;
-        $driver->address = $request->address;
-        $driver->salary  = $request->salary;
+        $driver->name                = $request->name;
+        $driver->phone               = $request->phone;
+        $driver->address             = $request->address;
+        $driver->salary              = $request->salary;
+        $driver->cnic_expiry_date    = $request->cnic_expiry_date;
+        $driver->license_expiry_date = $request->license_expiry_date;
         $driver->save();
 
         return redirect()->route('admin.drivers.index')->with('success', 'Driver updated successfully.');

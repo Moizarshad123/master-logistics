@@ -33,6 +33,7 @@
         <thead>
             <tr>
                 <th>ID</th>
+                <th>Trip ID</th>
                 <th>Vehicle</th>
                 <th>Type</th>
                 <th>Created By</th>
@@ -68,10 +69,13 @@
             dom: '<"top d-flex justify-content-between"f p>rt<"bottom"p>',
 
             columns: [
-
                 {
                     data: 'id',
                     name: 'id'
+                },
+                {
+                    data: 'trip_id',
+                    name: 'trip_id'
                 },
                 {
                     data: 'vehicle',

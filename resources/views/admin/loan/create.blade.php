@@ -82,7 +82,8 @@ $(document).on('change', '#driver_id', function () {
     }
 
     $.ajax({
-        url: `/admin/drivers/${driverId}/salary`,
+        
+        url: "{{ url('admin/drivers') }}/" + driverId + "/salary",
         type: 'GET',
         success: function (res) {
             $('#salary').val(res.salary);

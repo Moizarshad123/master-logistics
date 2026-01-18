@@ -32,6 +32,11 @@ class Trip extends Model
         return $this->hasMany(TripPayment::class);
     }
 
+    public function fuelings()
+    {
+        return $this->hasMany(Diesel::class);
+    }
+
     public function tripExpenses()
     {
         return $this->hasMany(TripVehicleExpense::class);

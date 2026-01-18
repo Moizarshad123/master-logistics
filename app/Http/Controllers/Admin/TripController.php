@@ -471,7 +471,7 @@ class TripController extends Controller
 
     public function show(Trip $trip)
     {
-        $trip->load(['tripDetails.customer', 'tripDetails.from_dest', 'tripDetails.to_dest', 'vehicle', 'driver', 'tripDetails', 'tripPayments', 'tripExpenses', 'tripExpenses.expenseName']);
+        $trip->load(['fuelings', 'tripDetails.customer', 'tripDetails.from_dest', 'tripDetails.to_dest', 'vehicle', 'driver', 'tripDetails', 'tripPayments', 'tripExpenses', 'tripExpenses.expenseName']);
         return view('admin.trips.detail', compact('trip'));
     }
 
