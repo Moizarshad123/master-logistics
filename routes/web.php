@@ -100,6 +100,9 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
         Route::get('active-trailers-trips', 'activeTrailersTrips')->name('activeTrailersTrips');
         Route::get('closed-trailers-trips', 'closedTrailersTrips')->name('closeTrailersTrips');
         Route::get('disbursement-slip', 'disbursement_slip')->name('disbursementSlip');
+        Route::delete('trip-expense/{id}', 'deleteExpense')->name('trip.expense.delete');
+        Route::delete('trip-detail/{id}', 'deleteTripDetail')->name('trip.detail.delete');
+
     });
 
     Route::controller(CustomerHeadController::class)->group(function() {

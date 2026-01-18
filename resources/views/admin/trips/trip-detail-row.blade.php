@@ -1,4 +1,18 @@
-<div class="trip-detail border rounded p-3 mb-3">
+<div class="trip-detail border rounded p-3 mb-3" data-detail-id="{{ $detail->id }}">
+
+    <div class="row">
+        <div class="col-md-10"></div>
+         <div class="col-md-2">
+            
+            {{-- DELETE BUTTON --}}
+            <div class="d-flex justify-content-end mb-2">
+                <button type="button" class="btn btn-danger btn-sm delete-trip-detail" data-id="{{ $detail->id }}">
+                                    
+                    Remove Detail <i class="fa fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-4">
             <label>Customer<span style="color: red">*</span></label>
@@ -18,6 +32,7 @@
                 <option value="Feed Sell" {{ $detail->trip_type == "Feed Sell" ? "selected" : ""}}>Feed Sell</option>
                 <option value="Other Sell" {{ $detail->trip_type == "Other Sell" ? "selected" : ""}}>Other Sell</option>
                 <option value="Local" {{ $detail->trip_type == "Local" ? "selected" : ""}}>Local</option>
+                <option value="Return" {{ $detail->trip_type == "Return" ? "selected" : ""}}>Return</option>
             </select>
         </div>
         <div class="col-md-4">
@@ -84,8 +99,6 @@
         </div>
     @endif
 
-
-
     {{-- <div class="row mt-2">
         <div class="col-md-6">
             <label>From</label>
@@ -108,7 +121,12 @@
     <div class="row mt-2">
         <div class="col-md-3">
             <label>Material</label>
-            <input type="text" name="trip_details[{{ $index }}][material]" value="{{ old("trip_details.$index.material", $detail->material ?? '') }}" class="form-control">
+            <select class="form-select" name="trip_details[{{ $index }}][material]">
+                <option value="">Select Material</option>
+                @foreach ($materials as $material)
+                    <option value="{{ $material->name }}" {{ $detail->material == $material->name ? "selected" : ""}}>{{ $material->name }}</option>
+                @endforeach
+            </select>
         </div>
         <div class="col-md-3">
             <label>Material Type</label>
@@ -129,7 +147,6 @@
             <input type="text" name="trip_details[{{ $index }}][baloch_labour]"  value="{{ $detail->baloch_labour ?? ''}}" class="form-control baloch-labour">
         </div>
     </div>
-    
 
     <div class="row mt-2">
         <div class="col-md-3">
@@ -174,5 +191,12 @@
             <label>Comments</label>
             <textarea  name="trip_details[{{ $index }}][comments]" class="form-control">{{  $detail->comments ?? '' }}</textarea>
         </div>
+
+       
+
+
+        {{-- IMPORTANT: hidden id for backend --}}
+        <input type="hidden" name="trip_details[{{ $index }}][id]" value="{{ $detail->id }}">
+
     </div>
 </div>

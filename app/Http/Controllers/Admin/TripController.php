@@ -657,4 +657,28 @@ class TripController extends Controller
                             ->orderByDESC("id")->get();
         return view("admin.trips.disbursement_slip", compact("trips"));
     }
+
+    public function deleteExpense($id)
+    {
+        $expense = TripVehicleExpense::findOrFail($id);
+        $expense->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Expense deleted successfully'
+        ]);
+    }
+
+    public function deleteTripDetail($id)
+    {
+        $detail = TripDetail::findOrFail($id);
+        $detail->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Trip detail deleted'
+        ]);
+    }
+
+
 }

@@ -47,11 +47,15 @@
                     <div class="col-md-3">
                         <h5 class="mb-0">Trip Payments</h5>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label>Balance</label>
-                        <input type="text" name="balance" class="form-control" readonly id="balance" value="{{ $trip->balance }}">
+                        <input type="text" name="balance" class="form-control" readonly id="balance" >
                     </div>
-                    <div class="col-md-5 text-end">
+                    <div class="col-md-3">
+                        <label>Total Rent</label>
+                        <input type="text" name="total_rent" class="form-control" id="totalRent" value="{{ $trip->total_rents }}" readonly>
+                    </div>
+                    <div class="col-md-3 text-end">
                         <button class="btn btn-success" id="addTripExpense">+</button>
                     </div>
                 </div>
@@ -126,6 +130,13 @@
                                     @endforeach
                                 </select>
                             </td>
+                            <td class="text-center">
+                                <button type="button"
+                                        class="btn btn-danger btn-sm delete-expense"
+                                        data-id="{{ $expense->id }}">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -165,6 +176,64 @@
             width: '100%'
         });
     });
+
+    $(document).on('click', '.delete-expense', function (e) {
+
+        e.preventDefault();
+        let expenseId = $(this).data('id');
+        let row       = $(this).closest('tr');
+
+        Swal.fire({
+            title: 'Delete Expense?',
+            text: 'This expense will be removed permanently',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{{ route('admin.trip.expense.delete', '') }}/" + expenseId,
+                    type: "DELETE",
+                    data: {
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function () {
+                        row.remove();
+                        calculateBalance();
+                        Swal.fire('Deleted!', 'Expense removed', 'success');
+                    }
+                });
+            }
+        });
+    });
+
+    $(document).on('click', '.delete-trip-detail', function () {
+        let detailId = $(this).data('id');
+        let container = $(this).closest('.trip-detail');
+
+        Swal.fire({
+            title: 'Delete Trip Detail?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{{ route('admin.trip.detail.delete', '') }}/" + detailId,
+                    type: "DELETE",
+                    data: {
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function () {
+                        container.remove();
+                        Swal.fire('Deleted!', 'Trip detail removed', 'success');
+                    }
+                });
+            }
+        });
+    });
+
+
 </script>
 <script>
     $(document).ready(function () {
