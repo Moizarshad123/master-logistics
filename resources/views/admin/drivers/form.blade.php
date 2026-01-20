@@ -30,12 +30,21 @@
     </div>
     <div class="col-md-4">
         <label for="">Driver Employment Status</label>
-        <select name="status" class="form-select">
-            <option value="left" {{ $driver->status == "left" ? "selected" : ""}}>Left</option>
-            <option value="resign" {{ $driver->status == "resign" ? "selected" : ""}}>Resign</option>
-            <option value="terminate" {{ $driver->status == "terminate" ? "selected" : ""}}>Terminate</option>
-            <option value="active" {{ $driver->status == "active" ? "selected" : ""}}>Active</option>
-        </select>
+        @if($driver != null)
+            <select name="status" class="form-select">
+                <option value="left" {{ $driver->status == "left" ? "selected" : ""}}>Left</option>
+                <option value="resign" {{ $driver->status == "resign" ? "selected" : ""}}>Resign</option>
+                <option value="terminate" {{ $driver->status == "terminate" ? "selected" : ""}}>Terminate</option>
+                <option value="active" {{ $driver->status == "active" ? "selected" : ""}}>Active</option>
+            </select>
+        @else 
+            <select name="status" class="form-select">
+                <option value="left" >Left</option>
+                <option value="resign">Resign</option>
+                <option value="terminate">Terminate</option>
+                <option value="active">Active</option>
+            </select>
+        @endif
     </div>
 </div>
 

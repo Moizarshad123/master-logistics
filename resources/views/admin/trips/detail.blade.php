@@ -11,7 +11,7 @@
 
     <div class="card mb-3">
         <div class="card-body">
-            <p><strong>Trip No:</strong> {{ $trip->trip_no }}</p>
+            <p><strong>Trip No:</strong> {{ $trip->id }}</p>
             <p><strong>Trip Date:</strong> {{ date("d-m-Y", strtotime($trip->trip_date)) }}</p>
             <p><strong>Vehicle:</strong> {{ $trip->vehicle->vehicle_no ?? 'N/A' }}</p>
             <p><strong>Driver:</strong> {{ $trip->driver->name ?? 'N/A' }}</p>

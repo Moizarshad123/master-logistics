@@ -84,7 +84,9 @@ class DriverController extends Controller
 
     public function create()
     {
-        return view('admin.drivers.create');
+        return view('admin.drivers.create', [
+            'driver' => null
+        ]);
     }
 
     public function store(Request $request)

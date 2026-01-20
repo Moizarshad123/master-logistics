@@ -66,7 +66,7 @@
             ajax: {
                 url: `{{route('admin.drivers.index')}}`,
             },
-            dom: '<"top"p>rt<"bottom"p><"clear">',
+            dom: '<"top d-flex justify-content-between"f p>rt<"bottom"p>',
             columns: [
 
                 {
