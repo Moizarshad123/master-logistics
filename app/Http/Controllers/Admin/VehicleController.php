@@ -293,6 +293,55 @@ class VehicleController extends Controller
             $data['image'] = asset($fileName);
         }
 
+        if ($request->hasFile('route_permit_sindh')) {
+            $file     = $request->file('route_permit_sindh');
+            $fileName = time() . '-' . uniqid() . '-vehicle.' . $file->getClientOriginalExtension();
+            $file->move($dir, $fileName);
+            $fileName = $dir.$fileName;
+
+            $data['route_permit_sindh'] = asset($fileName);
+        }
+        if ($request->hasFile('route_permit_punjab')) {
+            $file     = $request->file('route_permit_punjab');
+            $fileName = time() . '-' . uniqid() . '-vehicle.' . $file->getClientOriginalExtension();
+            $file->move($dir, $fileName);
+            $fileName = $dir.$fileName;
+
+            $data['route_permit_punjab'] = asset($fileName);
+        }
+        if ($request->hasFile('fitness_certificate')) {
+            $file     = $request->file('fitness_certificate');
+            $fileName = time() . '-' . uniqid() . '-vehicle.' . $file->getClientOriginalExtension();
+            $file->move($dir, $fileName);
+            $fileName = $dir.$fileName;
+
+            $data['fitness_certificate'] = asset($fileName);
+        }
+        if ($request->hasFile('insurance_certificate')) {
+            $file     = $request->file('insurance_certificate');
+            $fileName = time() . '-' . uniqid() . '-vehicle.' . $file->getClientOriginalExtension();
+            $file->move($dir, $fileName);
+            $fileName = $dir.$fileName;
+
+            $data['insurance_certificate'] = asset($fileName);
+        }
+        if ($request->hasFile('tax_token')) {
+            $file     = $request->file('tax_token');
+            $fileName = time() . '-' . uniqid() . '-vehicle.' . $file->getClientOriginalExtension();
+            $file->move($dir, $fileName);
+            $fileName = $dir.$fileName;
+
+            $data['tax_token'] = asset($fileName);
+        }
+        if ($request->hasFile('vehicle_file')) {
+            $file     = $request->file('vehicle_file');
+            $fileName = time() . '-' . uniqid() . '-vehicle.' . $file->getClientOriginalExtension();
+            $file->move($dir, $fileName);
+            $fileName = $dir.$fileName;
+
+            $data['vehicle_file'] = asset($fileName);
+        }
+
         $vehicle->update($data);
 
         if ($request->has('expense_types')) {

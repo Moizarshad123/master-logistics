@@ -49,11 +49,11 @@
                     </div>
                     <div class="col-md-3">
                         <label>Balance</label>
-                        <input type="text" name="balance" class="form-control" readonly id="balance" >
+                        <input type="text" name="balance" class="form-control" readonly id="balance" value="{{ $trip->balance }}">
                     </div>
                     <div class="col-md-3">
                         <label>Total Rent</label>
-                        <input type="text" name="total_rent" class="form-control" id="totalRent" value="{{ $trip->total_rents }}" readonly>
+                        <input type="text" name="total_rent" class="form-control" id="totalRent" value="{{ $trip->total_rent }}" readonly>
                     </div>
                     <div class="col-md-3 text-end">
                         <button class="btn btn-success" id="addTripExpense">+</button>
