@@ -73,17 +73,17 @@
         <table class="table" border="1">
             <tr style="font-weight:bold; background:#f2f2f2;">
                 <td style="width: 10%">Grand Total</td>
-                <td>{{ $grandTotal['trips'] }}</td>
-                <td>{{ number_format($grandTotal['Meal']) }}</td>
-                <td>{{ number_format($grandTotal['Fueling']) }}</td>
-                <td>{{ number_format($grandTotal['Service']) }}</td>
-                <td>{{ number_format($grandTotal['Route']) }}</td>
-                <td>{{ number_format($grandTotal['Toll Tax']) }}</td>
-                <td>{{ number_format($grandTotal['Tyre Punc/Air']) }}</td>
-                <td>{{ number_format($grandTotal['Labor']) }}</td>
-                <td>{{ number_format($grandTotal['Repair']) }}</td>
-                <td>{{ number_format($grandTotal['Misc']) }}</td>
-                <td>{{ number_format($grandTotal['Brokerage']) }}</td>
+                <td style="width: 6%">{{ $grandTotal['trips'] }}</td>
+                <td style="width: 8%">{{ number_format($grandTotal['Meal']) }}</td>
+                <td style="width: 8%">{{ number_format($grandTotal['Fueling']) }}</td>
+                <td style="width: 8%">{{ number_format($grandTotal['Service']) }}</td>
+                <td style="width: 8%">{{ number_format($grandTotal['Route']) }}</td>
+                <td style="width: 8%">{{ number_format($grandTotal['Toll Tax']) }}</td>
+                <td style="width: 8%">{{ number_format($grandTotal['Tyre Punc/Air']) }}</td>
+                <td style="width: 5%">{{ number_format($grandTotal['Labor']) }}</td>
+                <td style="width: 8%">{{ number_format($grandTotal['Repair']) }}</td>
+                <td style="width: 8%">{{ number_format($grandTotal['Misc']) }}</td>
+                <td style="width: 12%">{{ number_format($grandTotal['Brokerage']) }}</td>
 
                 
             </tr>

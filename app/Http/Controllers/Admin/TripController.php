@@ -373,7 +373,7 @@ class TripController extends Controller
             $trip_no = str_pad(Trip::max('id') + 1, 2, '0', STR_PAD_LEFT);
             
             $trip = Trip::create([
-                                'trip_no'    => $trip_no,
+                                // 'trip_no'    => $trip_no,
                                 // "trip_type"  => $request->trip_type,
                                 'vehicle_id' => $request->vehicle_id,
                                 'driver_id'  => $request->driver_id,
@@ -384,6 +384,9 @@ class TripController extends Controller
                             ]);
 
 
+            $trip->trip_no = $trip->id;
+            $trip->save();
+            
             if (!empty($request->payment_type) && is_array($request->payment_type)) {
                 foreach ($request->payment_type as $index => $type) {
                     TripPayment::create([
