@@ -50,6 +50,9 @@
                     <div class="col-md-3">
                         <label>Balance</label>
                         <input type="text" name="balance" class="form-control" readonly id="balance" value="{{ $trip->balance }}">
+                        {{-- <input type="text" name="balance" class="form-control" readonly id="balance" value="{{ $advance ?? 0 }}"> --}}
+
+                        
                     </div>
                     <div class="col-md-3">
                         <label>Total Rent</label>
@@ -82,7 +85,7 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <input type="number" step="0.01" name="expense_amount[]" class="form-control" value="{{ $item->amount ?? ''}}">
+                                        <input type="number" step="0.01" name="expense_amount[]" class="form-control payment-amount" value="{{ $item->amount ?? ''}}">
                                     </td>
                                     <td>
                                         <input type="date" name="date[]"  class="form-control" value="{{ $item->date ?? ''}}">
@@ -254,6 +257,18 @@
                                 @endforeach
                             `;
 
+        // Real-time balance calculation on keyup/change
+        $(document).on("keyup change", ".payment-amount, input[name='expense_amount[]'], input[name^='expenses'][name$='[amount]']", function() {
+            console.log("yess");
+            
+            calculateBalance();
+        });
+
+        // Calculate balance after row removal
+        $(document).on("click", ".removeTripPaymentRow, .removeExpenseRow, .delete-expense", function() {
+            calculateBalance();
+        });
+
 
         function calculateBalance() {
             let totalPayments = 0;
@@ -285,6 +300,7 @@
             $("#balance").val(balance.toFixed(2));
         }
         
+        calculateBalance();
         $(document).on("input", "input[name='expense_amount[]'], input[name^='expenses'][name$='[amount]']", calculateBalance);
 
         $(document).on('click', "#addExpenseRow", function(e) {

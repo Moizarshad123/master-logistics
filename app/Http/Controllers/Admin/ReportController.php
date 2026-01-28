@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Trip;
 use App\Models\Vehicle;
+use App\Models\Diesel;
+
 
 
 use App\Models\TripDetail;
@@ -221,6 +223,10 @@ class ReportController extends Controller
                         ->whereBetween('trip_date', [$fromDate, $toDate])
                         ->get();
 
+                        $diesels = Diesel::with('vehicle.new_wheeler')
+                    ->whereBetween('date', [$fromDate, $toDate])
+                    ->get();
+
         // Expense ID → Name mapping
         $expenseMap = [
             'Meal'  => 'Meal',
@@ -300,6 +306,38 @@ class ReportController extends Controller
                 $report[$category][$vehicleNo][$key] += $amount;
                 $grandTotal[$key] += $amount;
             }
+        }
+
+        foreach ($diesels as $diesel) {
+            // Safety checks
+            if (!$diesel->vehicle || !$diesel->vehicle->new_wheeler) {
+                continue;
+            }
+
+            $category  = $diesel->vehicle->new_wheeler->name;
+            $vehicleNo = $diesel->vehicle->vehicle_no;
+
+            // Agar vehicle pehle se report mein nahi hai, initialize karo
+            if (!isset($report[$category][$vehicleNo])) {
+                $report[$category][$vehicleNo] = [
+                    'trips'         => 0,
+                    'Meal'          => 0,
+                    'Fueling'       => 0,
+                    'Service'       => 0,
+                    'Route'         => 0,
+                    'Toll Tax'      => 0,
+                    'Tyre Punc/Air' => 0,
+                    'Labor'         => 0,
+                    'Repair'        => 0,
+                    'Misc'          => 0,
+                    'Brokerage'     => 0
+                ];
+            }
+
+            // Fueling amount add karo
+            $fuelingAmount = (float) ($diesel->total_amount ?? 0);
+            $report[$category][$vehicleNo]['Fueling'] += $fuelingAmount;
+            $grandTotal['Fueling'] += $fuelingAmount;
         }
 
         return view('admin.reports.vehicle__summary_report', compact('report', 'grandTotal', 'fromDate', 'toDate'));

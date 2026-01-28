@@ -253,29 +253,16 @@ class TripController extends Controller
                     ->addColumn('journey_count', function ($data) {
                         return  $data->tripDetails->count() ?? 0;
                     })
-                    ->editColumn('created_at', function ($data) {
-                        return  date('d M Y', strtotime($data->created_at));
+                    ->editColumn('trip_end_date', function ($data) {
+                        return  date('d M Y', strtotime($data->trip_end_date));
                     })   
-                    ->addColumn('action', function ($data) {
+                    // ->addColumn('action', function ($data) {
 
-                        $viewUrl   = route('admin.trips.show', $data->id);
-                        $editUrl   = route('admin.trips.edit', $data->id);
-                        $deleteUrl = route('admin.trips.destroy', $data->id);
-                        $endtripUrl = route('admin.endActualTrip', $data->id);
+                    //     $viewUrl   = route('admin.trips.show', $data->id);
 
 
-                        return '
-                            <a href="'.$viewUrl.'" class="btn btn-sm btn-info">View</a> |
-                            <a href="'.$editUrl.'" class="btn btn-sm btn-warning">Edit</a> |
-                            <form action="'.$deleteUrl.'" method="POST" style="display:inline;">
-                                '.csrf_field().'
-                                '.method_field('DELETE').'
-                                <button type="submit" class="btn btn-sm btn-danger deleteExpenseType" onclick="return confirm(\'Are you sure?\')">Delete</button>
-                            </form> | 
-                            <a href="'.$endtripUrl.'" class="btn btn-sm btn-success endTripBtn">End Trip</a>
-
-                        ';
-                    })
+                    //     return '<a href="'.$viewUrl.'" class="btn btn-sm btn-info">View</a>';
+                    // })
                     ->rawColumns(['action', 'vehicle', 'driver', 'journey_count'])->make(true);
 
             }
@@ -494,9 +481,9 @@ class TripController extends Controller
         $materials     = Material::orderBy("name", "ASC")->get();
         $expense_froms = ExpenseFrom::orderBy("name", "ASC")->get();
         $customers     = Customer::all();
+        $advance       = TripPayment::where("trip_id", $trip->id)->sum('amount');
 
-
-        return view('admin.trips.edit', compact( "customers", "expense_froms", "sales", "purchases", "materials", 'trip', 'vehicles', 'drivers', 'expenses', 'payments', 'expensesTypes', 'destinations'));
+        return view('admin.trips.edit', compact("advance", "customers", "expense_froms", "sales", "purchases", "materials", 'trip', 'vehicles', 'drivers', 'expenses', 'payments', 'expensesTypes', 'destinations'));
     }
 
     public function update(Request $request, Trip $trip)
@@ -653,12 +640,20 @@ class TripController extends Controller
         return redirect()->route('admin.trips.index')->with('success', 'Trip deleted successfully!');
     }
 
-    public function disbursement_slip() {
-        
-        $trips = Trip::with('tripDetails', 'vehicle', "vehicle.new_wheeler", 'driver')
-                            ->where('status', "Active")
-                            ->orderByDESC("id")->get();
-        return view("admin.trips.disbursement_slip", compact("trips"));
+    public function disbursement_slip(Request $request)
+    {
+        $trip = null;
+        $advance_amount = null;
+        if ($request->filled('trip_id')) {
+            $trip = Trip::with('tripDetails', 'vehicle', 'driver')
+                            ->where('id', $request->trip_id)
+                            ->where('status', 'Active')
+                            ->first();
+
+            $advance_amount = TripPayment::where('trip_id', $request->trip_id)->sum('amount');
+        }
+
+        return view('admin.trips.disbursement_slip', compact('trip', 'advance_amount'));
     }
 
     public function deleteExpense($id)

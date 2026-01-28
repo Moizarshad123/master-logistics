@@ -20,12 +20,12 @@
             <thead>
                 <tr>
                     <th>Trip No</th>
-                    <th>Trip Date</th>
+                    <th>Total Journeys</th>
                     <th>Vehicle</th>
                     <th>Driver</th>
-                    <th>Total Journeys</th>
-                    <th>Created At</th>
-                    <th>Actions</th>
+                    <th>Trip Start Date</th>
+                    <th>Trip End Date</th>
+                    {{-- <th>Actions</th> --}}
                 </tr>
             </thead>
             <tbody>
@@ -36,7 +36,7 @@
 @endsection
 
 @section('js')
-<script>
+{{-- <script>
     $(document).ready(function () {
         $('.deleteExpenseType').on('click', function (e) {
             e.preventDefault();
@@ -56,7 +56,7 @@
             });
         });
     });
-</script>
+</script> --}}
 
 <script>
 
@@ -81,9 +81,10 @@
                     name: 'id'
                 },
                 {
-                    data: 'trip_date',
-                    name: 'trip_date'
+                    data: 'journey_count',
+                    name: 'journey_count'
                 },
+              
                 {
                     data: 'vehicle',
                     name: 'vehicle'
@@ -93,17 +94,18 @@
                     name: 'driver'
                 },
                 {
-                    data: 'journey_count',
-                    name: 'journey_count'
+                    data: 'trip_date',
+                    name: 'trip_date'
                 },
+               
                 {
-                    data: 'created_at',
-                    name: 'created_at'
+                    data: 'trip_end_date',
+                    name: 'trip_end_date'
                 },
-                {
-                    data: 'action',
-                    name: 'action'
-                }
+                // {
+                //     data: 'action',
+                //     name: 'action'
+                // }
             ],
             order: [[0, 'desc']],
 
