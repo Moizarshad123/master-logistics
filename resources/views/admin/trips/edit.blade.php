@@ -253,7 +253,7 @@
         const expenseOptions = `
                                 <option value="">Select Expense</option>
                                 @foreach($expensesTypes as $expense)
-                                    <option value="{{ $expense->id }}">{{ $expense->name }}</option>
+                                    <option value="{{ $expense->name }}">{{ $expense->name }}</option>
                                 @endforeach
                             `;
 

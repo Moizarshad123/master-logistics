@@ -9,6 +9,7 @@ class Driver extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'vehicle_id',
         'name',
         'phone',
         "salary",
@@ -40,5 +41,10 @@ class Driver extends Model
     public function loans()
     {
         return $this->hasMany(Loan::class);
+    }
+
+     public function vehicle()
+    {
+        return $this->hasOne(Vehicle::class, 'id', 'vehicle_id');
     }
 }

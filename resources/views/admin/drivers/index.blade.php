@@ -25,6 +25,7 @@
         <table class="table table-custom table-lg mb-0" id="driversTable">
             <thead>
                 <tr>
+                    <th>Vehicle</th>
                     <th>Image</th>
                     <th>Name</th>
                     <th>Phone</th>
@@ -68,7 +69,11 @@
             },
             dom: '<"top d-flex justify-content-between"f p>rt<"bottom"p>',
             columns: [
-
+                
+                {
+                    data: 'vehicle',
+                    name: 'vehicle'
+                },
                 {
                     data: 'myImage',
                     name: 'myImage'

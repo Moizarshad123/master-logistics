@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Driver;
+use App\Models\Vehicle;
+
 use App\Models\TripPayment;
 use App\Models\Attendance;
 use Illuminate\Support\Facades\Storage;
@@ -31,7 +33,7 @@ class DriverController extends Controller
     {
         try {
             if (request()->ajax()) {
-                $drivers = Driver::latest();
+                $drivers = Driver::with('vehicle')->latest();
                 return datatables()->eloquent($drivers->orderByDesc('id'))
                     ->addColumn('myImage', function ($data) {
                         if($data->image != null) {
@@ -39,6 +41,9 @@ class DriverController extends Controller
                         } else {
                             return "";
                         }
+                    })
+                    ->addColumn('vehicle', function ($data) {
+                            return $data->vehicle->vehicle_no ?? '';
                     })
                     ->editColumn('cnic_expiry_date', function ($data) {
                         if(isset($data->cnic_expiry_date)) {
@@ -72,7 +77,7 @@ class DriverController extends Controller
                                 <button type="submit" class="btn btn-sm btn-danger deleteExpenseType" onclick="return confirm(\'Are you sure?\')">Delete</button>
                             </form>';
                     })
-                    ->rawColumns(['action', 'myImage'])->make(true);
+                    ->rawColumns(['action', 'myImage', 'vehicle'])->make(true);
 
             }
         } catch (\Exception $ex) {
@@ -197,7 +202,8 @@ class DriverController extends Controller
 
     public function edit(Driver $driver)
     {
-         return view('admin.drivers.edit', compact('driver'));
+        $vehicles = Vehicle::orderBy("vehicle_no", "ASC")->get();
+        return view('admin.drivers.edit', compact('driver', 'vehicles'));
     }
 
     public function update(Request $request, Driver $driver)
@@ -259,7 +265,7 @@ class DriverController extends Controller
 
             $driver->image = asset($fileName);
         }
-
+        $driver->vehicle_id          = $request->vehicle_id;
         $driver->name                = $request->name;
         $driver->phone               = $request->phone;
         $driver->address             = $request->address;

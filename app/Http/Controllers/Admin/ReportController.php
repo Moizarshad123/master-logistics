@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Trip;
 use App\Models\Vehicle;
 use App\Models\Diesel;
-
+use App\Models\Driver;
 
 
 use App\Models\TripDetail;
@@ -118,93 +118,139 @@ class ReportController extends Controller
 
     // public function vehicleSummaryReport(Request $request)
     // {
-    //     $query = Trip::with(['vehicle.new_wheeler', 'tripExpenses']);
+    //     // Date range set karein
+    //     $fromDate = $request->filled('from_date') 
+    //         ? Carbon::parse($request->from_date)->startOfDay()
+    //         : Carbon::today()->startOfDay();
+        
+    //     $toDate = $request->filled('to_date')
+    //         ? Carbon::parse($request->to_date)->endOfDay()
+    //         : Carbon::today()->endOfDay();
 
-    //     if (!$request->filled('from_date') && !$request->filled('to_date')) {
-    //         $query->whereDate('trip_date', Carbon::today());
-    //     }
+    //     // Trips fetch karein with proper date filter
+    //     $trips = Trip::with(['vehicle.new_wheeler', 'tripExpenses'])
+    //                     // ->whereBetween('trip_date', [$fromDate, $toDate])
+    //                     ->whereBetween('trip_end_date', [$fromDate, $toDate])
+    //                     ->get();
 
+    //                     $diesels = Diesel::with('vehicle.new_wheeler')
+    //                 ->whereBetween('date', [$fromDate, $toDate])
+    //                 ->get();
 
-    //     if ($request->filled('from_date') && $request->filled('to_date')) {
-    //         $query->whereBetween('trip_date', [
-    //             Carbon::parse($request->from_date)->startOfDay(),
-    //             Carbon::parse($request->to_date)->endOfDay(),
-    //         ]);
-    //     }
-
-    //     $trips = $query->get();
-
-    //     // Expense ID → DB Name mapping (DB ko touch nahi kar rahe)
+    //     // Expense ID → Name mapping
     //     $expenseMap = [
-    //         1 => 'Meal',
-    //         2 => 'Fueling',
-    //         3 => 'Service',
-    //         4 => 'Route',
-    //         5 => 'Toll Tax',
-    //         6 => 'Tyre Punc/Air',
-    //         7 => 'Labor',
-    //         8 => 'Repair',
-    //         9 => 'Misc',
-    //         10=> "Brokerage"
+    //         'Meal'  => 'Meal',
+    //         'Fueling'  => 'Fueling',
+    //         'Service'  => 'Service',
+    //         'Route'  => 'Route',
+    //         'Toll Tax'  => 'Toll Tax',
+    //         'Tyre Punc/Air'  => 'Tyre Punc/Air',
+    //         'Labor'  => 'Labor',
+    //         'Repair'  => 'Repair',
+    //         'Misc'  => 'Misc',
+    //         'Brokerage' => 'Brokerage'
     //     ];
+
     //     $report = [];
+        
     //     // Grand total initialize
     //     $grandTotal = [
-    //         'trips'    => 0,
-    //         'Meal'     => 0,
-    //         'Fueling'  => 0,
-    //         'Service'  => 0,
-    //         'Route'    => 0,
-    //         'Toll Tax' => 0,
+    //         'trips'         => 0,
+    //         'Meal'          => 0,
+    //         'Fueling'       => 0,
+    //         'Service'       => 0,
+    //         'Route'         => 0,
+    //         'Toll Tax'      => 0,
     //         'Tyre Punc/Air' => 0,
-    //         'Labor'     => 0,
-    //         'Repair'    => 0,
-    //         'Misc'      => 0,
-    //         "Brokerage" => 0
+    //         'Labor'         => 0,
+    //         'Repair'        => 0,
+    //         'Misc'          => 0,
+    //         'Brokerage'     => 0
     //     ];
 
     //     foreach ($trips as $trip) {
-
     //         // Safety checks
     //         if (!$trip->vehicle || !$trip->vehicle->new_wheeler) {
     //             continue;
     //         }
+
     //         $category  = $trip->vehicle->new_wheeler->name;
     //         $vehicleNo = $trip->vehicle->vehicle_no;
-    //         // Initialize vehicle row
+
+    //         // Initialize vehicle row agar pehle se nahi hai
     //         if (!isset($report[$category][$vehicleNo])) {
     //             $report[$category][$vehicleNo] = [
-    //                 'trips'    => 0,
-    //                 'Meal'     => 0,
-    //                 'Fueling'  => 0,
-    //                 'Service'  => 0,
-    //                 'Route'    => 0,
-    //                 'Toll Tax' => 0,
+    //                 'trips'         => 0,
+    //                 'Meal'          => 0,
+    //                 'Fueling'       => 0,
+    //                 'Service'       => 0,
+    //                 'Route'         => 0,
+    //                 'Toll Tax'      => 0,
     //                 'Tyre Punc/Air' => 0,
-    //                 'Labor'     => 0,
-    //                 'Repair'    => 0,
-    //                 'Misc'      => 0,
-    //                 "Brokerage" => 0
+    //                 'Labor'         => 0,
+    //                 'Repair'        => 0,
+    //                 'Misc'          => 0,
+    //                 'Brokerage'     => 0
     //             ];
     //         }
 
-    //         // Count trips
+    //         // Trip count
     //         $report[$category][$vehicleNo]['trips']++;
     //         $grandTotal['trips']++;
 
-    //         // Expenses
+    //         // dd($trips[260]);
+    //         // Expenses calculate karein
     //         foreach ($trip->tripExpenses as $expense) {
+
+    //         // if($trip->id == 938 && $expense->expense == "Meal"){
+    //         //     dd($expenseMap[$expense->expense]);
+    //         // }
+    //             // Agar expense ID mapping mein nahi hai, skip karein
     //             if (!isset($expenseMap[$expense->expense])) {
     //                 continue;
     //             }
 
     //             $key = $expenseMap[$expense->expense];
-    //             $report[$category][$vehicleNo][$key] += (float) $expense->amount;
-    //             $grandTotal[$key] += (float) $expense->amount;
+    //             $amount = (float) ($expense->amount ?? 0);
+                
+    //             $report[$category][$vehicleNo][$key] += $amount;
+    //             $grandTotal[$key] += $amount;
     //         }
     //     }
 
-    //     return view('admin.reports.vehicle__summary_report', compact('report', 'grandTotal'));
+    //     foreach ($diesels as $diesel) {
+    //         // Safety checks
+    //         if (!$diesel->vehicle || !$diesel->vehicle->new_wheeler) {
+    //             continue;
+    //         }
+
+    //         $category  = $diesel->vehicle->new_wheeler->name;
+    //         $vehicleNo = $diesel->vehicle->vehicle_no;
+
+    //         // Agar vehicle pehle se report mein nahi hai, initialize karo
+    //         if (!isset($report[$category][$vehicleNo])) {
+    //             $report[$category][$vehicleNo] = [
+    //                 'trips'         => 0,
+    //                 'Meal'          => 0,
+    //                 'Fueling'       => 0,
+    //                 'Service'       => 0,
+    //                 'Route'         => 0,
+    //                 'Toll Tax'      => 0,
+    //                 'Tyre Punc/Air' => 0,
+    //                 'Labor'         => 0,
+    //                 'Repair'        => 0,
+    //                 'Misc'          => 0,
+    //                 'Brokerage'     => 0
+    //             ];
+    //         }
+
+    //         // Fueling amount add karo
+    //         $fuelingAmount = (float) ($diesel->total_amount ?? 0);
+    //         $report[$category][$vehicleNo]['Fueling'] += $fuelingAmount;
+    //         $grandTotal['Fueling'] += $fuelingAmount;
+    //     }
+
+    //     return view('admin.reports.vehicle__summary_report', compact('report', 'grandTotal', 'fromDate', 'toDate'));
     // }
 
     public function vehicleSummaryReport(Request $request)
@@ -218,14 +264,20 @@ class ReportController extends Controller
             ? Carbon::parse($request->to_date)->endOfDay()
             : Carbon::today()->endOfDay();
 
+        // Calculate total days in date range
+        $totalDays = $fromDate->diffInDays($toDate) + 1;
+
         // Trips fetch karein with proper date filter
-        $trips = Trip::with(['vehicle.new_wheeler', 'tripExpenses'])
-                        ->whereBetween('trip_date', [$fromDate, $toDate])
+        $trips = Trip::with(['vehicle.new_wheeler', 'tripExpenses', 'tripDetails'])
+                        ->whereBetween('trip_end_date', [$fromDate, $toDate])
                         ->get();
 
-                        $diesels = Diesel::with('vehicle.new_wheeler')
+        $diesels = Diesel::with('vehicle.new_wheeler')
                     ->whereBetween('date', [$fromDate, $toDate])
                     ->get();
+
+        // Drivers fetch karein with vehicle relationship
+        $drivers = Driver::with('vehicle')->where('status', 'active')->get();
 
         // Expense ID → Name mapping
         $expenseMap = [
@@ -246,6 +298,7 @@ class ReportController extends Controller
         // Grand total initialize
         $grandTotal = [
             'trips'         => 0,
+            'total_journeys' => 0,
             'Meal'          => 0,
             'Fueling'       => 0,
             'Service'       => 0,
@@ -255,8 +308,16 @@ class ReportController extends Controller
             'Labor'         => 0,
             'Repair'        => 0,
             'Misc'          => 0,
-            'Brokerage'     => 0
+            'Brokerage'     => 0,
+            'Salary'        => 0,
+            'Total_Exp'     => 0,
+            'Sale_Rent'     => 0,
+            'Gross_Earning' => 0,
+            'Net_Earning'   => 0
         ];
+
+        // Category-wise totals initialize
+        $categoryTotals = [];
 
         foreach ($trips as $trip) {
             // Safety checks
@@ -267,10 +328,11 @@ class ReportController extends Controller
             $category  = $trip->vehicle->new_wheeler->name;
             $vehicleNo = $trip->vehicle->vehicle_no;
 
-            // Initialize vehicle row agar pehle se nahi hai
-            if (!isset($report[$category][$vehicleNo])) {
-                $report[$category][$vehicleNo] = [
+            // Initialize category total agar pehle se nahi hai
+            if (!isset($categoryTotals[$category])) {
+                $categoryTotals[$category] = [
                     'trips'         => 0,
+                    'total_journeys' => 0,
                     'Meal'          => 0,
                     'Fueling'       => 0,
                     'Service'       => 0,
@@ -280,31 +342,76 @@ class ReportController extends Controller
                     'Labor'         => 0,
                     'Repair'        => 0,
                     'Misc'          => 0,
-                    'Brokerage'     => 0
+                    'Brokerage'     => 0,
+                    'Salary'        => 0,
+                    'Total_Exp'     => 0,
+                    'Sale_Rent'     => 0,
+                    'Gross_Earning' => 0,
+                    'Net_Earning'   => 0
+                ];
+            }
+
+            // Initialize vehicle row agar pehle se nahi hai
+            if (!isset($report[$category][$vehicleNo])) {
+                $report[$category][$vehicleNo] = [
+                    'trips'         => 0,
+                    'total_journeys' => 0,
+                    'Meal'          => 0,
+                    'Fueling'       => 0,
+                    'Service'       => 0,
+                    'Route'         => 0,
+                    'Toll Tax'      => 0,
+                    'Tyre Punc/Air' => 0,
+                    'Labor'         => 0,
+                    'Repair'        => 0,
+                    'Misc'          => 0,
+                    'Brokerage'     => 0,
+                    'Salary'        => 0,
+                    'Total_Exp'     => 0,
+                    'Sale_Rent'     => 0,
+                    'Gross_Earning' => 0,
+                    'Net_Earning'   => 0
                 ];
             }
 
             // Trip count
             $report[$category][$vehicleNo]['trips']++;
+            $categoryTotals[$category]['trips']++;
             $grandTotal['trips']++;
 
-            // dd($trips[260]);
-            // Expenses calculate karein
+            // Journey count (tripDetails ka count)
+            $journeyCount = $trip->tripDetails->count();
+            $report[$category][$vehicleNo]['total_journeys'] += $journeyCount;
+            $categoryTotals[$category]['total_journeys'] += $journeyCount;
+            $grandTotal['total_journeys'] += $journeyCount;
+
+            // Expenses calculate karein aur Total_Exp mein bhi add karein
+            $tripTotalExpense = 0; // Is trip ka total expense
+            
             foreach ($trip->tripExpenses as $expense) {
-
-            // if($trip->id == 938 && $expense->expense == "Meal"){
-            //     dd($expenseMap[$expense->expense]);
-            // }
-                // Agar expense ID mapping mein nahi hai, skip karein
-                if (!isset($expenseMap[$expense->expense])) {
-                    continue;
-                }
-
-                $key = $expenseMap[$expense->expense];
                 $amount = (float) ($expense->amount ?? 0);
+                $tripTotalExpense += $amount; // Total expense mein add karo
                 
-                $report[$category][$vehicleNo][$key] += $amount;
-                $grandTotal[$key] += $amount;
+                // Agar expense mapping mein hai to specific column mein bhi add karo
+                if (isset($expenseMap[$expense->expense])) {
+                    $key = $expenseMap[$expense->expense];
+                    $report[$category][$vehicleNo][$key] += $amount;
+                    $categoryTotals[$category][$key] += $amount;
+                    $grandTotal[$key] += $amount;
+                }
+            }
+
+            // Total Expense add karo (tripExpenses ka sum)
+            $report[$category][$vehicleNo]['Total_Exp'] += $tripTotalExpense;
+            $categoryTotals[$category]['Total_Exp'] += $tripTotalExpense;
+            $grandTotal['Total_Exp'] += $tripTotalExpense;
+
+            // Trip details se rent calculate karein
+            foreach ($trip->tripDetails as $detail) {
+                $rent = (float) ($detail->rent ?? 0);
+                $report[$category][$vehicleNo]['Sale_Rent'] += $rent;
+                $categoryTotals[$category]['Sale_Rent'] += $rent;
+                $grandTotal['Sale_Rent'] += $rent;
             }
         }
 
@@ -317,10 +424,11 @@ class ReportController extends Controller
             $category  = $diesel->vehicle->new_wheeler->name;
             $vehicleNo = $diesel->vehicle->vehicle_no;
 
-            // Agar vehicle pehle se report mein nahi hai, initialize karo
-            if (!isset($report[$category][$vehicleNo])) {
-                $report[$category][$vehicleNo] = [
+            // Initialize category total agar pehle se nahi hai
+            if (!isset($categoryTotals[$category])) {
+                $categoryTotals[$category] = [
                     'trips'         => 0,
+                    'total_journeys' => 0,
                     'Meal'          => 0,
                     'Fueling'       => 0,
                     'Service'       => 0,
@@ -330,17 +438,95 @@ class ReportController extends Controller
                     'Labor'         => 0,
                     'Repair'        => 0,
                     'Misc'          => 0,
-                    'Brokerage'     => 0
+                    'Brokerage'     => 0,
+                    'Salary'        => 0,
+                    'Total_Exp'     => 0,
+                    'Sale_Rent'     => 0,
+                    'Gross_Earning' => 0,
+                    'Net_Earning'   => 0
+                ];
+            }
+
+            // Agar vehicle pehle se report mein nahi hai, initialize karo
+            if (!isset($report[$category][$vehicleNo])) {
+                $report[$category][$vehicleNo] = [
+                    'trips'         => 0,
+                    'total_journeys' => 0,
+                    'Meal'          => 0,
+                    'Fueling'       => 0,
+                    'Service'       => 0,
+                    'Route'         => 0,
+                    'Toll Tax'      => 0,
+                    'Tyre Punc/Air' => 0,
+                    'Labor'         => 0,
+                    'Repair'        => 0,
+                    'Misc'          => 0,
+                    'Brokerage'     => 0,
+                    'Salary'        => 0,
+                    'Total_Exp'     => 0,
+                    'Sale_Rent'     => 0,
+                    'Gross_Earning' => 0,
+                    'Net_Earning'   => 0
                 ];
             }
 
             // Fueling amount add karo
             $fuelingAmount = (float) ($diesel->total_amount ?? 0);
             $report[$category][$vehicleNo]['Fueling'] += $fuelingAmount;
+            $categoryTotals[$category]['Fueling'] += $fuelingAmount;
             $grandTotal['Fueling'] += $fuelingAmount;
+
+            // Diesel amount ko Total_Exp mein bhi add karo
+            $report[$category][$vehicleNo]['Total_Exp'] += $fuelingAmount;
+            $categoryTotals[$category]['Total_Exp'] += $fuelingAmount;
+            $grandTotal['Total_Exp'] += $fuelingAmount;
         }
 
-        return view('admin.reports.vehicle__summary_report', compact('report', 'grandTotal', 'fromDate', 'toDate'));
+        // Calculate salary for each vehicle (based on date range)
+        foreach ($drivers as $driver) {
+            if (!$driver->vehicle || !$driver->vehicle->new_wheeler) {
+                continue;
+            }
+
+            $category = $driver->vehicle->new_wheeler->name;
+            $vehicleNo = $driver->vehicle->vehicle_no;
+
+            // Daily salary calculate karein
+            $monthlySalary = (float) ($driver->salary ?? 0);
+            $dailySalary = $monthlySalary / 30; // 30 days per month
+            $totalSalary = $dailySalary * $totalDays;
+
+            // Agar vehicle report mein hai to salary add karo
+            if (isset($report[$category][$vehicleNo])) {
+                $report[$category][$vehicleNo]['Salary'] += $totalSalary;
+                $categoryTotals[$category]['Salary'] += $totalSalary;
+                $grandTotal['Salary'] += $totalSalary;
+
+                // Salary ko Total_Exp mein bhi add karo
+                $report[$category][$vehicleNo]['Total_Exp'] += $totalSalary;
+                $categoryTotals[$category]['Total_Exp'] += $totalSalary;
+                $grandTotal['Total_Exp'] += $totalSalary;
+            }
+        }
+
+        // Calculate Gross Earning and Net Earning
+        foreach ($report as $category => $vehicles) {
+            foreach ($vehicles as $vehicleNo => $data) {
+                // Gross Earning = Sale Rent
+                $grossEarning = $data['Sale_Rent'];
+                $report[$category][$vehicleNo]['Gross_Earning'] = $grossEarning;
+                $categoryTotals[$category]['Gross_Earning'] += $grossEarning;
+                $grandTotal['Gross_Earning'] += $grossEarning;
+
+                // Net Earning = Gross Earning - Total Expense
+                $netEarning = $grossEarning - $data['Total_Exp'];
+                $report[$category][$vehicleNo]['Net_Earning'] = $netEarning;
+                $categoryTotals[$category]['Net_Earning'] += $netEarning;
+                $grandTotal['Net_Earning'] += $netEarning;
+            }
+        }
+
+        return view('admin.reports.vehicle__summary_report', compact('report', 'categoryTotals', 'grandTotal', 'fromDate', 'toDate'));
     }
 
     public function weekly_labour_report(Request $request) {
