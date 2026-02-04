@@ -29,7 +29,7 @@
         </div>
     </form>
 
-    {{-- FIRST TABLE: Expenses (Vehicle No to Brokerage) --}}
+    {{-- FIRST TABLE: Expenses (Vehicle No to Brokerage) - NO ADVANCE HERE --}}
     @foreach($report as $category => $vehicles)
         <h4>{{ $category }}</h4>
 
@@ -119,7 +119,7 @@
 
     <br><br>
 
-    {{-- SECOND TABLE: Financial Summary (Salary to Net Earning) --}}
+    {{-- SECOND TABLE: Financial Summary (Salary, Advance, Total Exp to Net Earning) --}}
     @foreach($report as $category => $vehicles)
         <h4>{{ $category }}</h4>
 
@@ -129,6 +129,7 @@
                     <tr>
                         <th>Vehicle No</th>
                         <th>Salary</th>
+                        <th>Advance</th> {{-- NEW COLUMN --}}
                         <th>Total Exp</th>
                         <th>Sale Rent</th>
                         <th>Gross Earning</th>
@@ -140,6 +141,7 @@
                         <tr>
                             <td>{{ $vehicleNo }}</td>
                             <td>{{ number_format($data['Salary']) }}</td>
+                            <td>{{ number_format($data['Advance']) }}</td> {{-- NEW DATA --}}
                             <td>{{ number_format($data['Total_Exp']) }}</td>
                             <td>{{ number_format($data['Sale_Rent']) }}</td>
                             <td>{{ number_format($data['Gross_Earning']) }}</td>
@@ -158,12 +160,13 @@
         <table class="table table-bordered">
             <tbody>
                 <tr style="font-weight:bold; background:#e0e0e0;">
-                    <td style="width: 20%">Grand Total</td>
-                    <td style="width: 16%">{{ number_format($grandTotal['Salary']) }}</td>
-                    <td style="width: 16%">{{ number_format($grandTotal['Total_Exp']) }}</td>
-                    <td style="width: 16%">{{ number_format($grandTotal['Sale_Rent']) }}</td>
-                    <td style="width: 16%">{{ number_format($grandTotal['Gross_Earning']) }}</td>
-                    <td style="width: 16%; color: {{ $grandTotal['Net_Earning'] < 0 ? 'red' : 'green' }}">
+                    <td style="width: 17%">Grand Total</td>
+                    <td style="width: 14%">{{ number_format($grandTotal['Salary']) }}</td>
+                    <td style="width: 14%">{{ number_format($grandTotal['Advance']) }}</td> {{-- NEW --}}
+                    <td style="width: 14%">{{ number_format($grandTotal['Total_Exp']) }}</td>
+                    <td style="width: 14%">{{ number_format($grandTotal['Sale_Rent']) }}</td>
+                    <td style="width: 14%">{{ number_format($grandTotal['Gross_Earning']) }}</td>
+                    <td style="width: 13%; color: {{ $grandTotal['Net_Earning'] < 0 ? 'red' : 'green' }}">
                         {{ number_format($grandTotal['Net_Earning']) }}
                     </td>
                 </tr>
@@ -173,6 +176,7 @@
                     <tr style="background:#f9f9f9;">
                         <td>{{ $category }}</td>
                         <td>{{ number_format($totals['Salary']) }}</td>
+                        <td>{{ number_format($totals['Advance']) }}</td> {{-- NEW --}}
                         <td>{{ number_format($totals['Total_Exp']) }}</td>
                         <td>{{ number_format($totals['Sale_Rent']) }}</td>
                         <td>{{ number_format($totals['Gross_Earning']) }}</td>

@@ -55,109 +55,107 @@
         <form method="GET" action="{{ route('admin.disbursementSlip') }}">
             <div class="row">
                 <div class="col-md-6">
-                    <input type="number" name="trip_id" class="form-control"
-                        placeholder="Enter Trip ID"
+                    <input type="number" name="trip_id" class="form-control" placeholder="Enter Trip ID"
                         value="{{ request('trip_id') }}" required>
-
                 </div>
                 <div class="col-md-2 text-end">
-  <button type="submit" class="btn btn-primary">
-                🔍 Search
-            </button>
+                    <button type="submit" class="btn btn-primary">
+                        🔍 Search
+                    </button>
                 </div>
 
                 <div class="col-md-2">
-                         @if(isset($trip))
-                <button type="button" onclick="window.print()" class="btn btn-primary">
-                    🖨 Print Slip
-                </button>
-            @endif
+                    @if(isset($trip))
+                    <button type="button" onclick="window.print()" class="btn btn-primary">
+                        🖨 Print Slip
+                    </button>
+                    @endif
                 </div>
             </div>
-
-          
-
-       
         </form>
     </div>
 
     @if(isset($trip))
-        <div class="slip-box">
+        @forelse($trip->tripPayments as $payment)
+            <div class="slip-box">
 
-            <h3>Trip Cash Allowance Disbursement Slip</h3>
-            {{-- BASIC INFO --}}
-            <table class="no-border">
-                <tr>
-                    <td><strong>Vehicle No:</strong> {{ $trip->vehicle->vehicle_no ?? '-' }}</td>
-                    <td><strong>Date:</strong> {{ date('d-m-Y', strtotime($trip->trip_date)) ?? '' }}</td>
-                </tr>
-                <tr>
-                    <td><strong>Trip ID:</strong> {{ $trip->trip_no ?? $trip->id }}</td>
-                    <td><strong>Driver:</strong> {{ $trip->driver->name ?? '-' }}</td>
-                </tr>
-            </table>
-
-            <br>
-
-            {{-- TRIP DETAILS --}}
-            <table>
-                <thead>
+                <h3>Trip Cash Allowance Disbursement Slip</h3>
+                {{-- BASIC INFO --}}
+                <table class="no-border">
                     <tr>
-                        <th style="width:25%">From → To</th>
-                        <th style="width:25%">Material</th>
-                        <th style="width:15%">Qty / Weight</th>
-                        <th style="width:35%">Remarks</th>
+                        <td><strong>Vehicle No:</strong> {{ $trip->vehicle->vehicle_no ?? '-' }}</td>
+                        <td><strong>Date:</strong> {{ date('d-m-Y', strtotime($trip->trip_date)) ?? '' }}</td>
                     </tr>
-                </thead>
-                <tbody>
-                    @forelse($trip->tripDetails as $detail)
                     <tr>
-                        <td>
-                            {{ $detail->from_destination ?? '-' }}
-                            →
-                            {{ $detail->to_destination ?? '-' }}
+                        <td><strong>Trip ID:</strong> {{ $trip->trip_no ?? $trip->id }}</td>
+                        <td><strong>Driver:</strong> {{ $trip->driver->name ?? '-' }}</td>
+                    </tr>
+                </table>
+
+                <br>
+                {{-- TRIP DETAILS --}}
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:25%">From → To</th>
+                            <th style="width:25%">Material</th>
+                            <th style="width:15%">Qty / Weight</th>
+                            <th style="width:35%">Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($trip->tripDetails as $detail)
+                        <tr>
+                            <td>
+                                {{ $detail->from_destination ?? '-' }}
+                                →
+                                {{ $detail->to_destination ?? '-' }}
+                            </td>
+                            <td>{{ $detail->material ?? '-' }}</td>
+                            <td>
+                                {{ $detail->total_bags ?? $detail->weight ?? '-' }}
+                            </td>
+                            <td>{{ $detail->comments ?? '-' }}</td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="4" class="text-center">No Trip Details Found</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+
+                <br>
+
+                {{-- CASH ALLOWANCE --}}
+                <table>
+                    <tr>
+                        <th style="width:40%">Cash Allowance Amount</th>
+                        <td style="width:60%">
+                            {{ number_format($payment->amount ?? 0, 2) }}
                         </td>
-                        <td>{{ $detail->material ?? '-' }}</td>
-                        <td>
-                            {{ $detail->total_bags ?? $detail->weight ?? '-' }}
-                        </td>
-                        <td>{{ $detail->comments ?? '-' }}</td>
                     </tr>
-                    @empty
+                </table>
+        
+
+                <br><br>
+
+                {{-- SIGNATURE --}}
+                <table class="no-border">
                     <tr>
-                        <td colspan="4" class="text-center">No Trip Details Found</td>
+                        <td style="width:60%">
+                            <strong>Supervisor Sign & Stamp:</strong>
+                        </td>
+                        <td style="width:40%">
+                            ___________________________
+                        </td>
                     </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                </table>
 
-            <br>
-
-            {{-- CASH ALLOWANCE --}}
-            <table>
-                <tr>
-                    <th style="width:40%">Cash Allowance Amount</th>
-                    <td style="width:60%">
-                        {{ number_format($advance_amount ?? 0, 2) }}
-                    </td>
-                </tr>
-            </table>
-
-            <br><br>
-
-            {{-- SIGNATURE --}}
-            <table class="no-border">
-                <tr>
-                    <td style="width:60%">
-                        <strong>Supervisor Sign & Stamp:</strong>
-                    </td>
-                    <td style="width:40%">
-                        ___________________________
-                    </td>
-                </tr>
-            </table>
-
-        </div>
+            </div>
+        @empty
+            <tr><td colspan="12" class="text-center">No trip payments found.</td></tr>
+        @endforelse
     @endif
 
 </div>

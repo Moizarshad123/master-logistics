@@ -645,7 +645,7 @@ class TripController extends Controller
         $trip = null;
         $advance_amount = null;
         if ($request->filled('trip_id')) {
-            $trip = Trip::with('tripDetails', 'vehicle', 'driver')
+            $trip = Trip::with('tripDetails', 'vehicle', 'driver', 'tripPayments')
                             ->where('id', $request->trip_id)
                             ->where('status', 'Active')
                             ->first();
