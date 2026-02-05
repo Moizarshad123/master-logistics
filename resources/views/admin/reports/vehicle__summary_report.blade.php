@@ -160,10 +160,10 @@
         <table class="table table-bordered">
             <tbody>
                 <tr style="font-weight:bold; background:#e0e0e0;">
-                    <td style="width: 17%">Grand Total</td>
-                    <td style="width: 14%">{{ number_format($grandTotal['Salary']) }}</td>
-                    <td style="width: 14%">{{ number_format($grandTotal['Advance']) }}</td> {{-- NEW --}}
-                    <td style="width: 14%">{{ number_format($grandTotal['Total_Exp']) }}</td>
+                    <td style="width: 13%">Grand Total</td>
+                    <td style="width: 9%">{{ number_format($grandTotal['Salary']) }}</td>
+                    <td style="width: 10%">{{ number_format($grandTotal['Advance']) }}</td> {{-- NEW --}}
+                    <td style="width: 8%">{{ number_format($grandTotal['Total_Exp']) }}</td>
                     <td style="width: 14%">{{ number_format($grandTotal['Sale_Rent']) }}</td>
                     <td style="width: 14%">{{ number_format($grandTotal['Gross_Earning']) }}</td>
                     <td style="width: 13%; color: {{ $grandTotal['Net_Earning'] < 0 ? 'red' : 'green' }}">

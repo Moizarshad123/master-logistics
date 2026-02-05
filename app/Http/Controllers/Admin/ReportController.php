@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Trip;
+use App\Models\TripPayment;
+use App\Models\TripVehicleExpense;
 use App\Models\Vehicle;
 use App\Models\Diesel;
 use App\Models\Driver;
@@ -407,7 +409,7 @@ class ReportController extends Controller
         $totalDays = $fromDate->diffInDays($toDate) + 1;
 
         // Trips fetch karein with proper date filter
-        $trips = Trip::with(['vehicle.new_wheeler', 'tripExpenses', 'tripDetails', 'tripPayments'])
+        $trips = Trip::with(['vehicle.new_wheeler', 'tripExpenses', 'tripDetails'])
                         ->whereBetween('trip_end_date', [$fromDate, $toDate])
                         ->get();
 
@@ -417,6 +419,20 @@ class ReportController extends Controller
 
         // Drivers fetch karein with vehicle relationship
         $drivers = Driver::with('vehicle')->where('status', 'active')->get();
+
+        // Fetch TripPayments (Advance payments) for date range
+        $tripPayments = TripPayment::with(['trip.vehicle.new_wheeler'])
+                        ->whereBetween('date', [$fromDate, $toDate])
+                        ->get();
+
+        // Fetch TripVehicleExpense where expense_from = "From Advance Amount"
+        // Ye sirf advance calculate karne ke liye hai, Total_Exp mein NAHI add karenge
+        $advanceExpenses = TripVehicleExpense::with(['vehicle.new_wheeler', 'trip'])
+                            ->where('expense_from', 'From Advance Amount')
+                            ->whereHas('trip', function($query) use ($fromDate, $toDate) {
+                                $query->whereBetween('trip_end_date', [$fromDate, $toDate]);
+                            })
+                            ->get();
 
         // Expense ID → Name mapping
         $expenseMap = [
@@ -448,7 +464,7 @@ class ReportController extends Controller
             'Repair'        => 0,
             'Misc'          => 0,
             'Brokerage'     => 0,
-            'Advance'       => 0,  // NEW: Advance column
+            'Advance'       => 0,
             'Salary'        => 0,
             'Total_Exp'     => 0,
             'Sale_Rent'     => 0,
@@ -483,7 +499,7 @@ class ReportController extends Controller
                     'Repair'        => 0,
                     'Misc'          => 0,
                     'Brokerage'     => 0,
-                    'Advance'       => 0,  // NEW
+                    'Advance'       => 0,
                     'Salary'        => 0,
                     'Total_Exp'     => 0,
                     'Sale_Rent'     => 0,
@@ -507,7 +523,7 @@ class ReportController extends Controller
                     'Repair'        => 0,
                     'Misc'          => 0,
                     'Brokerage'     => 0,
-                    'Advance'       => 0,  // NEW
+                    'Advance'       => 0,
                     'Salary'        => 0,
                     'Total_Exp'     => 0,
                     'Sale_Rent'     => 0,
@@ -548,19 +564,6 @@ class ReportController extends Controller
             $categoryTotals[$category]['Total_Exp'] += $tripTotalExpense;
             $grandTotal['Total_Exp'] += $tripTotalExpense;
 
-            // NEW: Trip payments se advance calculate karein
-            foreach ($trip->tripPayments as $payment) {
-                $paymentAmount = (float) ($payment->amount ?? 0);
-                $report[$category][$vehicleNo]['Advance'] += $paymentAmount;
-                $categoryTotals[$category]['Advance'] += $paymentAmount;
-                $grandTotal['Advance'] += $paymentAmount;
-
-                // Advance ko Total_Exp mein bhi add karo
-                $report[$category][$vehicleNo]['Total_Exp'] += $paymentAmount;
-                $categoryTotals[$category]['Total_Exp'] += $paymentAmount;
-                $grandTotal['Total_Exp'] += $paymentAmount;
-            }
-
             // Trip details se rent calculate karein
             foreach ($trip->tripDetails as $detail) {
                 $rent = (float) ($detail->rent ?? 0);
@@ -594,7 +597,7 @@ class ReportController extends Controller
                     'Repair'        => 0,
                     'Misc'          => 0,
                     'Brokerage'     => 0,
-                    'Advance'       => 0,  // NEW
+                    'Advance'       => 0,
                     'Salary'        => 0,
                     'Total_Exp'     => 0,
                     'Sale_Rent'     => 0,
@@ -618,7 +621,7 @@ class ReportController extends Controller
                     'Repair'        => 0,
                     'Misc'          => 0,
                     'Brokerage'     => 0,
-                    'Advance'       => 0,  // NEW
+                    'Advance'       => 0,
                     'Salary'        => 0,
                     'Total_Exp'     => 0,
                     'Sale_Rent'     => 0,
@@ -637,6 +640,90 @@ class ReportController extends Controller
             $report[$category][$vehicleNo]['Total_Exp'] += $fuelingAmount;
             $categoryTotals[$category]['Total_Exp'] += $fuelingAmount;
             $grandTotal['Total_Exp'] += $fuelingAmount;
+        }
+
+        // Calculate Advance: TripPayments - Expenses from Advance
+        // Step 1: Add all trip payments to Advance
+        foreach ($tripPayments as $payment) {
+            if (!$payment->trip || !$payment->trip->vehicle || !$payment->trip->vehicle->new_wheeler) {
+                continue;
+            }
+
+            $category = $payment->trip->vehicle->new_wheeler->name;
+            $vehicleNo = $payment->trip->vehicle->vehicle_no;
+
+            // Initialize agar vehicle report mein nahi hai
+            if (!isset($categoryTotals[$category])) {
+                $categoryTotals[$category] = [
+                    'trips'         => 0,
+                    'total_journeys' => 0,
+                    'Meal'          => 0,
+                    'Fueling'       => 0,
+                    'Service'       => 0,
+                    'Route'         => 0,
+                    'Toll Tax'      => 0,
+                    'Tyre Punc/Air' => 0,
+                    'Labor'         => 0,
+                    'Repair'        => 0,
+                    'Misc'          => 0,
+                    'Brokerage'     => 0,
+                    'Advance'       => 0,
+                    'Salary'        => 0,
+                    'Total_Exp'     => 0,
+                    'Sale_Rent'     => 0,
+                    'Gross_Earning' => 0,
+                    'Net_Earning'   => 0
+                ];
+            }
+
+            if (!isset($report[$category][$vehicleNo])) {
+                $report[$category][$vehicleNo] = [
+                    'trips'         => 0,
+                    'total_journeys' => 0,
+                    'Meal'          => 0,
+                    'Fueling'       => 0,
+                    'Service'       => 0,
+                    'Route'         => 0,
+                    'Toll Tax'      => 0,
+                    'Tyre Punc/Air' => 0,
+                    'Labor'         => 0,
+                    'Repair'        => 0,
+                    'Misc'          => 0,
+                    'Brokerage'     => 0,
+                    'Advance'       => 0,
+                    'Salary'        => 0,
+                    'Total_Exp'     => 0,
+                    'Sale_Rent'     => 0,
+                    'Gross_Earning' => 0,
+                    'Net_Earning'   => 0
+                ];
+            }
+
+            $paymentAmount = (float) ($payment->amount ?? 0);
+            $report[$category][$vehicleNo]['Advance'] += $paymentAmount;
+            $categoryTotals[$category]['Advance'] += $paymentAmount;
+            $grandTotal['Advance'] += $paymentAmount;
+        }
+
+        // Step 2: Subtract expenses paid from advance (IMPORTANT: NOT added to Total_Exp)
+        foreach ($advanceExpenses as $advExp) {
+            if (!$advExp->vehicle || !$advExp->vehicle->new_wheeler) {
+                continue;
+            }
+
+            $category = $advExp->vehicle->new_wheeler->name;
+            $vehicleNo = $advExp->vehicle->vehicle_no;
+
+            // Make sure vehicle exists in report
+            if (isset($report[$category][$vehicleNo])) {
+                $expenseAmount = (float) ($advExp->amount ?? 0);
+                
+                // ONLY subtract from Advance, DO NOT add to Total_Exp
+                // (because it's already in tripExpenses table and counted there)
+                $report[$category][$vehicleNo]['Advance'] -= $expenseAmount;
+                $categoryTotals[$category]['Advance'] -= $expenseAmount;
+                $grandTotal['Advance'] -= $expenseAmount;
+            }
         }
 
         // Calculate salary for each vehicle (based on date range)

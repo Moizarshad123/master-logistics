@@ -16,4 +16,9 @@ class TripPayment extends Model
         "date",
         "comments"
     ];
+
+    public function trip()
+    {
+        return $this->belongsTo(Trip::class);
+    }
 }
