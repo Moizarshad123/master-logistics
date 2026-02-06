@@ -73,7 +73,7 @@
             serverSide: true,
             pageLength: 50,
             ajax: {
-                url: `{{route('admin.activeTrailersTrips')}}`,
+                url: `{{route('admin.trailer-trips.index')}}`,
             },
             dom: '<"top d-flex justify-content-between"f p>rt<"bottom"p>',
             columns: [

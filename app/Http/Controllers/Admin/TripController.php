@@ -115,95 +115,95 @@ class TripController extends Controller
         return view('admin.trips.index');
     }
 
-    public function activeTrailersTrips()
-    {
-        try {
-            if (request()->ajax()) {
+    // public function activeTrailersTrips()
+    // {
+    //     try {
+    //         if (request()->ajax()) {
             
-                $trips = Trip::with('tripDetails', 'vehicle', "vehicle.new_wheeler", 'driver')
-                                ->where('status', "Active")
-                                ->whereHas('vehicle.new_wheeler', function($q) {
-                                    $q->where('name', 'Trailers');
-                                });
-                return datatables()->eloquent($trips->orderByDesc('id'))
+    //             $trips = Trip::with('tripDetails', 'vehicle', "vehicle.new_wheeler", 'driver')
+    //                             ->where('status', "Active")
+    //                             ->whereHas('vehicle.new_wheeler', function($q) {
+    //                                 $q->where('name', 'Trailers');
+    //                             });
+    //             return datatables()->eloquent($trips->orderByDesc('id'))
 
-                    ->filterColumn('vehicle', function($query, $keyword) {
-                        $query->whereHas('vehicle', function($q) use ($keyword) {
-                            $q->where('vehicle_no', 'like', "%{$keyword}%");
-                        });
-                    })
+    //                 ->filterColumn('vehicle', function($query, $keyword) {
+    //                     $query->whereHas('vehicle', function($q) use ($keyword) {
+    //                         $q->where('vehicle_no', 'like', "%{$keyword}%");
+    //                     });
+    //                 })
 
-                    ->filterColumn('driver', function($query, $keyword) {
-                        $query->whereHas('driver', function($q) use ($keyword) {
-                            $q->where('name', 'like', "%{$keyword}%");
-                        });
-                    })
+    //                 ->filterColumn('driver', function($query, $keyword) {
+    //                     $query->whereHas('driver', function($q) use ($keyword) {
+    //                         $q->where('name', 'like', "%{$keyword}%");
+    //                     });
+    //                 })
 
 
-                    ->addColumn('vehicle', function ($data) {
-                        if($data->vehicle != null) {
-                            return $data->vehicle->vehicle_no;
-                        } else {
-                            return "";
-                        }
-                    })
-                    ->editColumn('trip_date', function ($data) {
+    //                 ->addColumn('vehicle', function ($data) {
+    //                     if($data->vehicle != null) {
+    //                         return $data->vehicle->vehicle_no;
+    //                     } else {
+    //                         return "";
+    //                     }
+    //                 })
+    //                 ->editColumn('trip_date', function ($data) {
                        
-                        return date("d-m-Y", strtotime($data->trip_date));
+    //                     return date("d-m-Y", strtotime($data->trip_date));
                         
-                    })
+    //                 })
 
                     
-                    ->addColumn('driver', function ($data) {
-                        if($data->driver != null) {
-                            return $data->driver->name;
-                        } else {
-                            return "";
-                        }
-                    })
-                    ->addColumn('journey_count', function ($data) {
-                        return  $data->tripDetails->count() ?? 0;
-                    })
-                    ->editColumn('created_at', function ($data) {
-                        return  date('d M Y', strtotime($data->created_at));
-                    })   
-                    ->addColumn('action', function ($data) {
+    //                 ->addColumn('driver', function ($data) {
+    //                     if($data->driver != null) {
+    //                         return $data->driver->name;
+    //                     } else {
+    //                         return "";
+    //                     }
+    //                 })
+    //                 ->addColumn('journey_count', function ($data) {
+    //                     return  $data->tripDetails->count() ?? 0;
+    //                 })
+    //                 ->editColumn('created_at', function ($data) {
+    //                     return  date('d M Y', strtotime($data->created_at));
+    //                 })   
+    //                 ->addColumn('action', function ($data) {
 
-                        $viewUrl   = route('admin.trips.show', $data->id);
-                        $editUrl   = route('admin.trips.edit', $data->id);
-                        $deleteUrl = route('admin.trips.destroy', $data->id);
-                        $endtripUrl = route('admin.endActualTrip', $data->id);
+    //                     $viewUrl   = route('admin.trips.show', $data->id);
+    //                     $editUrl   = route('admin.trips.edit', $data->id);
+    //                     $deleteUrl = route('admin.trips.destroy', $data->id);
+    //                     $endtripUrl = route('admin.endActualTrip', $data->id);
 
 
-                        return '
-                            <a href="'.$viewUrl.'" class="btn btn-sm btn-info">View</a> |
-                            <a href="'.$editUrl.'" class="btn btn-sm btn-warning">Edit</a> |
-                            <form action="'.$deleteUrl.'" method="POST" style="display:inline;">
-                                '.csrf_field().'
-                                '.method_field('DELETE').'
-                                <button type="submit" class="btn btn-sm btn-danger deleteExpenseType" onclick="return confirm(\'Are you sure?\')">Delete</button>
-                            </form> | 
-                            <button type="button"
-                                    class="btn btn-sm btn-success tripEndBtn"
-                                    data-id="'.$data->id.'"
-                                    data-balance="'.$data->balance.'"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#endTripModal">
-                                End Trip
-                            </button>
+    //                     return '
+    //                         <a href="'.$viewUrl.'" class="btn btn-sm btn-info">View</a> |
+    //                         <a href="'.$editUrl.'" class="btn btn-sm btn-warning">Edit</a> |
+    //                         <form action="'.$deleteUrl.'" method="POST" style="display:inline;">
+    //                             '.csrf_field().'
+    //                             '.method_field('DELETE').'
+    //                             <button type="submit" class="btn btn-sm btn-danger deleteExpenseType" onclick="return confirm(\'Are you sure?\')">Delete</button>
+    //                         </form> | 
+    //                         <button type="button"
+    //                                 class="btn btn-sm btn-success tripEndBtn"
+    //                                 data-id="'.$data->id.'"
+    //                                 data-balance="'.$data->balance.'"
+    //                                 data-bs-toggle="modal"
+    //                                 data-bs-target="#endTripModal">
+    //                             End Trip
+    //                         </button>
 
-                        ';
-                    })
-                    ->rawColumns(['action', 'vehicle', 'driver', 'journey_count'])->make(true);
+    //                     ';
+    //                 })
+    //                 ->rawColumns(['action', 'vehicle', 'driver', 'journey_count'])->make(true);
 
-            }
+    //         }
 
-        } catch (\Exception $ex) {
-            return redirect('/')->with('error', $ex->getMessage());
-        }
+    //     } catch (\Exception $ex) {
+    //         return redirect('/')->with('error', $ex->getMessage());
+    //     }
 
-        return view('admin.trips.active_trailers_trips');
-    }
+    //     return view('admin.trips.active_trailers_trips');
+    // }
 
     public function closedTrailersTrips()
     {

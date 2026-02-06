@@ -28,7 +28,8 @@ use App\Http\Controllers\Admin\{
     PayrollController,
     AdvanceSalaryController,
     LoanController,
-    LoanInstallmentController
+    LoanInstallmentController,
+    TrailerTripController
 };
 
 Route::match(['get', 'post'], 'login', [AdminController::class, 'login'])->name('login');
@@ -64,6 +65,10 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
     Route::resource('customers', CustomerController::class);
     Route::resource('customer-heads', CustomerHeadController::class);
     Route::resource('maintenances', MaintenanceController::class);
+    Route::resource('trailer-trips', TrailerTripController::class);
+
+    
+
     Route::resource('advance-salaries', AdvanceSalaryController::class)->only(['index','store','destroy', 'create', 'update', 'edit']);
 
 
@@ -97,13 +102,15 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
         Route::POST('end-actual-trip', 'endActualTrip')->name('endActualTrip');
         Route::POST('end-actual-trailer-trip', 'endActualTrailerTrip')->name('endActualTrailerTrip');
         Route::get('closed-trips', 'closedTrips')->name('closedTrips');
-        Route::get('active-trailers-trips', 'activeTrailersTrips')->name('activeTrailersTrips');
-        Route::get('closed-trailers-trips', 'closedTrailersTrips')->name('closeTrailersTrips');
         Route::get('disbursement-slip', 'disbursement_slip')->name('disbursementSlip');
         Route::delete('trip-expense/{id}', 'deleteExpense')->name('trip.expense.delete');
         Route::delete('trip-detail/{id}', 'deleteTripDetail')->name('trip.detail.delete');
-
+        Route::get('closed-trailers-trips', 'closedTrailersTrips')->name('closeTrailersTrips');
+        
     });
+        
+
+    
 
     Route::controller(CustomerHeadController::class)->group(function() {
         Route::get('customer-head-report', 'customerHeadReport')->name('customerHeadReport');

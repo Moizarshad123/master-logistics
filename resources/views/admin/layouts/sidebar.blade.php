@@ -59,7 +59,7 @@
                 </a>
                 <ul>
                     <li>
-                        <a href="{{ route('admin.activeTrailersTrips') }}">Active Trailers Trips</a>
+                        <a href="{{ route('admin.trailer-trips.index') }}">Active Trailers Trips</a>
                     </li>
 
                     <li>
