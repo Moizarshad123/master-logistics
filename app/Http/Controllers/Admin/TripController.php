@@ -3,21 +3,25 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Trip;
-use App\Models\TripDetail;
-use App\Models\Vehicle;
-use App\Models\Driver;
-use App\Models\TripVehicleExpense;
-use App\Models\TripPayment;
-use App\Models\ExpenseType;
-use App\Models\Destination;
 use Illuminate\Http\Request;
-use App\Models\PurchaseSheet;
-use App\Models\SaleSheet;
-use App\Models\Material;
-use App\Models\ExpenseFrom;
-use App\Models\Customer;
-use App\Models\AmountReceivable;
+use App\Models\{
+    Trip,
+    TripDetail,
+    Vehicle,
+    Driver,
+    TripVehicleExpense,
+    TripPayment,
+    ExpenseType,
+    Destination,
+    PurchaseSheet,
+    SaleSheet,
+    Material,
+    ExpenseFrom,
+    Customer,
+    AmountReceivable,
+};
+
+
 use DB, DataTables;
 
 class TripController extends Controller
@@ -394,12 +398,14 @@ class TripController extends Controller
                     if (empty($expenseData['name']) || empty($expenseData['amount'])) {
                         continue;
                     }
+                    $expenseTypeId = ExpenseType::where("name", $expenseData['name'])->pluck("id")->first();
                     TripVehicleExpense::create([
-                        'trip_id'    => $trip->id,
-                        'vehicle_id' => $request->vehicle_id,
-                        'expense'    => $expenseData['name'],
-                        'expense_from' => $expenseData["expense_from"],
-                        'amount'     => $expenseData['amount'],
+                        'trip_id'         => $trip->id,
+                        'vehicle_id'      => $request->vehicle_id,
+                        "expense_type_id" => $expenseTypeId ?? 0,
+                        'expense'         => $expenseData['name'],
+                        'expense_from'    => $expenseData["expense_from"],
+                        'amount'          => $expenseData['amount'],
                     ]);
                 }
             }
@@ -539,10 +545,12 @@ class TripController extends Controller
                         $existing = TripVehicleExpense::find($expenseData['id']);
 
                         if ($existing) {
+                            $expenseTypeId = ExpenseType::where("name", $expenseData['name'])->pluck("id")->first();
                             $existing->update([
-                                'expense' => $expenseData['name'],
-                                'amount'  => $expenseData['amount'],
-                                'expense_from'  => $expenseData['expense_from'],
+                                'expense'         => $expenseData['name'],
+                                'amount'          => $expenseData['amount'],
+                                "expense_type_id" => $expenseTypeId ?? 0,
+                                'expense_from'    => $expenseData['expense_from'],
                             ]);
 
                             $submittedExpenseIds[] = $existing->id;

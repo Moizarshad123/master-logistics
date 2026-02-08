@@ -10,8 +10,7 @@ use App\Models\TripVehicleExpense;
 use App\Models\Vehicle;
 use App\Models\Diesel;
 use App\Models\Driver;
-
-
+use App\Models\ExpenseCategory;
 use App\Models\TripDetail;
 use Carbon\Carbon;
 use DB;
@@ -132,8 +131,17 @@ class ReportController extends Controller
     //     // Calculate total days in date range
     //     $totalDays = $fromDate->diffInDays($toDate) + 1;
 
-    //     // Trips fetch karein with proper date filter
-    //     $trips = Trip::with(['vehicle.new_wheeler', 'tripExpenses', 'tripDetails'])
+    //     // Get all expense categories dynamically from database
+    //     $expenseCategories = ExpenseCategory::orderBy('id')->get();
+        
+    //     // Create dynamic category array for initialization
+    //     $expenseCategoryKeys = [];
+    //     foreach ($expenseCategories as $category) {
+    //         $expenseCategoryKeys[$category->name] = 0;
+    //     }
+
+    //     // Trips fetch karein with proper relationships
+    //     $trips = Trip::with(['vehicle.new_wheeler', 'tripExpenses.expenseType.category', 'tripDetails'])
     //                     ->whereBetween('trip_end_date', [$fromDate, $toDate])
     //                     ->get();
 
@@ -144,42 +152,33 @@ class ReportController extends Controller
     //     // Drivers fetch karein with vehicle relationship
     //     $drivers = Driver::with('vehicle')->where('status', 'active')->get();
 
-    //     // Expense ID → Name mapping
-    //     $expenseMap = [
-    //         'Meal'  => 'Meal',
-    //         'Fueling'  => 'Fueling',
-    //         'Service'  => 'Service',
-    //         'Route'  => 'Route',
-    //         'Toll Tax'  => 'Toll Tax',
-    //         'Tyre Punc/Air'  => 'Tyre Punc/Air',
-    //         'Labor'  => 'Labor',
-    //         'Repair'  => 'Repair',
-    //         'Misc'  => 'Misc',
-    //         'Brokerage' => 'Brokerage'
-    //     ];
+    //     // Fetch TripPayments (Advance payments) for date range
+    //     $tripPayments = TripPayment::with(['trip.vehicle.new_wheeler'])
+    //                     ->whereBetween('date', [$fromDate, $toDate])
+    //                     ->get();
+
+    //     // Fetch TripVehicleExpense where expense_from = "From Advance Amount"
+    //     $advanceExpenses = TripVehicleExpense::with(['vehicle.new_wheeler', 'trip', 'expenseType.category'])
+    //                         ->where('expense_from', 'From Advance Amount')
+    //                         ->whereHas('trip', function($query) use ($fromDate, $toDate) {
+    //                             $query->whereBetween('trip_end_date', [$fromDate, $toDate]);
+    //                         })
+    //                         ->get();
 
     //     $report = [];
         
-    //     // Grand total initialize
-    //     $grandTotal = [
+    //     // Grand total initialize - with dynamic expense categories
+    //     $grandTotal = array_merge([
     //         'trips'         => 0,
     //         'total_journeys' => 0,
-    //         'Meal'          => 0,
-    //         'Fueling'       => 0,
-    //         'Service'       => 0,
-    //         'Route'         => 0,
-    //         'Toll Tax'      => 0,
-    //         'Tyre Punc/Air' => 0,
-    //         'Labor'         => 0,
-    //         'Repair'        => 0,
-    //         'Misc'          => 0,
-    //         'Brokerage'     => 0,
+    //     ], $expenseCategoryKeys, [
+    //         'Advance'       => 0,
     //         'Salary'        => 0,
     //         'Total_Exp'     => 0,
     //         'Sale_Rent'     => 0,
     //         'Gross_Earning' => 0,
     //         'Net_Earning'   => 0
-    //     ];
+    //     ]);
 
     //     // Category-wise totals initialize
     //     $categoryTotals = [];
@@ -195,48 +194,32 @@ class ReportController extends Controller
 
     //         // Initialize category total agar pehle se nahi hai
     //         if (!isset($categoryTotals[$category])) {
-    //             $categoryTotals[$category] = [
+    //             $categoryTotals[$category] = array_merge([
     //                 'trips'         => 0,
     //                 'total_journeys' => 0,
-    //                 'Meal'          => 0,
-    //                 'Fueling'       => 0,
-    //                 'Service'       => 0,
-    //                 'Route'         => 0,
-    //                 'Toll Tax'      => 0,
-    //                 'Tyre Punc/Air' => 0,
-    //                 'Labor'         => 0,
-    //                 'Repair'        => 0,
-    //                 'Misc'          => 0,
-    //                 'Brokerage'     => 0,
+    //             ], $expenseCategoryKeys, [
+    //                 'Advance'       => 0,
     //                 'Salary'        => 0,
     //                 'Total_Exp'     => 0,
     //                 'Sale_Rent'     => 0,
     //                 'Gross_Earning' => 0,
     //                 'Net_Earning'   => 0
-    //             ];
+    //             ]);
     //         }
 
     //         // Initialize vehicle row agar pehle se nahi hai
     //         if (!isset($report[$category][$vehicleNo])) {
-    //             $report[$category][$vehicleNo] = [
+    //             $report[$category][$vehicleNo] = array_merge([
     //                 'trips'         => 0,
     //                 'total_journeys' => 0,
-    //                 'Meal'          => 0,
-    //                 'Fueling'       => 0,
-    //                 'Service'       => 0,
-    //                 'Route'         => 0,
-    //                 'Toll Tax'      => 0,
-    //                 'Tyre Punc/Air' => 0,
-    //                 'Labor'         => 0,
-    //                 'Repair'        => 0,
-    //                 'Misc'          => 0,
-    //                 'Brokerage'     => 0,
+    //             ], $expenseCategoryKeys, [
+    //                 'Advance'       => 0,
     //                 'Salary'        => 0,
     //                 'Total_Exp'     => 0,
     //                 'Sale_Rent'     => 0,
     //                 'Gross_Earning' => 0,
     //                 'Net_Earning'   => 0
-    //             ];
+    //             ]);
     //         }
 
     //         // Trip count
@@ -250,23 +233,27 @@ class ReportController extends Controller
     //         $categoryTotals[$category]['total_journeys'] += $journeyCount;
     //         $grandTotal['total_journeys'] += $journeyCount;
 
-    //         // Expenses calculate karein aur Total_Exp mein bhi add karein
-    //         $tripTotalExpense = 0; // Is trip ka total expense
+    //         // Expenses calculate karein - GROUP BY CATEGORY
+    //         $tripTotalExpense = 0;
             
     //         foreach ($trip->tripExpenses as $expense) {
     //             $amount = (float) ($expense->amount ?? 0);
-    //             $tripTotalExpense += $amount; // Total expense mein add karo
+    //             $tripTotalExpense += $amount;
                 
-    //             // Agar expense mapping mein hai to specific column mein bhi add karo
-    //             if (isset($expenseMap[$expense->expense])) {
-    //                 $key = $expenseMap[$expense->expense];
-    //                 $report[$category][$vehicleNo][$key] += $amount;
-    //                 $categoryTotals[$category][$key] += $amount;
-    //                 $grandTotal[$key] += $amount;
+    //             // Get category name from expense type relationship
+    //             if ($expense->expenseType && $expense->expenseType->category) {
+    //                 $categoryName = $expense->expenseType->category->name;
+                    
+    //                 // Add to respective CATEGORY column (not expense type)
+    //                 if (isset($report[$category][$vehicleNo][$categoryName])) {
+    //                     $report[$category][$vehicleNo][$categoryName] += $amount;
+    //                     $categoryTotals[$category][$categoryName] += $amount;
+    //                     $grandTotal[$categoryName] += $amount;
+    //                 }
     //             }
     //         }
 
-    //         // Total Expense add karo (tripExpenses ka sum)
+    //         // Total Expense add karo
     //         $report[$category][$vehicleNo]['Total_Exp'] += $tripTotalExpense;
     //         $categoryTotals[$category]['Total_Exp'] += $tripTotalExpense;
     //         $grandTotal['Total_Exp'] += $tripTotalExpense;
@@ -280,6 +267,7 @@ class ReportController extends Controller
     //         }
     //     }
 
+    //     // Diesel entries process karein
     //     foreach ($diesels as $diesel) {
     //         // Safety checks
     //         if (!$diesel->vehicle || !$diesel->vehicle->new_wheeler) {
@@ -291,55 +279,44 @@ class ReportController extends Controller
 
     //         // Initialize category total agar pehle se nahi hai
     //         if (!isset($categoryTotals[$category])) {
-    //             $categoryTotals[$category] = [
+    //             $categoryTotals[$category] = array_merge([
     //                 'trips'         => 0,
     //                 'total_journeys' => 0,
-    //                 'Meal'          => 0,
-    //                 'Fueling'       => 0,
-    //                 'Service'       => 0,
-    //                 'Route'         => 0,
-    //                 'Toll Tax'      => 0,
-    //                 'Tyre Punc/Air' => 0,
-    //                 'Labor'         => 0,
-    //                 'Repair'        => 0,
-    //                 'Misc'          => 0,
-    //                 'Brokerage'     => 0,
+    //             ], $expenseCategoryKeys, [
+    //                 'Advance'       => 0,
     //                 'Salary'        => 0,
     //                 'Total_Exp'     => 0,
     //                 'Sale_Rent'     => 0,
     //                 'Gross_Earning' => 0,
     //                 'Net_Earning'   => 0
-    //             ];
+    //             ]);
     //         }
 
     //         // Agar vehicle pehle se report mein nahi hai, initialize karo
     //         if (!isset($report[$category][$vehicleNo])) {
-    //             $report[$category][$vehicleNo] = [
+    //             $report[$category][$vehicleNo] = array_merge([
     //                 'trips'         => 0,
     //                 'total_journeys' => 0,
-    //                 'Meal'          => 0,
-    //                 'Fueling'       => 0,
-    //                 'Service'       => 0,
-    //                 'Route'         => 0,
-    //                 'Toll Tax'      => 0,
-    //                 'Tyre Punc/Air' => 0,
-    //                 'Labor'         => 0,
-    //                 'Repair'        => 0,
-    //                 'Misc'          => 0,
-    //                 'Brokerage'     => 0,
+    //             ], $expenseCategoryKeys, [
+    //                 'Advance'       => 0,
     //                 'Salary'        => 0,
     //                 'Total_Exp'     => 0,
     //                 'Sale_Rent'     => 0,
     //                 'Gross_Earning' => 0,
     //                 'Net_Earning'   => 0
-    //             ];
+    //             ]);
     //         }
 
     //         // Fueling amount add karo
     //         $fuelingAmount = (float) ($diesel->total_amount ?? 0);
-    //         $report[$category][$vehicleNo]['Fueling'] += $fuelingAmount;
-    //         $categoryTotals[$category]['Fueling'] += $fuelingAmount;
-    //         $grandTotal['Fueling'] += $fuelingAmount;
+            
+    //         // Find "Fuel" category dynamically from database
+    //         $fuelCategory = $expenseCategories->where('name', 'Fuel')->first();
+    //         if ($fuelCategory) {
+    //             $report[$category][$vehicleNo][$fuelCategory->name] += $fuelingAmount;
+    //             $categoryTotals[$category][$fuelCategory->name] += $fuelingAmount;
+    //             $grandTotal[$fuelCategory->name] += $fuelingAmount;
+    //         }
 
     //         // Diesel amount ko Total_Exp mein bhi add karo
     //         $report[$category][$vehicleNo]['Total_Exp'] += $fuelingAmount;
@@ -347,7 +324,70 @@ class ReportController extends Controller
     //         $grandTotal['Total_Exp'] += $fuelingAmount;
     //     }
 
-    //     // Calculate salary for each vehicle (based on date range)
+    //     // Calculate Advance: TripPayments - Expenses from Advance
+    //     foreach ($tripPayments as $payment) {
+    //         if (!$payment->trip || !$payment->trip->vehicle || !$payment->trip->vehicle->new_wheeler) {
+    //             continue;
+    //         }
+
+    //         $category = $payment->trip->vehicle->new_wheeler->name;
+    //         $vehicleNo = $payment->trip->vehicle->vehicle_no;
+
+    //         // Initialize agar vehicle report mein nahi hai
+    //         if (!isset($categoryTotals[$category])) {
+    //             $categoryTotals[$category] = array_merge([
+    //                 'trips'         => 0,
+    //                 'total_journeys' => 0,
+    //             ], $expenseCategoryKeys, [
+    //                 'Advance'       => 0,
+    //                 'Salary'        => 0,
+    //                 'Total_Exp'     => 0,
+    //                 'Sale_Rent'     => 0,
+    //                 'Gross_Earning' => 0,
+    //                 'Net_Earning'   => 0
+    //             ]);
+    //         }
+
+    //         if (!isset($report[$category][$vehicleNo])) {
+    //             $report[$category][$vehicleNo] = array_merge([
+    //                 'trips'         => 0,
+    //                 'total_journeys' => 0,
+    //             ], $expenseCategoryKeys, [
+    //                 'Advance'       => 0,
+    //                 'Salary'        => 0,
+    //                 'Total_Exp'     => 0,
+    //                 'Sale_Rent'     => 0,
+    //                 'Gross_Earning' => 0,
+    //                 'Net_Earning'   => 0
+    //             ]);
+    //         }
+
+    //         $paymentAmount = (float) ($payment->amount ?? 0);
+    //         $report[$category][$vehicleNo]['Advance'] += $paymentAmount;
+    //         $categoryTotals[$category]['Advance'] += $paymentAmount;
+    //         $grandTotal['Advance'] += $paymentAmount;
+    //     }
+
+    //     // Subtract expenses paid from advance
+    //     foreach ($advanceExpenses as $advExp) {
+    //         if (!$advExp->vehicle || !$advExp->vehicle->new_wheeler) {
+    //             continue;
+    //         }
+
+    //         $category = $advExp->vehicle->new_wheeler->name;
+    //         $vehicleNo = $advExp->vehicle->vehicle_no;
+
+    //         if (isset($report[$category][$vehicleNo])) {
+    //             $expenseAmount = (float) ($advExp->amount ?? 0);
+                
+    //             // ONLY subtract from Advance, DO NOT add to Total_Exp
+    //             $report[$category][$vehicleNo]['Advance'] -= $expenseAmount;
+    //             $categoryTotals[$category]['Advance'] -= $expenseAmount;
+    //             $grandTotal['Advance'] -= $expenseAmount;
+    //         }
+    //     }
+
+    //     // Calculate salary for each vehicle
     //     foreach ($drivers as $driver) {
     //         if (!$driver->vehicle || !$driver->vehicle->new_wheeler) {
     //             continue;
@@ -356,13 +396,22 @@ class ReportController extends Controller
     //         $category = $driver->vehicle->new_wheeler->name;
     //         $vehicleNo = $driver->vehicle->vehicle_no;
 
-    //         // Daily salary calculate karein
     //         $monthlySalary = (float) ($driver->salary ?? 0);
-    //         $dailySalary = $monthlySalary / 30; // 30 days per month
+    //         $dailySalary = $monthlySalary / 30;
     //         $totalSalary = $dailySalary * $totalDays;
 
-    //         // Agar vehicle report mein hai to salary add karo
     //         if (isset($report[$category][$vehicleNo])) {
+    //             // Find "Salaries" category from database
+    //             $salariesCategory = $expenseCategories->where('name', 'Salaries')->first();
+                
+    //             if ($salariesCategory) {
+    //                 // Add to Salaries CATEGORY column
+    //                 $report[$category][$vehicleNo][$salariesCategory->name] += $totalSalary;
+    //                 $categoryTotals[$category][$salariesCategory->name] += $totalSalary;
+    //                 $grandTotal[$salariesCategory->name] += $totalSalary;
+    //             }
+                
+    //             // Also keep in Salary for second table
     //             $report[$category][$vehicleNo]['Salary'] += $totalSalary;
     //             $categoryTotals[$category]['Salary'] += $totalSalary;
     //             $grandTotal['Salary'] += $totalSalary;
@@ -377,13 +426,11 @@ class ReportController extends Controller
     //     // Calculate Gross Earning and Net Earning
     //     foreach ($report as $category => $vehicles) {
     //         foreach ($vehicles as $vehicleNo => $data) {
-    //             // Gross Earning = Sale Rent
     //             $grossEarning = $data['Sale_Rent'];
     //             $report[$category][$vehicleNo]['Gross_Earning'] = $grossEarning;
     //             $categoryTotals[$category]['Gross_Earning'] += $grossEarning;
     //             $grandTotal['Gross_Earning'] += $grossEarning;
 
-    //             // Net Earning = Gross Earning - Total Expense
     //             $netEarning = $grossEarning - $data['Total_Exp'];
     //             $report[$category][$vehicleNo]['Net_Earning'] = $netEarning;
     //             $categoryTotals[$category]['Net_Earning'] += $netEarning;
@@ -391,7 +438,14 @@ class ReportController extends Controller
     //         }
     //     }
 
-    //     return view('admin.reports.vehicle__summary_report', compact('report', 'categoryTotals', 'grandTotal', 'fromDate', 'toDate'));
+    //     return view('admin.reports.vehicle__summary_report', compact(
+    //         'report', 
+    //         'categoryTotals', 
+    //         'grandTotal', 
+    //         'fromDate', 
+    //         'toDate',
+    //         'expenseCategories'
+    //     ));
     // }
 
     public function vehicleSummaryReport(Request $request)
@@ -408,69 +462,71 @@ class ReportController extends Controller
         // Calculate total days in date range
         $totalDays = $fromDate->diffInDays($toDate) + 1;
 
-        // Trips fetch karein with proper date filter
-        $trips = Trip::with(['vehicle.new_wheeler', 'tripExpenses', 'tripDetails'])
+        // Get all expense categories dynamically from database
+        $expenseCategories = ExpenseCategory::orderBy('id')->get();
+        
+        // Create dynamic category array for initialization
+        $expenseCategoryKeys = [];
+        foreach ($expenseCategories as $category) {
+            $expenseCategoryKeys[$category->name] = 0;
+        }
+
+        // Trips fetch karein with proper relationships - EXCLUDE TRAILERS (vehicle_type = 2)
+        $trips = Trip::with(['vehicle.new_wheeler', 'tripExpenses.expenseType.category', 'tripDetails'])
                         ->whereBetween('trip_end_date', [$fromDate, $toDate])
+                        ->whereHas('vehicle', function($query) {
+                            $query->where('vehicle_type', '!=', 2); // Exclude trailers
+                        })
                         ->get();
 
         $diesels = Diesel::with('vehicle.new_wheeler')
                     ->whereBetween('date', [$fromDate, $toDate])
+                    ->whereHas('vehicle', function($query) {
+                        $query->where('vehicle_type', '!=', 2); // Exclude trailers
+                    })
                     ->get();
 
-        // Drivers fetch karein with vehicle relationship
-        $drivers = Driver::with('vehicle')->where('status', 'active')->get();
+        // Drivers fetch karein with vehicle relationship - EXCLUDE TRAILERS
+        $drivers = Driver::with('vehicle')
+                    ->where('status', 'active')
+                    ->whereHas('vehicle', function($query) {
+                        $query->where('vehicle_type', '!=', 2); // Exclude trailers
+                    })
+                    ->get();
 
-        // Fetch TripPayments (Advance payments) for date range
+        // Fetch TripPayments (Advance payments) for date range - EXCLUDE TRAILERS
         $tripPayments = TripPayment::with(['trip.vehicle.new_wheeler'])
                         ->whereBetween('date', [$fromDate, $toDate])
+                        ->whereHas('trip.vehicle', function($query) {
+                            $query->where('vehicle_type', '!=', 2); // Exclude trailers
+                        })
                         ->get();
 
-        // Fetch TripVehicleExpense where expense_from = "From Advance Amount"
-        // Ye sirf advance calculate karne ke liye hai, Total_Exp mein NAHI add karenge
-        $advanceExpenses = TripVehicleExpense::with(['vehicle.new_wheeler', 'trip'])
+        // Fetch TripVehicleExpense where expense_from = "From Advance Amount" - EXCLUDE TRAILERS
+        $advanceExpenses = TripVehicleExpense::with(['vehicle.new_wheeler', 'trip', 'expenseType.category'])
                             ->where('expense_from', 'From Advance Amount')
+                            ->whereHas('vehicle', function($query) {
+                                $query->where('vehicle_type', '!=', 2); // Exclude trailers
+                            })
                             ->whereHas('trip', function($query) use ($fromDate, $toDate) {
                                 $query->whereBetween('trip_end_date', [$fromDate, $toDate]);
                             })
                             ->get();
 
-        // Expense ID → Name mapping
-        $expenseMap = [
-            'Meal'  => 'Meal',
-            'Fueling'  => 'Fueling',
-            'Service'  => 'Service',
-            'Route'  => 'Route',
-            'Toll Tax'  => 'Toll Tax',
-            'Tyre Punc/Air'  => 'Tyre Punc/Air',
-            'Labor'  => 'Labor',
-            'Repair'  => 'Repair',
-            'Misc'  => 'Misc',
-            'Brokerage' => 'Brokerage'
-        ];
-
         $report = [];
         
-        // Grand total initialize
-        $grandTotal = [
+        // Grand total initialize - with dynamic expense categories
+        $grandTotal = array_merge([
             'trips'         => 0,
             'total_journeys' => 0,
-            'Meal'          => 0,
-            'Fueling'       => 0,
-            'Service'       => 0,
-            'Route'         => 0,
-            'Toll Tax'      => 0,
-            'Tyre Punc/Air' => 0,
-            'Labor'         => 0,
-            'Repair'        => 0,
-            'Misc'          => 0,
-            'Brokerage'     => 0,
+        ], $expenseCategoryKeys, [
             'Advance'       => 0,
             'Salary'        => 0,
             'Total_Exp'     => 0,
             'Sale_Rent'     => 0,
             'Gross_Earning' => 0,
             'Net_Earning'   => 0
-        ];
+        ]);
 
         // Category-wise totals initialize
         $categoryTotals = [];
@@ -486,50 +542,32 @@ class ReportController extends Controller
 
             // Initialize category total agar pehle se nahi hai
             if (!isset($categoryTotals[$category])) {
-                $categoryTotals[$category] = [
+                $categoryTotals[$category] = array_merge([
                     'trips'         => 0,
                     'total_journeys' => 0,
-                    'Meal'          => 0,
-                    'Fueling'       => 0,
-                    'Service'       => 0,
-                    'Route'         => 0,
-                    'Toll Tax'      => 0,
-                    'Tyre Punc/Air' => 0,
-                    'Labor'         => 0,
-                    'Repair'        => 0,
-                    'Misc'          => 0,
-                    'Brokerage'     => 0,
+                ], $expenseCategoryKeys, [
                     'Advance'       => 0,
                     'Salary'        => 0,
                     'Total_Exp'     => 0,
                     'Sale_Rent'     => 0,
                     'Gross_Earning' => 0,
                     'Net_Earning'   => 0
-                ];
+                ]);
             }
 
             // Initialize vehicle row agar pehle se nahi hai
             if (!isset($report[$category][$vehicleNo])) {
-                $report[$category][$vehicleNo] = [
+                $report[$category][$vehicleNo] = array_merge([
                     'trips'         => 0,
                     'total_journeys' => 0,
-                    'Meal'          => 0,
-                    'Fueling'       => 0,
-                    'Service'       => 0,
-                    'Route'         => 0,
-                    'Toll Tax'      => 0,
-                    'Tyre Punc/Air' => 0,
-                    'Labor'         => 0,
-                    'Repair'        => 0,
-                    'Misc'          => 0,
-                    'Brokerage'     => 0,
+                ], $expenseCategoryKeys, [
                     'Advance'       => 0,
                     'Salary'        => 0,
                     'Total_Exp'     => 0,
                     'Sale_Rent'     => 0,
                     'Gross_Earning' => 0,
                     'Net_Earning'   => 0
-                ];
+                ]);
             }
 
             // Trip count
@@ -540,26 +578,30 @@ class ReportController extends Controller
             // Journey count (tripDetails ka count)
             $journeyCount = $trip->tripDetails->count();
             $report[$category][$vehicleNo]['total_journeys'] += $journeyCount;
-            $categoryTotals[$category]['total_journeys'] += $journeyCount;
-            $grandTotal['total_journeys'] += $journeyCount;
+            $categoryTotals[$category]['total_journeys']     += $journeyCount;
+            $grandTotal['total_journeys']                    += $journeyCount;
 
-            // Expenses calculate karein aur Total_Exp mein bhi add karein
-            $tripTotalExpense = 0; // Is trip ka total expense
+            // Expenses calculate karein - GROUP BY CATEGORY
+            $tripTotalExpense = 0;
             
             foreach ($trip->tripExpenses as $expense) {
                 $amount = (float) ($expense->amount ?? 0);
-                $tripTotalExpense += $amount; // Total expense mein add karo
+                $tripTotalExpense += $amount;
                 
-                // Agar expense mapping mein hai to specific column mein bhi add karo
-                if (isset($expenseMap[$expense->expense])) {
-                    $key = $expenseMap[$expense->expense];
-                    $report[$category][$vehicleNo][$key] += $amount;
-                    $categoryTotals[$category][$key] += $amount;
-                    $grandTotal[$key] += $amount;
+                // Get category name from expense type relationship
+                if ($expense->expenseType && $expense->expenseType->category) {
+                    $categoryName = $expense->expenseType->category->name;
+                    
+                    // Add to respective CATEGORY column (not expense type)
+                    if (isset($report[$category][$vehicleNo][$categoryName])) {
+                        $report[$category][$vehicleNo][$categoryName] += $amount;
+                        $categoryTotals[$category][$categoryName] += $amount;
+                        $grandTotal[$categoryName] += $amount;
+                    }
                 }
             }
 
-            // Total Expense add karo (tripExpenses ka sum)
+            // Total Expense add karo
             $report[$category][$vehicleNo]['Total_Exp'] += $tripTotalExpense;
             $categoryTotals[$category]['Total_Exp'] += $tripTotalExpense;
             $grandTotal['Total_Exp'] += $tripTotalExpense;
@@ -571,8 +613,18 @@ class ReportController extends Controller
                 $categoryTotals[$category]['Sale_Rent'] += $rent;
                 $grandTotal['Sale_Rent'] += $rent;
             }
+
+            // Trip balance ko Advance mein add/subtract karein
+            // Positive balance = add to Advance
+            // Negative balance = subtract from Advance
+            $tripBalance = (float) ($trip->balance ?? 0);
+            
+            $report[$category][$vehicleNo]['Advance'] += $tripBalance;
+            $categoryTotals[$category]['Advance'] += $tripBalance;
+            $grandTotal['Advance'] += $tripBalance;
         }
 
+        // Diesel entries process karein
         foreach ($diesels as $diesel) {
             // Safety checks
             if (!$diesel->vehicle || !$diesel->vehicle->new_wheeler) {
@@ -584,57 +636,44 @@ class ReportController extends Controller
 
             // Initialize category total agar pehle se nahi hai
             if (!isset($categoryTotals[$category])) {
-                $categoryTotals[$category] = [
+                $categoryTotals[$category] = array_merge([
                     'trips'         => 0,
                     'total_journeys' => 0,
-                    'Meal'          => 0,
-                    'Fueling'       => 0,
-                    'Service'       => 0,
-                    'Route'         => 0,
-                    'Toll Tax'      => 0,
-                    'Tyre Punc/Air' => 0,
-                    'Labor'         => 0,
-                    'Repair'        => 0,
-                    'Misc'          => 0,
-                    'Brokerage'     => 0,
+                ], $expenseCategoryKeys, [
                     'Advance'       => 0,
                     'Salary'        => 0,
                     'Total_Exp'     => 0,
                     'Sale_Rent'     => 0,
                     'Gross_Earning' => 0,
                     'Net_Earning'   => 0
-                ];
+                ]);
             }
 
             // Agar vehicle pehle se report mein nahi hai, initialize karo
             if (!isset($report[$category][$vehicleNo])) {
-                $report[$category][$vehicleNo] = [
+                $report[$category][$vehicleNo] = array_merge([
                     'trips'         => 0,
                     'total_journeys' => 0,
-                    'Meal'          => 0,
-                    'Fueling'       => 0,
-                    'Service'       => 0,
-                    'Route'         => 0,
-                    'Toll Tax'      => 0,
-                    'Tyre Punc/Air' => 0,
-                    'Labor'         => 0,
-                    'Repair'        => 0,
-                    'Misc'          => 0,
-                    'Brokerage'     => 0,
+                ], $expenseCategoryKeys, [
                     'Advance'       => 0,
                     'Salary'        => 0,
                     'Total_Exp'     => 0,
                     'Sale_Rent'     => 0,
                     'Gross_Earning' => 0,
                     'Net_Earning'   => 0
-                ];
+                ]);
             }
 
             // Fueling amount add karo
             $fuelingAmount = (float) ($diesel->total_amount ?? 0);
-            $report[$category][$vehicleNo]['Fueling'] += $fuelingAmount;
-            $categoryTotals[$category]['Fueling'] += $fuelingAmount;
-            $grandTotal['Fueling'] += $fuelingAmount;
+            
+            // Find "Fuel" category dynamically from database
+            $fuelCategory = $expenseCategories->where('name', 'Fuel')->first();
+            if ($fuelCategory) {
+                $report[$category][$vehicleNo][$fuelCategory->name] += $fuelingAmount;
+                $categoryTotals[$category][$fuelCategory->name] += $fuelingAmount;
+                $grandTotal[$fuelCategory->name] += $fuelingAmount;
+            }
 
             // Diesel amount ko Total_Exp mein bhi add karo
             $report[$category][$vehicleNo]['Total_Exp'] += $fuelingAmount;
@@ -643,7 +682,6 @@ class ReportController extends Controller
         }
 
         // Calculate Advance: TripPayments - Expenses from Advance
-        // Step 1: Add all trip payments to Advance
         foreach ($tripPayments as $payment) {
             if (!$payment->trip || !$payment->trip->vehicle || !$payment->trip->vehicle->new_wheeler) {
                 continue;
@@ -654,49 +692,31 @@ class ReportController extends Controller
 
             // Initialize agar vehicle report mein nahi hai
             if (!isset($categoryTotals[$category])) {
-                $categoryTotals[$category] = [
+                $categoryTotals[$category] = array_merge([
                     'trips'         => 0,
                     'total_journeys' => 0,
-                    'Meal'          => 0,
-                    'Fueling'       => 0,
-                    'Service'       => 0,
-                    'Route'         => 0,
-                    'Toll Tax'      => 0,
-                    'Tyre Punc/Air' => 0,
-                    'Labor'         => 0,
-                    'Repair'        => 0,
-                    'Misc'          => 0,
-                    'Brokerage'     => 0,
+                ], $expenseCategoryKeys, [
                     'Advance'       => 0,
                     'Salary'        => 0,
                     'Total_Exp'     => 0,
                     'Sale_Rent'     => 0,
                     'Gross_Earning' => 0,
                     'Net_Earning'   => 0
-                ];
+                ]);
             }
 
             if (!isset($report[$category][$vehicleNo])) {
-                $report[$category][$vehicleNo] = [
+                $report[$category][$vehicleNo] = array_merge([
                     'trips'         => 0,
                     'total_journeys' => 0,
-                    'Meal'          => 0,
-                    'Fueling'       => 0,
-                    'Service'       => 0,
-                    'Route'         => 0,
-                    'Toll Tax'      => 0,
-                    'Tyre Punc/Air' => 0,
-                    'Labor'         => 0,
-                    'Repair'        => 0,
-                    'Misc'          => 0,
-                    'Brokerage'     => 0,
+                ], $expenseCategoryKeys, [
                     'Advance'       => 0,
                     'Salary'        => 0,
                     'Total_Exp'     => 0,
                     'Sale_Rent'     => 0,
                     'Gross_Earning' => 0,
                     'Net_Earning'   => 0
-                ];
+                ]);
             }
 
             $paymentAmount = (float) ($payment->amount ?? 0);
@@ -705,7 +725,7 @@ class ReportController extends Controller
             $grandTotal['Advance'] += $paymentAmount;
         }
 
-        // Step 2: Subtract expenses paid from advance (IMPORTANT: NOT added to Total_Exp)
+        // Subtract expenses paid from advance
         foreach ($advanceExpenses as $advExp) {
             if (!$advExp->vehicle || !$advExp->vehicle->new_wheeler) {
                 continue;
@@ -714,19 +734,17 @@ class ReportController extends Controller
             $category = $advExp->vehicle->new_wheeler->name;
             $vehicleNo = $advExp->vehicle->vehicle_no;
 
-            // Make sure vehicle exists in report
             if (isset($report[$category][$vehicleNo])) {
                 $expenseAmount = (float) ($advExp->amount ?? 0);
                 
                 // ONLY subtract from Advance, DO NOT add to Total_Exp
-                // (because it's already in tripExpenses table and counted there)
                 $report[$category][$vehicleNo]['Advance'] -= $expenseAmount;
                 $categoryTotals[$category]['Advance'] -= $expenseAmount;
                 $grandTotal['Advance'] -= $expenseAmount;
             }
         }
 
-        // Calculate salary for each vehicle (based on date range)
+        // Calculate salary for each vehicle
         foreach ($drivers as $driver) {
             if (!$driver->vehicle || !$driver->vehicle->new_wheeler) {
                 continue;
@@ -735,13 +753,22 @@ class ReportController extends Controller
             $category = $driver->vehicle->new_wheeler->name;
             $vehicleNo = $driver->vehicle->vehicle_no;
 
-            // Daily salary calculate karein
             $monthlySalary = (float) ($driver->salary ?? 0);
-            $dailySalary = $monthlySalary / 30; // 30 days per month
+            $dailySalary = $monthlySalary / 30;
             $totalSalary = $dailySalary * $totalDays;
 
-            // Agar vehicle report mein hai to salary add karo
             if (isset($report[$category][$vehicleNo])) {
+                // Find "Salaries" category from database
+                $salariesCategory = $expenseCategories->where('name', 'Salaries')->first();
+                
+                if ($salariesCategory) {
+                    // Add to Salaries CATEGORY column
+                    $report[$category][$vehicleNo][$salariesCategory->name] += $totalSalary;
+                    $categoryTotals[$category][$salariesCategory->name] += $totalSalary;
+                    $grandTotal[$salariesCategory->name] += $totalSalary;
+                }
+                
+                // Also keep in Salary for second table
                 $report[$category][$vehicleNo]['Salary'] += $totalSalary;
                 $categoryTotals[$category]['Salary'] += $totalSalary;
                 $grandTotal['Salary'] += $totalSalary;
@@ -756,13 +783,11 @@ class ReportController extends Controller
         // Calculate Gross Earning and Net Earning
         foreach ($report as $category => $vehicles) {
             foreach ($vehicles as $vehicleNo => $data) {
-                // Gross Earning = Sale Rent
                 $grossEarning = $data['Sale_Rent'];
                 $report[$category][$vehicleNo]['Gross_Earning'] = $grossEarning;
                 $categoryTotals[$category]['Gross_Earning'] += $grossEarning;
                 $grandTotal['Gross_Earning'] += $grossEarning;
 
-                // Net Earning = Gross Earning - Total Expense
                 $netEarning = $grossEarning - $data['Total_Exp'];
                 $report[$category][$vehicleNo]['Net_Earning'] = $netEarning;
                 $categoryTotals[$category]['Net_Earning'] += $netEarning;
@@ -770,7 +795,373 @@ class ReportController extends Controller
             }
         }
 
-        return view('admin.reports.vehicle__summary_report', compact('report', 'categoryTotals', 'grandTotal', 'fromDate', 'toDate'));
+        return view('admin.reports.vehicle__summary_report', compact(
+            'report', 
+            'categoryTotals', 
+            'grandTotal', 
+            'fromDate', 
+            'toDate',
+            'expenseCategories'
+        ));
+    }
+
+    public function trailersVehicleSummaryReport(Request $request)
+    {
+        // Date range set karein
+        $fromDate = $request->filled('from_date') 
+            ? Carbon::parse($request->from_date)->startOfDay()
+            : Carbon::today()->startOfDay();
+        
+        $toDate = $request->filled('to_date')
+            ? Carbon::parse($request->to_date)->endOfDay()
+            : Carbon::today()->endOfDay();
+
+        // Calculate total days in date range
+        $totalDays = $fromDate->diffInDays($toDate) + 1;
+
+        // Get all expense categories dynamically from database
+        $expenseCategories = ExpenseCategory::orderBy('id')->get();
+        
+        // Create dynamic category array for initialization
+        $expenseCategoryKeys = [];
+        foreach ($expenseCategories as $category) {
+            $expenseCategoryKeys[$category->name] = 0;
+        }
+
+        // Trips fetch karein with proper relationships - ONLY TRAILERS (vehicle_type = 2)
+        $trips = Trip::with(['vehicle.new_wheeler', 'tripExpenses.expenseType.category', 'tripDetails'])
+                        ->whereBetween('trip_end_date', [$fromDate, $toDate])
+                        ->whereHas('vehicle', function($query) {
+                            $query->where('vehicle_type', 2); // ONLY trailers
+                        })
+                        ->get();
+
+        // Diesel with trip relationship - ONLY TRAILERS
+        $diesels = Diesel::with(['vehicle.new_wheeler', 'trip'])
+                    ->whereBetween('date', [$fromDate, $toDate])
+                    ->whereHas('vehicle', function($query) {
+                        $query->where('vehicle_type', 2); // ONLY trailers
+                    })
+                    ->get();
+
+        // Drivers fetch karein with vehicle relationship - ONLY TRAILERS
+        $drivers = Driver::with('vehicle')
+                    ->where('status', 'active')
+                    ->whereHas('vehicle', function($query) {
+                        $query->where('vehicle_type', 2); // ONLY trailers
+                    })
+                    ->get();
+
+        // Fetch TripPayments (Advance payments) for date range - ONLY TRAILERS
+        $tripPayments = TripPayment::with(['trip.vehicle.new_wheeler'])
+                        ->whereBetween('date', [$fromDate, $toDate])
+                        ->whereHas('trip.vehicle', function($query) {
+                            $query->where('vehicle_type', 2); // ONLY trailers
+                        })
+                        ->get();
+
+        // Fetch TripVehicleExpense where expense_from = "From Advance Amount" - ONLY TRAILERS
+        $advanceExpenses = TripVehicleExpense::with(['vehicle.new_wheeler', 'trip', 'expenseType.category'])
+                            ->where('expense_from', 'From Advance Amount')
+                            ->whereHas('vehicle', function($query) {
+                                $query->where('vehicle_type', 2); // ONLY trailers
+                            })
+                            ->whereHas('trip', function($query) use ($fromDate, $toDate) {
+                                $query->whereBetween('trip_end_date', [$fromDate, $toDate]);
+                            })
+                            ->get();
+
+        $report = [];
+        
+        // Grand total initialize - with dynamic expense categories
+        $grandTotal = array_merge([
+            'trips'         => 0,
+            'total_journeys' => 0,
+        ], $expenseCategoryKeys, [
+            'Advance'       => 0,
+            'Salary'        => 0,
+            'Total_Exp'     => 0,
+            'Sale_Rent'     => 0,
+            'Gross_Earning' => 0,
+            'Net_Earning'   => 0
+        ]);
+
+        // Category-wise totals initialize
+        $categoryTotals = [];
+
+        foreach ($trips as $trip) {
+            // Safety checks
+            if (!$trip->vehicle || !$trip->vehicle->new_wheeler) {
+                continue;
+            }
+
+            $category  = $trip->vehicle->new_wheeler->name;
+            $vehicleNo = $trip->vehicle->vehicle_no;
+
+            // Initialize category total agar pehle se nahi hai
+            if (!isset($categoryTotals[$category])) {
+                $categoryTotals[$category] = array_merge([
+                    'trips'         => 0,
+                    'total_journeys' => 0,
+                ], $expenseCategoryKeys, [
+                    'Advance'       => 0,
+                    'Salary'        => 0,
+                    'Total_Exp'     => 0,
+                    'Sale_Rent'     => 0,
+                    'Gross_Earning' => 0,
+                    'Net_Earning'   => 0
+                ]);
+            }
+
+            // Initialize vehicle row agar pehle se nahi hai
+            if (!isset($report[$category][$vehicleNo])) {
+                $report[$category][$vehicleNo] = array_merge([
+                    'trips'         => 0,
+                    'total_journeys' => 0,
+                ], $expenseCategoryKeys, [
+                    'Advance'       => 0,
+                    'Salary'        => 0,
+                    'Total_Exp'     => 0,
+                    'Sale_Rent'     => 0,
+                    'Gross_Earning' => 0,
+                    'Net_Earning'   => 0
+                ]);
+            }
+
+            // Trip count
+            $report[$category][$vehicleNo]['trips']++;
+            $categoryTotals[$category]['trips']++;
+            $grandTotal['trips']++;
+
+            // Journey count (tripDetails ka count)
+            $journeyCount = $trip->tripDetails->count();
+            $report[$category][$vehicleNo]['total_journeys'] += $journeyCount;
+            $categoryTotals[$category]['total_journeys']     += $journeyCount;
+            $grandTotal['total_journeys']                    += $journeyCount;
+
+            // Expenses calculate karein - GROUP BY CATEGORY
+            $tripTotalExpense = 0;
+            
+            foreach ($trip->tripExpenses as $expense) {
+                $amount = (float) ($expense->amount ?? 0);
+                $tripTotalExpense += $amount;
+                
+                // Get category name from expense type relationship
+                if ($expense->expenseType && $expense->expenseType->category) {
+                    $categoryName = $expense->expenseType->category->name;
+                    
+                    // Add to respective CATEGORY column (not expense type)
+                    if (isset($report[$category][$vehicleNo][$categoryName])) {
+                        $report[$category][$vehicleNo][$categoryName] += $amount;
+                        $categoryTotals[$category][$categoryName] += $amount;
+                        $grandTotal[$categoryName] += $amount;
+                    }
+                }
+            }
+
+            // Total Expense add karo
+            $report[$category][$vehicleNo]['Total_Exp'] += $tripTotalExpense;
+            $categoryTotals[$category]['Total_Exp'] += $tripTotalExpense;
+            $grandTotal['Total_Exp'] += $tripTotalExpense;
+
+            // Trip details se rent calculate karein
+            foreach ($trip->tripDetails as $detail) {
+                $rent = (float) ($detail->rent ?? 0);
+                $report[$category][$vehicleNo]['Sale_Rent'] += $rent;
+                $categoryTotals[$category]['Sale_Rent'] += $rent;
+                $grandTotal['Sale_Rent'] += $rent;
+            }
+
+            // Trip balance ko Advance mein add/subtract karein
+            // Positive balance = add to Advance
+            // Negative balance = subtract from Advance
+            $tripBalance = (float) ($trip->balance ?? 0);
+            
+            $report[$category][$vehicleNo]['Advance'] += $tripBalance;
+            $categoryTotals[$category]['Advance']     += $tripBalance;
+            $grandTotal['Advance']                    += $tripBalance;
+        }
+
+        // Diesel entries process karein
+        foreach ($diesels as $diesel) {
+            // Safety checks
+            if (!$diesel->vehicle || !$diesel->vehicle->new_wheeler) {
+                continue;
+            }
+
+            $category  = $diesel->vehicle->new_wheeler->name;
+            $vehicleNo = $diesel->vehicle->vehicle_no;
+
+            // Initialize category total agar pehle se nahi hai
+            if (!isset($categoryTotals[$category])) {
+                $categoryTotals[$category] = array_merge([
+                    'trips'         => 0,
+                    'total_journeys' => 0,
+                ], $expenseCategoryKeys, [
+                    'Advance'       => 0,
+                    'Salary'        => 0,
+                    'Total_Exp'     => 0,
+                    'Sale_Rent'     => 0,
+                    'Gross_Earning' => 0,
+                    'Net_Earning'   => 0
+                ]);
+            }
+
+            // Agar vehicle pehle se report mein nahi hai, initialize karo
+            if (!isset($report[$category][$vehicleNo])) {
+                $report[$category][$vehicleNo] = array_merge([
+                    'trips'         => 0,
+                    'total_journeys' => 0,
+                ], $expenseCategoryKeys, [
+                    'Advance'       => 0,
+                    'Salary'        => 0,
+                    'Total_Exp'     => 0,
+                    'Sale_Rent'     => 0,
+                    'Gross_Earning' => 0,
+                    'Net_Earning'   => 0
+                ]);
+            }
+
+            // Fueling amount add karo
+            $fuelingAmount = (float) ($diesel->total_amount ?? 0);
+            
+            // Find "Fuel" category dynamically from database
+            $fuelCategory = $expenseCategories->where('name', 'Fuel')->first();
+            if ($fuelCategory) {
+                // Add diesel amount to Fuel category
+                $report[$category][$vehicleNo][$fuelCategory->name] += $fuelingAmount;
+                $categoryTotals[$category][$fuelCategory->name] += $fuelingAmount;
+                $grandTotal[$fuelCategory->name] += $fuelingAmount;
+            }
+
+            // Diesel amount ko Total_Exp mein bhi add karo
+            $report[$category][$vehicleNo]['Total_Exp'] += $fuelingAmount;
+            $categoryTotals[$category]['Total_Exp'] += $fuelingAmount;
+            $grandTotal['Total_Exp'] += $fuelingAmount;
+        }
+
+        // Calculate Advance: TripPayments - Expenses from Advance
+        foreach ($tripPayments as $payment) {
+            if (!$payment->trip || !$payment->trip->vehicle || !$payment->trip->vehicle->new_wheeler) {
+                continue;
+            }
+
+            $category = $payment->trip->vehicle->new_wheeler->name;
+            $vehicleNo = $payment->trip->vehicle->vehicle_no;
+
+            // Initialize agar vehicle report mein nahi hai
+            if (!isset($categoryTotals[$category])) {
+                $categoryTotals[$category] = array_merge([
+                    'trips'         => 0,
+                    'total_journeys' => 0,
+                ], $expenseCategoryKeys, [
+                    'Advance'       => 0,
+                    'Salary'        => 0,
+                    'Total_Exp'     => 0,
+                    'Sale_Rent'     => 0,
+                    'Gross_Earning' => 0,
+                    'Net_Earning'   => 0
+                ]);
+            }
+
+            if (!isset($report[$category][$vehicleNo])) {
+                $report[$category][$vehicleNo] = array_merge([
+                    'trips'         => 0,
+                    'total_journeys' => 0,
+                ], $expenseCategoryKeys, [
+                    'Advance'       => 0,
+                    'Salary'        => 0,
+                    'Total_Exp'     => 0,
+                    'Sale_Rent'     => 0,
+                    'Gross_Earning' => 0,
+                    'Net_Earning'   => 0
+                ]);
+            }
+
+            $paymentAmount = (float) ($payment->amount ?? 0);
+            $report[$category][$vehicleNo]['Advance'] += $paymentAmount;
+            $categoryTotals[$category]['Advance'] += $paymentAmount;
+            $grandTotal['Advance'] += $paymentAmount;
+        }
+
+        // Subtract expenses paid from advance
+        foreach ($advanceExpenses as $advExp) {
+            if (!$advExp->vehicle || !$advExp->vehicle->new_wheeler) {
+                continue;
+            }
+
+            $category = $advExp->vehicle->new_wheeler->name;
+            $vehicleNo = $advExp->vehicle->vehicle_no;
+
+            if (isset($report[$category][$vehicleNo])) {
+                $expenseAmount = (float) ($advExp->amount ?? 0);
+                
+                // ONLY subtract from Advance, DO NOT add to Total_Exp
+                $report[$category][$vehicleNo]['Advance'] -= $expenseAmount;
+                $categoryTotals[$category]['Advance'] -= $expenseAmount;
+                $grandTotal['Advance'] -= $expenseAmount;
+            }
+        }
+
+        // Calculate salary for each vehicle
+        foreach ($drivers as $driver) {
+            if (!$driver->vehicle || !$driver->vehicle->new_wheeler) {
+                continue;
+            }
+
+            $category = $driver->vehicle->new_wheeler->name;
+            $vehicleNo = $driver->vehicle->vehicle_no;
+
+            $monthlySalary = (float) ($driver->salary ?? 0);
+            $dailySalary = $monthlySalary / 30;
+            $totalSalary = $dailySalary * $totalDays;
+
+            if (isset($report[$category][$vehicleNo])) {
+                // Find "Salaries" category from database
+                $salariesCategory = $expenseCategories->where('name', 'Salaries')->first();
+                
+                if ($salariesCategory) {
+                    // Add to Salaries CATEGORY column
+                    $report[$category][$vehicleNo][$salariesCategory->name] += $totalSalary;
+                    $categoryTotals[$category][$salariesCategory->name] += $totalSalary;
+                    $grandTotal[$salariesCategory->name] += $totalSalary;
+                }
+                
+                // Also keep in Salary for second table
+                $report[$category][$vehicleNo]['Salary'] += $totalSalary;
+                $categoryTotals[$category]['Salary'] += $totalSalary;
+                $grandTotal['Salary'] += $totalSalary;
+
+                // Salary ko Total_Exp mein bhi add karo
+                $report[$category][$vehicleNo]['Total_Exp'] += $totalSalary;
+                $categoryTotals[$category]['Total_Exp'] += $totalSalary;
+                $grandTotal['Total_Exp'] += $totalSalary;
+            }
+        }
+
+        // Calculate Gross Earning and Net Earning
+        foreach ($report as $category => $vehicles) {
+            foreach ($vehicles as $vehicleNo => $data) {
+                $grossEarning = $data['Sale_Rent'];
+                $report[$category][$vehicleNo]['Gross_Earning'] = $grossEarning;
+                $categoryTotals[$category]['Gross_Earning'] += $grossEarning;
+                $grandTotal['Gross_Earning'] += $grossEarning;
+
+                $netEarning = $grossEarning - $data['Total_Exp'];
+                $report[$category][$vehicleNo]['Net_Earning'] = $netEarning;
+                $categoryTotals[$category]['Net_Earning'] += $netEarning;
+                $grandTotal['Net_Earning'] += $netEarning;
+            }
+        }
+
+        return view('admin.reports.trailers_vehicle_summary_report', compact(
+            'report', 
+            'categoryTotals', 
+            'grandTotal', 
+            'fromDate', 
+            'toDate',
+            'expenseCategories'
+        ));
     }
 
     public function weekly_labour_report(Request $request) {

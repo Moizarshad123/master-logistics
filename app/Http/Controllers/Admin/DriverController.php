@@ -66,16 +66,12 @@ class DriverController extends Controller
 
                         $viewUrl    = route('admin.drivers.show', $data->id);
                         $editUrl    = route('admin.drivers.edit', $data->id);
-                        $deleteUrl  = route('admin.drivers.destroy', $data->id);
+                        // $deleteUrl  = route('admin.drivers.destroy', $data->id);
 
                         return '
                             <a href="'.$viewUrl.'" class="btn btn-sm btn-info">View</a> |
-                            <a href="'.$editUrl.'" class="btn btn-sm btn-warning">Edit</a> |
-                            <form action="'.$deleteUrl.'" method="POST" style="display:inline;">
-                                '.csrf_field().'
-                                '.method_field('DELETE').'
-                                <button type="submit" class="btn btn-sm btn-danger deleteExpenseType" onclick="return confirm(\'Are you sure?\')">Delete</button>
-                            </form>';
+                            <a href="'.$editUrl.'" class="btn btn-sm btn-warning">Edit</a>
+                          ';
                     })
                     ->rawColumns(['action', 'myImage', 'vehicle'])->make(true);
 
@@ -161,7 +157,7 @@ class DriverController extends Controller
             $image = asset($fileName);
         }
 
-        Driver::create([
+        $driver = Driver::create([
             'name'                  => $request->name,
             'phone'                 => $request->phone,
             'salary'                => $request->salary,
@@ -174,6 +170,9 @@ class DriverController extends Controller
             'driving_license_back'  => $driving_license_back,
             'image'                 => $image,
         ]);
+
+        $driver->emp_id = 'ML-' . $driver->id;
+        $driver->save();
 
         return redirect()->route('admin.drivers.index')->with('success', 'Driver added successfully.');
     }

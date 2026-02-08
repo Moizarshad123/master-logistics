@@ -43,6 +43,7 @@
     <table class="table table-bordered">
         <thead>
             <tr>
+                <th style="text-align: center">EMP: ID#</th>
                 <th>Driver</th>
                 <th>Total Days</th>
                 <th>Present</th>
@@ -58,6 +59,7 @@
         <tbody>
             @foreach($report as $row)
                 <tr>
+                    <td style="text-align: center">{{ $row['driver']->emp_id }}</td>
                     <td>{{ $row['driver']->name }}</td>
                     <td>{{ $row['totalDays'] }}</td>
                     <td>{{ $row['present'] }}</td>

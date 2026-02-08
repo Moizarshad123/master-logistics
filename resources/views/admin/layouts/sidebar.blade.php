@@ -89,7 +89,10 @@
                     <li>
                         <a href="{{ route('admin.vehicleSummaryReport') }}">Vehicle Summary Report</a>
                     </li>
-                    
+                    <li>
+                        <a href="{{ route('admin.trailersVehicleSummaryReport') }}">Trailers Vehicle Summary Report</a>
+                    </li>
+                
                     <li>
                         <a href="{{ route('admin.tripVehicleReport') }}">Trip Vehicle Report</a>
                     </li>

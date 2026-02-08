@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
-@section('title', 'Vehicle Summary Report')
+@section('title', 'Trailers Vehicle Summary Report')
 
 @section('content')
 
 <div class="content">
-    <h3 class="mb-3">Vehicle Summary Report</h3>
+    <h3 class="mb-3">Trailers Vehicle Summary Report</h3>
 
-    <form method="GET" action="{{ route('admin.vehicleSummaryReport') }}" class="mb-4">
+    <form method="GET" action="{{ route('admin.trailersVehicleSummaryReport') }}" class="mb-4">
         <div class="row">
             <div class="col-md-3">
                 <label>From Date</label>
@@ -22,7 +22,7 @@
 
             <div class="col-md-3 d-flex align-items-end">
                 <button class="btn btn-primary">Filter</button>
-                <a href="{{ route('admin.vehicleSummaryReport') }}" class="btn btn-secondary ms-2">
+                <a href="{{ route('admin.trailersVehicleSummaryReport') }}" class="btn btn-secondary ms-2">
                     Reset
                 </a>
             </div>
@@ -31,7 +31,7 @@
 
     {{-- FIRST TABLE: Expenses (Vehicle No to Dynamic Categories) --}}
     @foreach($report as $category => $vehicles)
-        @if(strtolower($category) !== 'trailers')
+        @if(strtolower($category) == 'trailers')
             <h4>{{ $category }}</h4>
 
             <div class="table-responsive">
@@ -55,9 +55,10 @@
                                 <td>{{ $data['trips'] }}</td>
                                 <td>{{ $data['total_journeys'] }}</td>
                                 @foreach($expenseCategories as $expCategory)
-                                @if($expCategory->name != "Salaries")
-                                    <td>{{ number_format($data[$expCategory->name] ?? 0) }}</td>
+                                    @if($expCategory->name != "Salaries")
+                                        <td>{{ number_format($data[$expCategory->name] ?? 0) }}</td>
                                     @endif
+                                    
                                 @endforeach
                             </tr>
                         @endforeach
@@ -68,6 +69,7 @@
     @endforeach
 
     {{-- Grand Total for First Table (Expenses) --}}
+
     @if(count($report) > 0)
         <div class="table-responsive">
             <table class="table table-bordered">
@@ -77,22 +79,23 @@
                         <td>{{ $grandTotal['trips'] }}</td>
                         <td>{{ $grandTotal['total_journeys'] }}</td>
                         @foreach($expenseCategories as $expCategory)
-                        @if($expCategory->name != "Salaries")
-                            <td>{{ number_format($grandTotal[$expCategory->name] ?? 0) }}</td>
-                        @endif
+                            @if($expCategory->name != "Salaries")
+                                <td>{{ number_format($grandTotal[$expCategory->name] ?? 0) }}</td>
+                            @endif
                         @endforeach
                     </tr>
 
                     {{-- Category-wise Totals for Expenses --}}
                     @foreach($categoryTotals as $category => $totals)
-                        @if(strtolower($category) !== 'trailers')
+                        @if(strtolower($category) == 'trailers')
                             <tr style="background:#f9f9f9;">
                                 <td>{{ $category }}</td>
                                 <td>{{ $totals['trips'] }}</td>
                                 <td>{{ $totals['total_journeys'] }}</td>
                                 @foreach($expenseCategories as $expCategory)
-                                @if($expCategory->name != "Salaries")
-                                    <td>{{ number_format($totals[$expCategory->name] ?? 0) }}</td>
+                                    @if($expCategory->name != "Salaries")
+
+                                        <td>{{ number_format($totals[$expCategory->name] ?? 0) }}</td>
                                     @endif
                                 @endforeach
                             </tr>
@@ -107,7 +110,7 @@
 
     {{-- SECOND TABLE: Financial Summary (Salary, Advance, Total Exp to Net Earning) --}}
     @foreach($report as $category => $vehicles)
-        @if(strtolower($category) !== 'trailers')
+        @if(strtolower($category) == 'trailers')
             <h4>{{ $category }}</h4>
 
             <div class="table-responsive">
@@ -162,7 +165,7 @@
 
                     {{-- Category-wise Totals for Financial Summary --}}
                     @foreach($categoryTotals as $category => $totals)
-                        @if(strtolower($category) !== 'trailers')
+                        @if(strtolower($category) == 'trailers')
                             <tr style="background:#f9f9f9;">
                                 <td>{{ $category }}</td>
                                 <td>{{ number_format($totals['Salary']) }}</td>

@@ -2,13 +2,10 @@
 @section('title', 'Drivers')
 
 @section('css')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-    crossorigin="anonymous">
+
 @endsection
 
 @section('content')
-<!-- content -->
-<div class="content ">
 
     <div class="mb-4">
         <div class="row">
@@ -25,6 +22,7 @@
         <table class="table table-custom table-lg mb-0" id="driversTable">
             <thead>
                 <tr>
+                    <th>EMP: ID#</th>
                     <th>Vehicle</th>
                     <th>Image</th>
                     <th>Name</th>
@@ -45,10 +43,6 @@
             </tbody>
         </table>
     </div>
-
-
-</div>
-<!-- ./ content -->
 @endsection
 
 @section('js')
@@ -70,6 +64,10 @@
             dom: '<"top d-flex justify-content-between"f p>rt<"bottom"p>',
             columns: [
                 
+                {
+                    data: 'emp_id',
+                    name: 'emp_id'
+                },
                 {
                     data: 'vehicle',
                     name: 'vehicle'
@@ -120,27 +118,6 @@
                 }
             }
 
-        });
-        
-
-        $('.deleteExpenseType').on('click', function (e) {
-
-            e.preventDefault();
-            const form = $(this).closest('form');
-
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "Do you really want to delete this driver?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                  form.submit();
-                }
-            });
         });
     });
 

@@ -11,6 +11,7 @@ class TripVehicleExpense extends Model
     protected $fillable = [
         "trip_id",
         "vehicle_id",
+        "expense_type_id",
         "expense",
         "expense_from",
         "amount"
@@ -29,6 +30,11 @@ class TripVehicleExpense extends Model
     public function driver()
     {
         return $this->hasOne(Trip::class, 'id', 'trip_id');
+    }
+    
+    public function expenseType()
+    {
+        return $this->belongsTo(ExpenseType::class, 'expense_type_id');
     }
 
     public function expenseName()

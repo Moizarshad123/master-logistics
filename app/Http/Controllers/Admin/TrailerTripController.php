@@ -188,7 +188,6 @@ class TrailerTripController extends Controller
             $amounts        = $request->expense_amount;
             $dates          = $request->date;
             $comments       = $request->comments;
-            
             $paymentIds     = $request->payment_id ?? []; // may not exist for new rows
 
             for ($i = 0; $i < count($paymentTypes); $i++) {
@@ -218,33 +217,28 @@ class TrailerTripController extends Controller
                     if (empty($expenseData['name']) || empty($expenseData['amount'])) {
                         continue;
                     }
-
+                    $expenseTypeId = ExpenseType::where("name", $expenseData['name'])->pluck("id")->first();
                     // Update existing expense
                     if (!empty($expenseData['id'])) {
-                        $existing = TripVehicleExpense::find($expenseData['id']);
-
+                        $existing      = TripVehicleExpense::find($expenseData['id']);
                         if ($existing) {
                             $existing->update([
-                                'expense' => $expenseData['name'],
-                                'amount'  => $expenseData['amount'],
-                                'expense_from'  => $expenseData['expense_from'],
-
+                                'expense'         => $expenseData['name'],
+                                'amount'          => $expenseData['amount'],
+                                'expense_from'    => $expenseData['expense_from'],
+                                "expense_type_id" => $expenseTypeId ?? 0,
                             ]);
-
                             $submittedExpenseIds[] = $existing->id;
                         }
-                    }
-                    // Insert new expense
-                    else {
+                    } else {
                         $new = TripVehicleExpense::create([
-                            'trip_id'    => $trip->id,
-                            'vehicle_id' => $trip->vehicle_id,
-                            'expense'    => $expenseData['name'],
-                            'amount'     => $expenseData['amount'],
-                            'expense_from'  => $expenseData['expense_from'],
-
+                            'trip_id'         => $trip->id,
+                            'vehicle_id'      => $trip->vehicle_id,
+                            'expense'         => $expenseData['name'],
+                            'amount'          => $expenseData['amount'],
+                            'expense_from'    => $expenseData['expense_from'],
+                            "expense_type_id" => $expenseTypeId ?? 0,
                         ]);
-
                         $submittedExpenseIds[] = $new->id;
                     }
                 }
