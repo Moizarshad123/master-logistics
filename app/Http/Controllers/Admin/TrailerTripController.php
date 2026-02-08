@@ -178,8 +178,10 @@ class TrailerTripController extends Controller
 
            $trip             = Trip::findOrFail($trip_id);
            $trip->trip_date  = $request->trip_date;
-           $trip->vehicle_id = $request->driver_id;
+           $trip->vehicle_id = $request->vehicle_id;
+           $trip->driver_id  = $request->driver_id;
            $trip->total_rent = $request->total_rent;
+           $trip->balance    = $request->balance;
            $trip->save();
 
             $paymentTypes   = $request->payment_type;

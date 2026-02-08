@@ -208,13 +208,14 @@ class TripController extends Controller
     public function closedTrailersTrips()
     {
         try {
-            if (request()->ajax()) {
             
+            if (request()->ajax()) {
                 $trips = Trip::with('tripDetails', 'vehicle', "vehicle.new_wheeler", 'driver')
                                 ->where('status', "Ended")
                                 ->whereHas('vehicle.new_wheeler', function($q) {
                                     $q->where('name', 'Trailers');
                                 });
+            
                 return datatables()->eloquent($trips->orderByDesc('id'))
 
                    ->filterColumn('vehicle', function($query, $keyword) {
@@ -496,7 +497,7 @@ class TripController extends Controller
    
            DB::beginTransaction();
 
-           $trip->update($request->only('trip_no', 'trip_date', 'vehicle_id', 'driver_id', 'total_rent'));
+           $trip->update($request->only('trip_no', 'trip_date', 'vehicle_id', 'driver_id', 'total_rent', 'balance'));
 
             $paymentTypes   = $request->payment_type;
             $amounts        = $request->expense_amount;
