@@ -525,7 +525,7 @@ class TripController extends Controller
             }
 
            $submittedExpenseIds = [];       
-
+  
             if (!empty($request->expenses)) {
                 foreach ($request->expenses as $expenseData) {
                     // Skip incomplete rows
@@ -541,6 +541,7 @@ class TripController extends Controller
                             $existing->update([
                                 'expense' => $expenseData['name'],
                                 'amount'  => $expenseData['amount'],
+                                'expense_from'  => $expenseData['expense_from'],
                             ]);
 
                             $submittedExpenseIds[] = $existing->id;
@@ -553,6 +554,7 @@ class TripController extends Controller
                             'vehicle_id' => $trip->vehicle_id,
                             'expense'    => $expenseData['name'],
                             'amount'     => $expenseData['amount'],
+                            'expense_from'  => $expenseData['expense_from'],
                         ]);
 
                         $submittedExpenseIds[] = $new->id;

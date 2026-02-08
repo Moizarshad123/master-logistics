@@ -163,7 +163,7 @@ class TrailerTripController extends Controller
         $customers     = Customer::all();
         $advance       = TripPayment::where("trip_id", $trip->id)->sum('amount');
 
-        return view('admin.trips.edit', compact("advance", "customers", "expense_froms", "sales", "purchases", "materials", 'trip', 'vehicles', 'drivers', 'expenses', 'payments', 'expensesTypes', 'destinations'));
+        return view('admin.trailer_trips.edit', compact("advance", "customers", "expense_froms", "sales", "purchases", "materials", 'trip', 'vehicles', 'drivers', 'expenses', 'payments', 'expensesTypes', 'destinations'));
     }
 
     public function update(Request $request, $trip_id)
@@ -225,6 +225,8 @@ class TrailerTripController extends Controller
                             $existing->update([
                                 'expense' => $expenseData['name'],
                                 'amount'  => $expenseData['amount'],
+                                'expense_from'  => $expenseData['expense_from'],
+
                             ]);
 
                             $submittedExpenseIds[] = $existing->id;
@@ -237,6 +239,8 @@ class TrailerTripController extends Controller
                             'vehicle_id' => $trip->vehicle_id,
                             'expense'    => $expenseData['name'],
                             'amount'     => $expenseData['amount'],
+                            'expense_from'  => $expenseData['expense_from'],
+
                         ]);
 
                         $submittedExpenseIds[] = $new->id;
@@ -265,7 +269,7 @@ class TrailerTripController extends Controller
            // delete those which were not sent in request
            $trip->tripDetails()->whereNotIn('id', $existingIds)->delete();
            DB::commit();
-           return redirect()->route('admin.trips.index')->with('success', 'Trip updated successfully!');
+           return redirect()->route('admin.trailer-trips.index')->with('success', 'Trailer Trip updated successfully!');
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->back()->with('error', $e->getMessage());

@@ -9,7 +9,7 @@
 @section('content')
 <div class="content">
     <h3>Edit Trip</h3>
-    <form action="{{ route('admin.trips.update', $trip->id) }}" method="POST" id="expenseTypeForm">
+    <form action="{{ route('admin.trailer-trips.update', $trip->id) }}" method="POST" id="expenseTypeForm">
         @csrf @method('PUT')
         <div class="row mb-3">
             <div class="col-md-4">
