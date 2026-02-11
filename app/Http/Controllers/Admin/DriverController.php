@@ -85,9 +85,9 @@ class DriverController extends Controller
 
     public function create()
     {
-        return view('admin.drivers.create', [
-            'driver' => null
-        ]);
+        $vehicles = Vehicle::orderBy("vehicle_no", "ASC")->get();
+        $driver = null;
+        return view('admin.drivers.create', compact("vehicles", 'driver'));
     }
 
     public function store(Request $request)

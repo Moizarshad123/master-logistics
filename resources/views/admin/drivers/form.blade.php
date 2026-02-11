@@ -4,6 +4,9 @@
         <div class="mb-3">
             <label for="">Vehicle</label>
             <select name="vehicle_id" id="vehicle_id" class="form-select">
+                @if($driver == null)
+                <option value="">Select Vehicle</option>
+                @endif
                 @foreach ($vehicles as $vehicle)
                     @if($driver != null)
                         <option value="{{ $vehicle->id }}" {{ $vehicle->id == $driver->vehicle_id ? "selected" : '' }}>{{ $vehicle->vehicle_no ?? ''}}</option>
@@ -26,8 +29,6 @@
         <label for="phone" class="form-label">Salary<span style="color: red">*</span></label>
         <input type="number" min="1" name="salary" id="salary" value="{{ old('salary', $driver->salary ?? '') }}" class="form-control" required>
     </div>
-  
-
 </div>
 
 <div class="row">
@@ -57,8 +58,7 @@
             </select>
         @endif
     </div>
-
-        <div class="col-md-3">
+    <div class="col-md-3">
         <div class="mb-3">
             <label for="address" class="form-label">Address</label>
             <textarea name="address" id="address" class="form-control" required>{{ old('address', $driver->address ?? '') }}</textarea>
