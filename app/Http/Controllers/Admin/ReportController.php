@@ -834,6 +834,7 @@ class ReportController extends Controller
                         ->whereHas('vehicle', function($query) {
                             $query->where('vehicle_type', 2); // ONLY trailers
                         })
+                        ->where("status", 'Ended')
                         ->get();
 
         // Diesel with trip relationship - ONLY TRAILERS

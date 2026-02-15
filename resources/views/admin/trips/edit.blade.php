@@ -176,645 +176,697 @@
 
 @section('js')
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
 <script>
-    $(document).ready(function() {
-        $('.select2').select2({
-            placeholder: "Select an option",
-            allowClear: true,
-            width: '100%'
-        });
+    // ============================================
+// COMPLETE FIXED JAVASCRIPT FOR EDIT FILE
+// ============================================
+
+$(document).ready(function() {
+    $('.select2').select2({
+        placeholder: "Select an option",
+        allowClear: true,
+        width: '100%'
     });
+});
 
-    $(document).on('click', '.delete-expense', function (e) {
+$(document).on('click', '.delete-expense', function (e) {
+    e.preventDefault();
+    let expenseId = $(this).data('id');
+    let row       = $(this).closest('tr');
 
-        e.preventDefault();
-        let expenseId = $(this).data('id');
-        let row       = $(this).closest('tr');
-
-        Swal.fire({
-            title: 'Delete Expense?',
-            text: 'This expense will be removed permanently',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, delete'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: "{{ route('admin.trip.expense.delete', '') }}/" + expenseId,
-                    type: "DELETE",
-                    data: {
-                        _token: "{{ csrf_token() }}"
-                    },
-                    success: function () {
-                        row.remove();
-                        calculateBalance();
-                        Swal.fire('Deleted!', 'Expense removed', 'success');
-                    }
-                });
-            }
-        });
-    });
-
-    $(document).on('click', '.delete-trip-detail', function () {
-        let detailId = $(this).data('id');
-        let container = $(this).closest('.trip-detail');
-
-        Swal.fire({
-            title: 'Delete Trip Detail?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, delete'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: "{{ route('admin.trip.detail.delete', '') }}/" + detailId,
-                    type: "DELETE",
-                    data: {
-                        _token: "{{ csrf_token() }}"
-                    },
-                    success: function () {
-                        container.remove();
-                        Swal.fire('Deleted!', 'Trip detail removed', 'success');
-                    }
-                });
-            }
-        });
-    });
-
-
-</script>
-<script>
-    $(document).ready(function () {
-        let index = $("#tripDetailsContainer .trip-detail").length;
-        let extraExpenseIndex = 1000;
-
-        // Generate expense options from $expenses
-        const expenseOptions = `
-                                <option value="">Select Expense</option>
-                                @foreach($expensesTypes as $expense)
-                                    <option value="{{ $expense->name }}">{{ $expense->name }}</option>
-                                @endforeach
-                            `;
-
-        // Real-time balance calculation on keyup/change
-        $(document).on("keyup change", ".payment-amount, input[name='expense_amount[]'], input[name^='expenses'][name$='[amount]']", function() {
-            console.log("yess");
-            
-            calculateBalance();
-        });
-
-        // Calculate balance after row removal
-        $(document).on("click", ".removeTripPaymentRow, .removeExpenseRow, .delete-expense", function() {
-            calculateBalance();
-        });
-
-
-        function calculateBalance() {
-
-            let totalPayments   = 0;
-            let totalRent       = parseFloat($("#totalRent").data("original-rent")) || 0;
-            let rentExpenses    = 0;
-            let advanceExpenses = 0;
-            let otherExpenses   = 0;
-
-            // Sum all payment amounts (assuming payments affect balance)
-            $("input[name='expense_amount[]']").each(function () {
-                const val = parseFloat($(this).val());
-                if (!isNaN(val)) {
-                    totalPayments += val;
+    Swal.fire({
+        title: 'Delete Expense?',
+        text: 'This expense will be removed permanently',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "{{ route('admin.trip.expense.delete', '') }}/" + expenseId,
+                type: "DELETE",
+                data: {
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function () {
+                    row.remove();
+                    calculateBalance();
+                    Swal.fire('Deleted!', 'Expense removed', 'success');
                 }
             });
+        }
+    });
+});
 
-            // Go through each expense row
+$(document).on('click', '.delete-trip-detail', function () {
+    let detailId = $(this).data('id');
+    let container = $(this).closest('.trip-detail');
+
+    Swal.fire({
+        title: 'Delete Trip Detail?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "{{ route('admin.trip.detail.delete', '') }}/" + detailId,
+                type: "DELETE",
+                data: {
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function () {
+                    container.remove();
+                    Swal.fire('Deleted!', 'Trip detail removed', 'success');
+                }
+            });
+        }
+    });
+});
+
+$(document).ready(function () {
+    let index = $("#tripDetailsContainer .trip-detail").length;
+    let extraExpenseIndex = 1000;
+
+    // ============================================
+    // IMPORTANT: Set original rent on page load
+    // ============================================
+    const initialTotalRent = parseFloat($("#totalRent").val()) || 0;
+    $("#totalRent").data("original-rent", initialTotalRent);
+
+    // Generate expense options from $expenses
+    const expenseOptions = `
+                            <option value="">Select Expense</option>
+                            @foreach($expensesTypes as $expense)
+                                <option value="{{ $expense->name }}">{{ $expense->name }}</option>
+                            @endforeach
+                        `;
+
+    // ============================================
+    // FIXED: Calculate Balance Function
+    // ============================================
+    function calculateBalance() {
+        let totalPayments   = 0;
+        let totalRent       = parseFloat($("#totalRent").data("original-rent")) || 0;
+        let rentExpenses    = 0;
+        let advanceExpenses = 0;
+        let otherExpenses   = 0;
+
+        // Sum all payment amounts
+        $("input[name='expense_amount[]']").each(function () {
+            const val = parseFloat($(this).val());
+            if (!isNaN(val)) {
+                totalPayments += val;
+            }
+        });
+
+        // ============================================
+        // FIXED: Handle BOTH old and new expense rows
+        // ============================================
+        // For existing expenses: expenses[ID][amount]
+        $("input[name^='expenses'][name$='[amount]']").each(function () {
+            const val = parseFloat($(this).val());
+            if (isNaN(val)) return;
+
+            // Find expense_from in the same row
+            const expenseFrom = $(this).closest('tr').find("select[name$='[expense_from]']").val();
+
+            if (expenseFrom === "From Rent Amount") {
+                rentExpenses += val;
+            } else if(expenseFrom === "From Advance Amount") {
+                advanceExpenses += val;
+            } else {
+                otherExpenses += val;
+            }
+        });
+
+        // Calculate remaining rent
+        if(totalRent >= rentExpenses) {
+            const remainingRent = totalRent - rentExpenses;
+            $("#totalRent").val(remainingRent.toFixed(2));
+        } else {
+            // Find and clear the last entered rent expense
+            let lastRentExpense = null;
             $("input[name^='expenses'][name$='[amount]']").each(function () {
-                const val = parseFloat($(this).val());
-                if (isNaN(val)) return;
-
-                // Find the corresponding 'expense_from' dropdown in the same row
                 const expenseFrom = $(this).closest('tr').find("select[name$='[expense_from]']").val();
-
-                if (expenseFrom === "From Rent Amount") {
-                    rentExpenses += val;
-                } else if(expenseFrom === "From Advance Amount") {
-                    advanceExpenses += val;
-                } else {
-                    otherExpenses += val;
+                if (expenseFrom === "From Rent Amount" && $(this).val()) {
+                    lastRentExpense = $(this);
                 }
             });
+            
+            Swal.fire({
+                title: 'Error!',
+                // text: `Total expenses (${rentExpenses.toFixed(2)}) exceed available rent (${totalRent.toFixed(2)})!`,
+                text: `Total expenses exceed available rent!`,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            
+            if (lastRentExpense) {
+                lastRentExpense.val(''); // Clear the invalid field
+            }
+            
+            setTimeout(calculateBalance, 100);
+            return;
+        }
 
-            // if(totalRent >= rentExpenses) {
-            //     const remainingRent = totalRent - rentExpenses;
-            //     $("#totalRent").val(remainingRent.toFixed(2));
+        // Calculate balance
+        if(totalPayments >= advanceExpenses) {
+            const balance = totalPayments - advanceExpenses;
+            $("#balance").val(balance.toFixed(2));
+        } else {
+            // Find and clear the last entered advance expense
+            let lastAdvanceExpense = null;
+            $("input[name^='expenses'][name$='[amount]']").each(function () {
+                const expenseFrom = $(this).closest('tr').find("select[name$='[expense_from]']").val();
+                if (expenseFrom === "From Advance Amount" && $(this).val()) {
+                    lastAdvanceExpense = $(this);
+                }
+            });
+            
+            Swal.fire({
+                title: 'Error!',
+                // text: `Total expenses (${advanceExpenses.toFixed(2)}) exceed available balance (${totalPayments.toFixed(2)})!`,
+                text: `Total expenses exceed available balance!`,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            
+            if (lastAdvanceExpense) {
+                lastAdvanceExpense.val(''); // Clear the invalid field
+            }
+            
+            setTimeout(calculateBalance, 100);
+            return;
+        }
+    }
 
-            // } else {
-            //     Swal.fire({
-            //         title: 'Error!',
-            //         text: 'Expense is more than the available rent!',
-            //         icon: 'error',
-            //         confirmButtonText: 'OK'
-            //     });
-            // }
+    // ============================================
+    // FIXED: Trigger calculation on all relevant changes
+    // ============================================
+    calculateBalance(); // Initial calculation on page load
 
-            // if(totalPayments >= advanceExpenses) {
+    // Trigger on payment amount changes
+    $(document).on("input change", "input[name='expense_amount[]']", function() {
+        calculateBalance();
+    });
 
-            //     const balance = totalPayments - advanceExpenses;
-            //     $("#balance").val(balance.toFixed(2));
-
-            // } else {
-            //     Swal.fire({
-            //         title: 'Error!',
-            //         text: 'Expense is more than the available advance balance!',
-            //         icon: 'error',
-            //         confirmButtonText: 'OK'
-            //     });
-            // }
+    // ============================================
+    // REAL-TIME VALIDATION: Clear field immediately if invalid
+    // ============================================
+    $(document).on("input", "input[name^='expenses'][name$='[amount]']", function() {
+        const currentInput = $(this);
+        const val = parseFloat(currentInput.val());
+        
+        if (isNaN(val)) {
+            calculateBalance();
+            return;
+        }
+        
+        const expenseFrom = currentInput.closest('tr').find("select[name$='[expense_from]']").val();
+        const totalRent = parseFloat($("#totalRent").data("original-rent")) || 0;
+        
+        // Calculate total payments
+        let totalPayments = 0;
+        $("input[name='expense_amount[]']").each(function () {
+            const paymentVal = parseFloat($(this).val());
+            if (!isNaN(paymentVal)) {
+                totalPayments += paymentVal;
+            }
+        });
+        
+        // Real-time validation for "From Rent Amount"
+        if (expenseFrom === "From Rent Amount") {
+            if (val > totalRent) {
+                Swal.fire({
+                    title: 'Invalid Amount!',
+                    text: `Amount (${val.toFixed(2)}) cannot exceed available rent (${totalRent.toFixed(2)})!`,
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                    timer: 2500
+                });
+                currentInput.val('');
+                return;
+            }
+        }
+        
+        // Real-time validation for "From Advance Amount"
+        if (expenseFrom === "From Advance Amount") {
+            if (val > totalPayments) {
+                Swal.fire({
+                    title: 'Invalid Amount!',
+                    text: `Amount (${val.toFixed(2)}) cannot exceed available balance (${totalPayments.toFixed(2)})!`,
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                    timer: 2500
+                });
+                currentInput.val('');
+                return;
+            }
         }
         
         calculateBalance();
-        $(document).on("input", "input[name='expense_amount[]'], input[name^='expenses'][name$='[amount]']", calculateBalance);
+    });
 
-        $(document).on('click', "#addExpenseRow", function(e) {
-            e.preventDefault();
-            const newRow = `
-                    <tr>
-                        <td>
-                            <select name="expenses[${extraExpenseIndex}][name]" class="form-select">
-                                ${expenseOptions}
-                            </select>
-                        </td>
-                        <td>
-                            <input type="number" step="0.01" 
-                                name="expenses[${extraExpenseIndex}][amount]" 
-                                class="form-control" 
-                                placeholder="Enter amount">
-                        </td>
-                        <td>
-                            <select name="expenses[${extraExpenseIndex}][expense_from]" class="form-select">
-                                <option value="">Select Expense From</option>
-                                @foreach ($expense_froms as $item)
-                                    <option value="{{ $item->name }}">{{ $item->name }}</option>
-                                @endforeach
-                            </select>
-                        </td>
-                        <td class="text-center">
-                            <button type="button" style="border-radius: 25%;" class="btn btn-danger btn-sm removeExpenseRow">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
+    // Trigger on expense_from dropdown changes
+    $(document).on("change", "select[name$='[expense_from]']", function() {
+        calculateBalance();
+    });
 
-                $("#expensesTableBody").append(newRow);
-                extraExpenseIndex++;
-
-                calculateBalance();
-
-        });
-
-        $(document).on("click", ".removeExpenseRow", function () {
-            $(this).closest("tr").remove();
-        });
-
-        $("#addTripExpense").click(function (e) {
-            e.preventDefault();
-            const newRow = `
-                    <tr>
-                        <td>
-                            <select name="payment_type[]" class="form-select">
-                                <option value="Cash">Cash</option>
-                                <option value="Jazz Cash">Jazz Cash</option>
-                                <option value="Easypaisa">Easypaisa</option>
-                                <option value="Bank Transfer">Bank Transfer</option>
-                            </select>
-                        </td>
-                       
-
-                        <td>
-                            <input type="number" step="0.01" name="expense_amount[]" class="form-control" placeholder="Enter amount">
-                        </td>
-                        <td>
-                            <input type="date" name="date[]"  class="form-control" value="{{ date('Y-m-d') }}">
-                        </td>
-                        <td>
-                            <textarea class="form-control" name="comments[]"></textarea>
-                        </td>
-                        <td class="text-center">
-                            <button type="button" style="border-radius: 25%;" class="btn btn-danger btn-sm removeTripPaymentRow">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>
-                    </tr>`;
-
-                $("#expensePaymentTable").append(newRow);
-
-            calculateBalance();
-
-        });
-
-        $(document).on("click", "#addRow", function (e) {
-
-            e.preventDefault();
-            let row = `
-            <div class="trip-detail border rounded p-3 mb-3">
-                <div class="row">
-                    <div class="col-md-4">
-                        <label>Customer<span style="color: red">*</span></label>
-                        <select name="trip_details[${index}][customer_id]" class="form-select" required>
-                            <option value="">Select Customer</option>
-                            @foreach($customers as $customer)
-                                <option value="{{ $customer->id }}">{{$customer->name}}</option>
-                            @endforeach
-                            
+    $(document).on('click', "#addExpenseRow", function(e) {
+        e.preventDefault();
+        const newRow = `
+                <tr>
+                    <td>
+                        <select name="expenses[${extraExpenseIndex}][name]" class="form-select">
+                            ${expenseOptions}
                         </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label>Trip Type<span style="color: red">*</span></label>
-                        <select name="trip_details[${index}][trip_type]" class="form-select trip_type" required>
-                            <option value="">Select Trip Type</option>
-                            <option value="Commercial">Commercial</option>
-                            <option value="Purchase">Purchase</option>
-                            <option value="Feed Sell">Feed Sell</option>
-                            <option value="Other Sell">Other Sell</option>
-                            <option value="Local">Local</option>
-                            <option value="Return">Return</option>
-
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label>Start Date</label>
-                        <input type="date" name="trip_details[${index}][start_date]" value="{{date('Y-m-d')}}" class="form-control" required>
-                    </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="col-md-6 from-container">
-                    </div>
-                    <div class="col-md-6 to-container">
-                    </div>
-                </div>
-                <div class="row mt-2 trip-row">    
-                  
-                    <div class="col-md-3">
-                        <label>Material Type</label>
-                        <select class="form-select" name="trip_details[${index}][material_type]">
-                            <option value="Bags">Bags</option>
-                            <option value="Tainki">Tainki</option>
-                            <option value="LTR">LTR</option>
-                            <option value="Drums">Drums</option>
-                            <option value="Egg cartons">Egg cartons</option>
-
-
-                            
-                        </select>
-                    </div>
-                     <div class="col-md-3">
-                        <label>Material</label>
-                        <select class="form-select" name="trip_details[${index}][material]">
-                            <option value="">Select Material</option>
-                            @foreach ($materials as $material)
-                                <option value="{{ $material->name }}">{{ $material->name }}</option>
+                    </td>
+                    <td>
+                        <input type="number" step="0.01" 
+                            name="expenses[${extraExpenseIndex}][amount]" 
+                            class="form-control" 
+                            placeholder="Enter amount">
+                    </td>
+                    <td>
+                        <select name="expenses[${extraExpenseIndex}][expense_from]" class="form-select">
+                            <option value="">Select Expense From</option>
+                            @foreach ($expense_froms as $item)
+                                <option value="{{ $item->name }}">{{ $item->name }}</option>
                             @endforeach
                         </select>
-                    </div>
-                    <div class="col-md-3 baloch-labour-field" style="display:none">
-                        <label>Baloch Labour Rate</label>
-                        <input type="text" name="trip_details[${index}][baloch_labour_rate]"  class="form-control baloch-labour-rate">
-                    </div>
-                    <div class="col-md-3 baloch-labour-field" style="display:none">
-                        <label>Baloch Labour</label>
-                        <input type="text" name="trip_details[${index}][baloch_labour]" class="form-control baloch-labour">
-                    </div>
+                    </td>
+                    <td class="text-center">
+                        <button type="button" style="border-radius: 25%;" class="btn btn-danger btn-sm removeExpenseRow">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+
+        $("#expensesTableBody").append(newRow);
+        extraExpenseIndex++;
+        calculateBalance();
+    });
+
+    $(document).on("click", ".removeExpenseRow", function () {
+        $(this).closest("tr").remove();
+        calculateBalance();
+    });
+
+    $("#addTripExpense").click(function (e) {
+        e.preventDefault();
+        const newRow = `
+                <tr>
+                    <td>
+                        <select name="payment_type[]" class="form-select">
+                            <option value="Cash">Cash</option>
+                            <option value="Jazz Cash">Jazz Cash</option>
+                            <option value="Easypaisa">Easypaisa</option>
+                            <option value="Bank Transfer">Bank Transfer</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" step="0.01" name="expense_amount[]" class="form-control" placeholder="Enter amount">
+                    </td>
+                    <td>
+                        <input type="date" name="date[]"  class="form-control" value="{{ date('Y-m-d') }}">
+                    </td>
+                    <td>
+                        <textarea class="form-control" name="comments[]"></textarea>
+                    </td>
+                    <td class="text-center">
+                        <button type="button" style="border-radius: 25%;" class="btn btn-danger btn-sm removeTripPaymentRow">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>`;
+
+        $("#expensePaymentTable").append(newRow);
+        calculateBalance();
+    });
+
+    $(document).on("click", "#addRow", function (e) {
+        e.preventDefault();
+        let row = `
+        <div class="trip-detail border rounded p-3 mb-3">
+            <div class="row">
+                <div class="col-md-4">
+                    <label>Customer<span style="color: red">*</span></label>
+                    <select name="trip_details[${index}][customer_id]" class="form-select" required>
+                        <option value="">Select Customer</option>
+                        @foreach($customers as $customer)
+                            <option value="{{ $customer->id }}">{{$customer->name}}</option>
+                        @endforeach
+                    </select>
                 </div>
-                <div class="row mt-2">
-                    <div class="col-md-3">
-                        <label>Total Bags</label>
-                        <input type="number" name="trip_details[${index}][total_bags]" class="form-control total-bags">
-                    </div>
-                    <div class="col-md-3">
-                        <label>No Of Labour</label>
-                        <input type="text" name="trip_details[${index}][no_of_labour]" class="form-control no_of_labour">
-                    </div>
-
-                    <div class="col-md-3">
-                        <label>Weekly Labour Rate</label>
-                        <input type="text" name="trip_details[${index}][rate]" class="form-control rate">
-                    </div>
-                    <div class="col-md-3">
-                        <label>Weekly Labour</label>
-                        <input type="text" name="trip_details[${index}][weekly_labour]" class="form-control weekly-labour">
-                    </div>
+                <div class="col-md-4">
+                    <label>Trip Type<span style="color: red">*</span></label>
+                    <select name="trip_details[${index}][trip_type]" class="form-select trip_type" required>
+                        <option value="">Select Trip Type</option>
+                        <option value="Commercial">Commercial</option>
+                        <option value="Purchase">Purchase</option>
+                        <option value="Feed Sell">Feed Sell</option>
+                        <option value="Other Sell">Other Sell</option>
+                        <option value="Local">Local</option>
+                        <option value="Return">Return</option>
+                    </select>
                 </div>
-                <div class="row mt-2">
-                    <div class="col-md-3">
-                        <label>Rent</label>
-                        <input type="number" name="trip_details[${index}][rent]" class="form-control rent">
-                    </div>
-                    
-                    <div class="col-md-3">
-                        <label>Weight (In Ton)</label>
-                        <input type="number" step="0.01" name="trip_details[${index}][weight]" class="form-control weight">
-                    </div>
-                    <div class="col-md-6">
-                        <label>Comments</label>
-                        <textarea  name="trip_details[${index}][comments]" class="form-control"></textarea>
-                    </div>
-                    <div class="col-md-4 d-flex align-items-end">
-                        <button type="button" class="btn btn-danger removeRow">Remove</button>
-                    </div>
+                <div class="col-md-4">
+                    <label>Start Date</label>
+                    <input type="date" name="trip_details[${index}][start_date]" value="{{date('Y-m-d')}}" class="form-control" required>
                 </div>
-                <div class="row mt-2">
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-6 from-container">
                 </div>
-            </div>`;
+                <div class="col-md-6 to-container">
+                </div>
+            </div>
+            <div class="row mt-2 trip-row">    
+                <div class="col-md-3">
+                    <label>Material Type</label>
+                    <select class="form-select" name="trip_details[${index}][material_type]">
+                        <option value="Bags">Bags</option>
+                        <option value="Tainki">Tainki</option>
+                        <option value="LTR">LTR</option>
+                        <option value="Drums">Drums</option>
+                        <option value="Egg cartons">Egg cartons</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label>Material</label>
+                    <select class="form-select" name="trip_details[${index}][material]">
+                        <option value="">Select Material</option>
+                        @foreach ($materials as $material)
+                            <option value="{{ $material->name }}">{{ $material->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-3 baloch-labour-field" style="display:none">
+                    <label>Baloch Labour Rate</label>
+                    <input type="text" name="trip_details[${index}][baloch_labour_rate]"  class="form-control baloch-labour-rate">
+                </div>
+                <div class="col-md-3 baloch-labour-field" style="display:none">
+                    <label>Baloch Labour</label>
+                    <input type="text" name="trip_details[${index}][baloch_labour]" class="form-control baloch-labour">
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-3">
+                    <label>Total Bags</label>
+                    <input type="number" name="trip_details[${index}][total_bags]" class="form-control total-bags">
+                </div>
+                <div class="col-md-3">
+                    <label>No Of Labour</label>
+                    <input type="text" name="trip_details[${index}][no_of_labour]" class="form-control no_of_labour">
+                </div>
+                <div class="col-md-3">
+                    <label>Weekly Labour Rate</label>
+                    <input type="text" name="trip_details[${index}][rate]" class="form-control rate">
+                </div>
+                <div class="col-md-3">
+                    <label>Weekly Labour</label>
+                    <input type="text" name="trip_details[${index}][weekly_labour]" class="form-control weekly-labour">
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-3">
+                    <label>Rent</label>
+                    <input type="number" name="trip_details[${index}][rent]" class="form-control rent">
+                </div>
+                <div class="col-md-3">
+                    <label>Weight (In Ton)</label>
+                    <input type="number" step="0.01" name="trip_details[${index}][weight]" class="form-control weight">
+                </div>
+                <div class="col-md-6">
+                    <label>Comments</label>
+                    <textarea  name="trip_details[${index}][comments]" class="form-control"></textarea>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="button" class="btn btn-danger removeRow">Remove</button>
+                </div>
+            </div>
+            <div class="row mt-2">
+            </div>
+        </div>`;
 
-            $("#tripDetailsContainer").append(row);
-            index++;
-        });
+        $("#tripDetailsContainer").append(row);
+        index++;
+    });
 
-        // Listen for Trip Type change dynamically
-        $(document).on('change', '.trip_type', function () {
-            const row      = $(this).closest('.trip-detail');
-            const tripType = $(this).val();
-            const rowIndex = row.index(); // Use index for unique names
+    // Listen for Trip Type change dynamically
+    $(document).on('change', '.trip_type', function () {
+        const row      = $(this).closest('.trip-detail');
+        const tripType = $(this).val();
+        const rowIndex = row.index();
 
-            const fromContainer = row.find('.from-container');
-            const toContainer   = row.find('.to-container');
-            const balochFields  = row.find('.baloch-labour-field');
+        const fromContainer = row.find('.from-container');
+        const toContainer   = row.find('.to-container');
+        const balochFields  = row.find('.baloch-labour-field');
 
-            // Hide Baloch Labour by default
-            balochFields.hide();
+        balochFields.hide();
 
-            let fromHtml = '';
-            let toHtml   = '';
+        let fromHtml = '';
+        let toHtml   = '';
 
-            // Feed Sell Case
-            if (tripType === "Feed Sell") {
-                fromHtml = `<input type="text" class="form-control" name="trip_details[${rowIndex}][from_destination]" value="Master Agro" readonly>`;
-                toHtml = `<select class="form-select" name="trip_details[${rowIndex}][to_destination]">
-                            <option value="">Select To Station</option>
-                            @foreach ($sales as $item)
+        if (tripType === "Feed Sell") {
+            fromHtml = `<input type="text" class="form-control" name="trip_details[${rowIndex}][from_destination]" value="Master Agro" readonly>`;
+            toHtml = `<select class="form-select" name="trip_details[${rowIndex}][to_destination]">
+                        <option value="">Select To Station</option>
+                        @foreach ($sales as $item)
+                            <option value="{{ $item->station }}">{{ $item->station }}</option>
+                        @endforeach
+                    </select>`;
+            balochFields.show();
+        }
+        else if (tripType === "Purchase") {
+            fromHtml = `<select class="form-select" name="trip_details[${rowIndex}][from_destination]">
+                            <option value="">Select From Station</option>
+                            @foreach ($purchases as $item)
                                 <option value="{{ $item->station }}">{{ $item->station }}</option>
                             @endforeach
                         </select>`;
-                balochFields.show(); // show baloch fields
-            }
-
-            // Purchase Case
-            else if (tripType === "Purchase") {
-                fromHtml = `<select class="form-select" name="trip_details[${rowIndex}][from_destination]">
-                                <option value="">Select From Station</option>
-                                @foreach ($purchases as $item)
-                                    <option value="{{ $item->station }}">{{ $item->station }}</option>
-                                @endforeach
-                            </select>`;
-                toHtml = `<input type="text" class="form-control" name="trip_details[${rowIndex}][to_destination]" value="Master Agro" readonly>`;
-            }
-
-            // Default / Other Cases
-            else {
-                fromHtml = `<select class="form-select" name="trip_details[${rowIndex}][from_destination]">
-                                <option value="">Select From Destination</option>
-                                @foreach ($destinations as $item)
-                                    <option value="{{ $item->name }}">{{ $item->name }}</option>
-                                @endforeach
-                            </select>`;
-                toHtml = `<select class="form-select" name="trip_details[${rowIndex}][to_destination]">
-                                <option value="">Select To Destination</option>
-                                @foreach ($destinations as $item)
-                                    <option value="{{ $item->name }}">{{ $item->name }}</option>
-                                @endforeach
+            toHtml = `<input type="text" class="form-control" name="trip_details[${rowIndex}][to_destination]" value="Master Agro" readonly>`;
+        }
+        else {
+            fromHtml = `<select class="form-select" name="trip_details[${rowIndex}][from_destination]">
+                            <option value="">Select From Destination</option>
+                            @foreach ($destinations as $item)
+                                <option value="{{ $item->name }}">{{ $item->name }}</option>
+                            @endforeach
                         </select>`;
-            }
+            toHtml = `<select class="form-select" name="trip_details[${rowIndex}][to_destination]">
+                            <option value="">Select To Destination</option>
+                            @foreach ($destinations as $item)
+                                <option value="{{ $item->name }}">{{ $item->name }}</option>
+                            @endforeach
+                    </select>`;
+        }
 
-            // Replace the HTML for From and To fields dynamically
-            fromContainer.html(`
-                <label>From</label>
-                ${fromHtml}
-            `);
-
-            toContainer.html(`
-                <label>To</label>
-                ${toHtml}
-            `);
-        });
-
-        document.addEventListener('change', function(e) {
-            if (e.target.matches('.form-select[name^="trip_details"][name$="[to_destination]"]')) {
-                const select = e.target;
-                const saleSheetId = select.value;
-                const row = select.closest('.trip-detail');
-                const rentInput = row.querySelector('.rent'); // change this to your rent field's class
-                const baseUrl = "{{ asset('') }}";
-
-                console.log(baseUrl);
-                
-                if (!saleSheetId) return;
-                // https://finchat.online/master-logistics/public/
-                fetch(`${baseUrl}admin/salesheets/${saleSheetId}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data && data.minimum_rent !== undefined) {
-
-                            let rate = data.per_bag_rate;
-                            const totalBagsInput = row.querySelector('.total-bags');
-                            const totalBags      = parseFloat(totalBagsInput?.value) || 0;
-                            let total = totalBags * rate;
-
-                            if(total > data.minimum_rent) {
-                                rentInput.value = total;
-                            } else {
-                                rentInput.value = data.minimum_rent;
-                            }
-                        }
-                    })
-                    .catch(err => console.error('Error fetching SaleSheet:', err));
-            }
-        });
-
-        document.addEventListener('change', function(e) {
-            if (e.target.matches('.form-select[name^="trip_details"][name$="[from_destination]"]')) {
-                const select      = e.target;
-                const purchaseSheetId = select.value;
-                const row         = select.closest('.trip-detail');
-                const rentInput   = row.querySelector('.rent'); // change this to your rent field's class
-                const baseUrl     = "{{ asset('') }}";
-
-                if (!purchaseSheetId) return;
-                // https://finchat.online/master-logistics/public
-                fetch(`${baseUrl}admin/purchasesheets/${purchaseSheetId}`)
-
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data && data.per_ton_rate !== undefined) {
-                            rentInput.value = data.per_ton_rate;
-
-                            let rate = data.per_ton_rate;
-                            const weightInput = row.querySelector('.weight');
-                            const weight      = parseFloat(weightInput?.value) || 0;
-                            let total         = weight * rate;
-
-                            rentInput.value = total; 
-                        }
-                    })
-                    .catch(err => console.error('Error fetching PurchaseSheet:', err));
-            }
-        });
-
-        document.addEventListener('input', function(e) {
-            const row = e.target.closest('.trip-detail');
-            if (!row) return;
-
-
-            const totalBagsInput        = row.querySelector('.total-bags');
-            const labourRateInput       = row.querySelector('.rate');
-            const noOfLabourInput       = row.querySelector('.no_of_labour');
-            const weeklyLabourInput     = row.querySelector('.weekly-labour');
-            const balochLabourRateInput = row.querySelector('.baloch-labour-rate');
-            const balochLabourInput     = row.querySelector('.baloch-labour');
-            const tripTypeInput         = row.querySelector('.trip_type');
-
-            const tripType         = tripTypeInput.value;
-            const totalBags        = parseFloat(totalBagsInput?.value) || 0;
-            const labourRate       = parseFloat(labourRateInput?.value) || 0;
-            const noOfLabour       = noOfLabourInput?.value === "" ? null : parseFloat(noOfLabourInput.value);
-            // const noOfLabour = Number(noOfLabourInput?.value) || 0;
-            const weeklyLabour     = parseFloat(weeklyLabourInput?.value) || 0;
-            const balochLabourRate = parseFloat(balochLabourRateInput?.value) || 0;
-
-            const active = e.target; // jis field me user likh raha hai
-
-            // 👇 Feed Sell Type Conditions
-            if (tripType === "Feed Sell") {
-                if (noOfLabour === 1) {
-                    if (labourRateInput) labourRateInput.value = 2;
-                    if (balochLabourRateInput) balochLabourRateInput.value = 1.5;
-                    balochLabourInput.value = (totalBags * 1.5).toFixed(1);
-                    weeklyLabourInput.value = (totalBags * 2).toFixed(1);
-                } 
-                else if (noOfLabour === 2) {
-                    if (labourRateInput) labourRateInput.value = 4;
-                    if (balochLabourRateInput) balochLabourRateInput.value = 0;
-                    balochLabourInput.value = 0;
-                    weeklyLabourInput.value = (totalBags * 4).toFixed(1);
-
-
-                } 
-                else if (noOfLabour === 0) {
-                    if (labourRateInput) labourRateInput.value = 0;
-                    if (balochLabourRateInput) balochLabourRateInput.value = 3;
-
-                    balochLabourInput.value = (totalBags * 3).toFixed(1);
-                    weeklyLabourInput.value = 0;
-
-                }
-            } else if(tripType == "Purchase") {
-                weeklyLabourInput.value = (totalBags * labourRate).toFixed(1);
-            }
-        });
-
-        $(document).on("change", "#trip_type", function () {
-            const tripType = $(this).val();
-
-            if (tripType === "Feed Sell") {
-                $(".baloch-labour-field").show();
-            } else {
-                $(".baloch-labour-field").hide();
-            }
-        });
-
-        $(document).on("click", ".removeRow", function () {
-            $(this).closest(".trip-detail").remove();
-        });
-        
-        $(document).on("click", ".removeTripPaymentRow", function () {
-            $(this).closest("tr").remove();
-        });
-
-        $("#vehicle_id").change(function() {
-            let vehicleId = $(this).val();
-
-            if (vehicleId) {
-                $.ajax({
-                    url: "{{ route('admin.getVehicleExpenses') }}",
-                    type: "GET",
-                    data: { vehicle_id: vehicleId },
-                    success: function(response) {
-                        $("#vehicleExpensesContainer").html(response);
-                        $('#addExpenseRow').show();
-                    },
-                    error: function() {
-                        alert("Unable to fetch vehicle expenses.");
-                    }
-                });
-            } else {
-                $("#vehicleExpensesContainer").empty();
-            }
-        });
-
-
-        $('#addExpenseType').on('click', function (e) {
-
-            e.preventDefault();
-
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "Do you really want to update this trip?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Yes, update it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                  $('#expenseTypeForm').submit();
-                }
-            });
-        });
-
-        $('.endTripBtn').on('click', function () {
-            const tripId = $(this).data('trip-id');
-
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "Do you really want to end this trip?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Yes, end it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: `/admin/endtrip/${tripId}`,
-                        type: 'GET',
-                        data: {
-                            _token: '{{ csrf_token() }}' // Required for Laravel POST
-                        },
-                        success: function (response) {
-                            Swal.fire(
-                                'Trip Ended!',
-                                'The trip has been successfully ended.',
-                                'success'
-                            );
-
-                            // Optional: Update UI or disable button
-                            $('#endTripBtn').prop('disabled', true).text('Trip Ended');
-                        },
-                        error: function (xhr) {
-                            Swal.fire(
-                                'Error!',
-                                'Something went wrong. Please try again.',
-                                'error'
-                            );
-                        }
-                    });
-                }
-            });
-        });
-
-       
-
-        
+        fromContainer.html(`<label>From</label>${fromHtml}`);
+        toContainer.html(`<label>To</label>${toHtml}`);
     });
 
+    document.addEventListener('change', function(e) {
+        if (e.target.matches('.form-select[name^="trip_details"][name$="[to_destination]"]')) {
+            const select = e.target;
+            const saleSheetId = select.value;
+            const row = select.closest('.trip-detail');
+            const rentInput = row.querySelector('.rent');
+            const baseUrl = "{{ asset('') }}";
+            
+            if (!saleSheetId) return;
+            
+            fetch(`${baseUrl}admin/salesheets/${saleSheetId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.minimum_rent !== undefined) {
+                        let rate = data.per_bag_rate;
+                        const totalBagsInput = row.querySelector('.total-bags');
+                        const totalBags      = parseFloat(totalBagsInput?.value) || 0;
+                        let total = totalBags * rate;
+
+                        if(total > data.minimum_rent) {
+                            rentInput.value = total;
+                        } else {
+                            rentInput.value = data.minimum_rent;
+                        }
+                    }
+                })
+                .catch(err => console.error('Error fetching SaleSheet:', err));
+        }
+    });
+
+    document.addEventListener('change', function(e) {
+        if (e.target.matches('.form-select[name^="trip_details"][name$="[from_destination]"]')) {
+            const select      = e.target;
+            const purchaseSheetId = select.value;
+            const row         = select.closest('.trip-detail');
+            const rentInput   = row.querySelector('.rent');
+            const baseUrl     = "{{ asset('') }}";
+
+            if (!purchaseSheetId) return;
+            
+            fetch(`${baseUrl}admin/purchasesheets/${purchaseSheetId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.per_ton_rate !== undefined) {
+                        rentInput.value = data.per_ton_rate;
+
+                        let rate = data.per_ton_rate;
+                        const weightInput = row.querySelector('.weight');
+                        const weight      = parseFloat(weightInput?.value) || 0;
+                        let total         = weight * rate;
+
+                        rentInput.value = total; 
+                    }
+                })
+                .catch(err => console.error('Error fetching PurchaseSheet:', err));
+        }
+    });
+
+    document.addEventListener('input', function(e) {
+        const row = e.target.closest('.trip-detail');
+        if (!row) return;
+
+        const totalBagsInput        = row.querySelector('.total-bags');
+        const labourRateInput       = row.querySelector('.rate');
+        const noOfLabourInput       = row.querySelector('.no_of_labour');
+        const weeklyLabourInput     = row.querySelector('.weekly-labour');
+        const balochLabourRateInput = row.querySelector('.baloch-labour-rate');
+        const balochLabourInput     = row.querySelector('.baloch-labour');
+        const tripTypeInput         = row.querySelector('.trip_type');
+
+        const tripType         = tripTypeInput.value;
+        const totalBags        = parseFloat(totalBagsInput?.value) || 0;
+        const labourRate       = parseFloat(labourRateInput?.value) || 0;
+        const noOfLabour       = noOfLabourInput?.value === "" ? null : parseFloat(noOfLabourInput.value);
+        const weeklyLabour     = parseFloat(weeklyLabourInput?.value) || 0;
+        const balochLabourRate = parseFloat(balochLabourRateInput?.value) || 0;
+
+        const active = e.target;
+
+        if (tripType === "Feed Sell") {
+            if (noOfLabour === 1) {
+                if (labourRateInput) labourRateInput.value = 2;
+                if (balochLabourRateInput) balochLabourRateInput.value = 1.5;
+                balochLabourInput.value = (totalBags * 1.5).toFixed(1);
+                weeklyLabourInput.value = (totalBags * 2).toFixed(1);
+            } 
+            else if (noOfLabour === 2) {
+                if (labourRateInput) labourRateInput.value = 4;
+                if (balochLabourRateInput) balochLabourRateInput.value = 0;
+                balochLabourInput.value = 0;
+                weeklyLabourInput.value = (totalBags * 4).toFixed(1);
+            } 
+            else if (noOfLabour === 0) {
+                if (labourRateInput) labourRateInput.value = 0;
+                if (balochLabourRateInput) balochLabourRateInput.value = 3;
+                balochLabourInput.value = (totalBags * 3).toFixed(1);
+                weeklyLabourInput.value = 0;
+            }
+        } else if(tripType == "Purchase") {
+            weeklyLabourInput.value = (totalBags * labourRate).toFixed(1);
+        }
+    });
+
+    $(document).on("change", "#trip_type", function () {
+        const tripType = $(this).val();
+
+        if (tripType === "Feed Sell") {
+            $(".baloch-labour-field").show();
+        } else {
+            $(".baloch-labour-field").hide();
+        }
+    });
+
+    $(document).on("click", ".removeRow", function () {
+        $(this).closest(".trip-detail").remove();
+    });
+    
+    $(document).on("click", ".removeTripPaymentRow", function () {
+        $(this).closest("tr").remove();
+        calculateBalance();
+    });
+
+    $("#vehicle_id").change(function() {
+        let vehicleId = $(this).val();
+
+        if (vehicleId) {
+            $.ajax({
+                url: "{{ route('admin.getVehicleExpenses') }}",
+                type: "GET",
+                data: { vehicle_id: vehicleId },
+                success: function(response) {
+                    $("#vehicleExpensesContainer").html(response);
+                    $('#addExpenseRow').show();
+                },
+                error: function() {
+                    alert("Unable to fetch vehicle expenses.");
+                }
+            });
+        } else {
+            $("#vehicleExpensesContainer").empty();
+        }
+    });
+
+    $('#addExpenseType').on('click', function (e) {
+        e.preventDefault();
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you really want to update this trip?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, update it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+              $('#expenseTypeForm').submit();
+            }
+        });
+    });
+
+    $('.endTripBtn').on('click', function () {
+        const tripId = $(this).data('trip-id');
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you really want to end this trip?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, end it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/admin/endtrip/${tripId}`,
+                    type: 'GET',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function (response) {
+                        Swal.fire(
+                            'Trip Ended!',
+                            'The trip has been successfully ended.',
+                            'success'
+                        );
+                        $('#endTripBtn').prop('disabled', true).text('Trip Ended');
+                    },
+                    error: function (xhr) {
+                        Swal.fire(
+                            'Error!',
+                            'Something went wrong. Please try again.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+    });
+});
 </script>
 @endsection
