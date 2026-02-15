@@ -25,6 +25,9 @@
                     <th>Driver</th>
                     <th>Trip Start Date</th>
                     <th>Trip End Date</th>
+                    @if(auth()->user()->role_id == 1)
+                    <th>Action</th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
@@ -79,6 +82,15 @@
                     name: 'trip_end_date'
                 }
             ],
+                // Conditionally add action column
+            @if(auth()->user()->role_id == 1)
+            columns.push({
+                data: 'action',
+                name: 'action',
+                orderable: false,
+                searchable: false
+            });
+            @endif
             order: [[0, 'desc']],
 
             createdRow: function(row, data, dataIndex) {

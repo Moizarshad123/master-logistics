@@ -25,7 +25,9 @@
                     <th>Driver</th>
                     <th>Trip Start Date</th>
                     <th>Trip End Date</th>
-                    {{-- <th>Actions</th> --}}
+                    @if(auth()->user()->role_id == 1)
+                    <th>Action</th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
@@ -101,14 +103,18 @@
                 {
                     data: 'trip_end_date',
                     name: 'trip_end_date'
-                },
-                // {
-                //     data: 'action',
-                //     name: 'action'
-                // }
+                }
             ],
             order: [[0, 'desc']],
 
+            @if(auth()->user()->role_id == 1)
+                columns.push({
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
+                });
+            @endif
             createdRow: function(row, data, dataIndex) {
                 // Check if order_nature is 'urgent'
                 if (data.order_nature == 'urgent' && data.outstanding_amount == 0) {

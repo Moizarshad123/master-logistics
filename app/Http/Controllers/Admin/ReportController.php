@@ -69,7 +69,7 @@ class ReportController extends Controller
     }
 
     public function viewTripVehicleReport($tripId) {
-        $trip = Trip::with(['vehicle', 'driver', 'tripDetails', 'tripPayments', 'tripExpenses', 'tripExpenses.expenseName'])->findOrFail($tripId);
+        $trip = Trip::with(['fuelings', 'vehicle', 'driver', 'tripDetails', 'tripPayments', 'tripExpenses', 'tripExpenses.expenseName'])->findOrFail($tripId);
         return view('admin.reports.view_trip_report', compact('trip'));
     }
 

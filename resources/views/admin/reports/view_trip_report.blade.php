@@ -95,13 +95,19 @@
                         <tr>
                             <td>{{ date('d M Y', strtotime($item->date)) ?? "" }}</td>
                             <td>{{ $item->payment_type ?? ""}}</td>
-                            <td>{{ $item->amount ?? ""}}</td>
+                            <td>{{ number_format($item->amount) ?? ""}}</td>
                             <td>{{ $item->comments ?? ""}}</td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
         @endif
+
+        @php
+            $tot = 0;
+            $tot_expenses = 0; 
+            $tot_lites = 0;
+        @endphp
 
         <h5 style="margin-top: 20px;">Trip Expenses</h5>
         @if(count($trip->tripExpenses) > 0)
@@ -114,14 +120,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @php $tot = 0; @endphp
                     @forelse($trip->tripExpenses as $expense)
                         <tr>
                             <td>{{ $expense->expense ?? "" }}</td>
                             <td>{{ $expense->expense_from ?? "" }}</td>
-                            <td>{{ $expense->amount }}</td>
+                            <td>{{  number_format($expense->amount) }}</td>
                         </tr>
-                        @php $tot += $expense->amount; @endphp
+                        @php $tot_expenses += $expense->amount; @endphp
 
                     @empty
                         <tr><td colspan="3" class="text-center">No expenses added.</td></tr>
@@ -129,12 +134,63 @@
                     @if(count($trip->tripExpenses) > 0)
                         <tr style="font-size:18px">
                             <th colspan="2">Total</th>
-                            <th>{{ $tot }}</th>
+                            <th>{{ number_format($tot_expenses, 1) ?? "0"}}</th>
                         </tr>
                     @endif
                 </tbody>
             </table>
         @endif
+        
+ 
+        <h5 style="margin-top: 20px;">Fueling</h5>
+        <table class="table table-custom table-bordered table-sm mb-4 report-table">
+            <thead>
+                <tr>
+                    <th>Fueling Type</th>
+                    <th>Fueling Date</th>
+                    <th>Fueling Time</th>
+                    <th>Source</th>
+                    <th>Per Litre Amount</th>
+                    <th>Total Litres</th>
+                    <th>Total Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($trip->fuelings as $diesel)
+                    @php $tot += $diesel->total_amount; $tot_lites += $diesel->litres; @endphp
+
+                    <tr>
+                        <td>{{ $diesel->type ?? "" }}</td>
+                        <td>{{ date("d-m-Y", strtotime($diesel->date)) ?? "" }}</td>
+                        <td>{{ date("H:i A", strtotime($diesel->time)) ?? "" }}</td>
+                        <td>{{ $diesel->source?? "" }}</td>
+                        <td>{{ $diesel->per_litre_amount ?? "" }}</td>
+                        <td>{{ $diesel->litres ?? ""}}</td>
+                        <td>{{ $diesel->total_amount ?? "" }}</td>
+                    </tr>
+
+                @empty
+                    <tr><td colspan="7" class="text-center">No fueling added.</td></tr>
+                @endforelse
+                @if(count($trip->fuelings) > 0)
+                    <tr style="font-size:18px">
+                        <th colspan="5">Total</th>
+                        <th>{{ $tot_lites }}</th>
+                        <th>{{ number_format($tot, 1) }}</th>
+                    </tr>
+                @endif
+            </tbody>
+        </table>
+
+        <table class="table table-custom table-bordered table-sm mb-4 report-table">
+            <thead>
+                <tr style="font-size:18px">
+                        <th colspan="5">Grand Total Expenses & Fueling</th>
+                        <th>{{ number_format($tot_expenses + $tot) ?? 0 }}</th>
+                    </tr>
+            </thead>
+        </table>
+
 
         {{-- Trip 1 Details --}}
         @if(count($trip->tripDetails) > 0)

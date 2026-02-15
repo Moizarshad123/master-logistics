@@ -208,7 +208,6 @@ class TripController extends Controller
 
     //     return view('admin.trips.active_trailers_trips');
     // }
-
     public function closedTrailersTrips()
     {
         try {
@@ -220,9 +219,9 @@ class TripController extends Controller
                                     $q->where('name', 'Trailers');
                                 });
             
-                return datatables()->eloquent($trips->orderByDesc('id'))
+                $dataTable = datatables()->eloquent($trips->orderByDesc('id'))
 
-                   ->filterColumn('vehicle', function($query, $keyword) {
+                    ->filterColumn('vehicle', function($query, $keyword) {
                         $query->whereHas('vehicle', function($q) use ($keyword) {
                             $q->where('vehicle_no', 'like', "%{$keyword}%");
                         });
@@ -242,12 +241,9 @@ class TripController extends Controller
                         }
                     })
                     ->editColumn('trip_date', function ($data) {
-                       
                         return date("d-m-Y", strtotime($data->trip_date));
-                        
                     })
 
-                    
                     ->addColumn('driver', function ($data) {
                         if($data->driver != null) {
                             return $data->driver->name;
@@ -259,17 +255,24 @@ class TripController extends Controller
                         return  $data->tripDetails->count() ?? 0;
                     })
                     ->editColumn('trip_end_date', function ($data) {
-                        return  date('d M Y', strtotime($data->trip_end_date));
-                    })   
-                    // ->addColumn('action', function ($data) {
+                        return  date('d-m-Y', strtotime($data->trip_end_date));
+                    });   
+                    
+                // Add action column only for role_id == 1
+                if(auth()->user()->role_id == 1) {
+                    $dataTable->addColumn('action', function ($data) {
+                        $viewUrl    = route('admin.trips.show', $data->id);
+                        $editUrl    = route('admin.trips.edit', $data->id);
+                        
+                        return '
+                            <a href="'.$viewUrl.'" class="btn btn-sm btn-info">View</a> |
+                            <a href="'.$editUrl.'" class="btn btn-sm btn-warning">Edit</a>';
+                    })->rawColumns(['action', 'vehicle', 'driver', 'journey_count']);
+                } else {
+                    $dataTable->rawColumns(['vehicle', 'driver', 'journey_count']);
+                }
 
-                    //     $viewUrl   = route('admin.trips.show', $data->id);
-
-
-                    //     return '<a href="'.$viewUrl.'" class="btn btn-sm btn-info">View</a>';
-                    // })
-                    ->rawColumns(['action', 'vehicle', 'driver', 'journey_count'])->make(true);
-
+                return $dataTable->make(true);
             }
 
         } catch (\Exception $ex) {
@@ -278,18 +281,18 @@ class TripController extends Controller
 
         return view('admin.trips.ended_trailers_trips');
     }
-
+    
     public function closedTrips() {
         try {
             if (request()->ajax()) {
             
-
                 $trips = Trip::with('tripDetails', 'vehicle', 'vehicle.new_wheeler', 'driver')
                                 ->where('status', "Ended")
                                 ->whereHas('vehicle.new_wheeler', function($q) {
                                     $q->where('name', '!=',  'Trailers');
                                 });
-                return datatables()->eloquent($trips->orderByDesc('id'))
+                
+                $dataTable = datatables()->eloquent($trips->orderByDesc('id'))
 
                     ->filterColumn('vehicle', function($query, $keyword) {
                         $query->whereHas('vehicle', function($q) use ($keyword) {
@@ -325,9 +328,23 @@ class TripController extends Controller
                     })
                     ->editColumn('created_at', function ($data) {
                         return  date('d M Y', strtotime($data->created_at));
-                    })   
-                    ->rawColumns(['vehicle', 'driver', 'journey_count'])->make(true);
+                    });
 
+                // Add action column only for role_id == 1
+                if(auth()->user()->role_id == 1) {
+                    $dataTable->addColumn('action', function ($data) {
+                        $viewUrl    = route('admin.trips.show', $data->id);
+                        $editUrl    = route('admin.trips.edit', $data->id);
+                        
+                        return '
+                            <a href="'.$viewUrl.'" class="btn btn-sm btn-info">View</a> |
+                            <a href="'.$editUrl.'" class="btn btn-sm btn-warning">Edit</a>';
+                    })->rawColumns(['action', 'vehicle', 'driver', 'journey_count']);
+                } else {
+                    $dataTable->rawColumns(['vehicle', 'driver', 'journey_count']);
+                }
+
+                return $dataTable->make(true);
             }
 
         } catch (\Exception $ex) {
