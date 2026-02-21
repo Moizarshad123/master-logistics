@@ -25,8 +25,8 @@ class MaintenanceController extends Controller
                             return "";
                         }
                     })
-                    ->editColumn('created_at', function ($data) {
-                        return  date('d M Y', strtotime($data->created_at));
+                    ->editColumn('date', function ($data) {
+                        return  isset($data->date) ? date('d M Y', strtotime($data->date)):'';
                     })   
                     ->addColumn('action', function ($data) {
 
@@ -75,14 +75,13 @@ class MaintenanceController extends Controller
     public function store(Request $request)
     {
         try {
-            //code...
             $request->validate([
                 'vehicle_id' => 'required',
                 'amount'     => 'required|numeric',
                 'comments'   => 'nullable|string',
             ]);
     
-            Maintenance::create($request->only('vehicle_id', 'expense_id', 'amount', 'comments'));
+            Maintenance::create($request->only('vehicle_id', 'expense_id', 'amount', 'comments', 'date'));
             return redirect()->route('admin.maintenances.index')->with('success', 'Maintenance added successfully.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
@@ -99,14 +98,16 @@ class MaintenanceController extends Controller
 
     public function update(Request $request, Maintenance $maintenance)
     {
+
         $request->validate([
-            'vehicle_id' => 'required|exists:vehicles,id',
+            'vehicle_id' => 'required',
             'expense_id' => 'required',
             'amount'     => 'required|numeric',
             'comments'   => 'nullable|string',
+            'date' => 'required'
         ]);
 
-        $maintenance->update($request->only('vehicle_id', 'expense_id', 'amount', 'comments'));
+        $maintenance->update($request->only('vehicle_id', 'expense_id', 'amount', 'comments', 'date'));
 
         return redirect()->route('admin.maintenances.index')->with('success', 'Maintenance updated successfully.');
     }

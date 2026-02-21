@@ -9,20 +9,29 @@
         @csrf
         @method('PUT')
         <div class="row">
-            <div class="col-md-4">
+
+            
+             <div class="col-md-6">
+                <div class="mb-3">
+                    <label>Date:</label>
+                   <input type="date" class="form-control" name="date" value="{{ $maintenance->date}}">
+                </div>
+            </div>
+
+            <div class="col-md-6">
                 <div class="mb-3">
                     <label>Vehicle:</label>
                     <select name="vehicle_id" class="form-select" required>
                         <option value="">Select Vehicle</option>
                         @foreach($vehicles as $v)
-                            <option value="{{ $v->vehicle_no }}" {{ $maintenance->vehicle_no == $v->vehicle_no ? 'selected' : '' }}>
+                            <option value="{{ $v->vehicle_no }}" {{ $maintenance->vehicle_id == $v->vehicle_no ? 'selected' : '' }}>
                                 {{ $v->vehicle_no }}
                             </option>
                         @endforeach
                     </select>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="mb-3">
                     <label>Expense Type:</label>
                     <select name="expense_id" class="form-select" required>
@@ -33,7 +42,7 @@
                     </select>
                 </div>
             </div>         
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="mb-3">
                     <label>Amount:</label>
                     <input type="number" name="amount" value="{{ $maintenance->amount }}" class="form-control" step="0.01" required>

@@ -8,7 +8,14 @@
     <form action="{{ route('admin.maintenances.store') }}" method="POST">
         @csrf
         <div class="row">
-            <div class="col-md-3">
+
+             <div class="col-md-6">
+                <div class="mb-3">
+                    <label>Date:</label>
+                   <input type="date" class="form-control" name="date" value="{{ date('Y-m-d')}}">
+                </div>
+            </div>
+            <div class="col-md-6">
                 <div class="mb-3">
                     <label>Vehicle:</label>
                     <select name="vehicle_id" class="form-select" required>
@@ -20,7 +27,7 @@
                 </div>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-6">
                 <div class="mb-3">
                     <label>Expense Type:</label>
                     <select name="expense_id" class="form-select" required>
@@ -31,13 +38,13 @@
                     </select>
                 </div>
             </div>                  
-            <div class="col-md-3">
+            <div class="col-md-6">
                 <div class="mb-3">
                     <label>Amount:</label>
                     <input type="number" name="amount" class="form-control" step="0.01" required>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-12">
                 <div class="mb-3">
                     <label>Comments:</label>
                     <textarea name="comments" class="form-control" rows="3"></textarea>

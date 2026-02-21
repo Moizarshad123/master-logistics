@@ -105,8 +105,8 @@
                     name: 'amount'
                 },
                 {
-                    data: 'created_at',
-                    name: 'created_at'
+                    data: 'date',
+                    name: 'date'
                 },
                 {
                     data: 'comments',
