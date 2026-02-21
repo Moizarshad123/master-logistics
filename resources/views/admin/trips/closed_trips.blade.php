@@ -40,8 +40,46 @@
 @section('js')
 
 <script>
-
     $(document).ready(function() {
+        // FIRST: Define columns array
+        var columns = [
+            {
+                data: 'id',
+                name: 'id'
+            },
+            {
+                data: 'journey_count',
+                name: 'journey_count'
+            },
+            {
+                data: 'vehicle',
+                name: 'vehicle'
+            },
+            {
+                data: 'driver',
+                name: 'driver'
+            },
+            {
+                data: 'trip_date',
+                name: 'trip_date'
+            },
+            {
+                data: 'trip_end_date',
+                name: 'trip_end_date'
+            }
+        ];
+
+        // THEN: Conditionally add action column
+        @if(auth()->user()->role_id == 1)
+        columns.push({
+            data: 'action',
+            name: 'action',
+            orderable: false,
+            searchable: false
+        });
+        @endif
+
+        // FINALLY: Initialize DataTable with columns
         var DataTable = $("#tripsTable").DataTable({
             buttons: [{
                 extend: "csv",
@@ -55,58 +93,20 @@
                 url: `{{route('admin.closedTrips')}}`,
             },
             dom: '<"top d-flex justify-content-between"f p>rt<"bottom"p>',
-            columns: [
-
-                {
-                    data: 'id',
-                    name: 'id'
-                },
-                {
-                    data: 'journey_count',
-                    name: 'journey_count'
-                },
-                {
-                    data: 'vehicle',
-                    name: 'vehicle'
-                },
-                {
-                    data: 'driver',
-                    name: 'driver'
-                },
-                {
-                    data: 'trip_date',
-                    name: 'trip_date'
-                },
-                {
-                    data: 'trip_end_date',
-                    name: 'trip_end_date'
-                }
-            ],
-                // Conditionally add action column
-            @if(auth()->user()->role_id == 1)
-            columns.push({
-                data: 'action',
-                name: 'action',
-                orderable: false,
-                searchable: false
-            });
-            @endif
+            columns: columns,  // Use the columns array here
             order: [[0, 'desc']],
-
             createdRow: function(row, data, dataIndex) {
                 // Check if order_nature is 'urgent'
                 if (data.order_nature == 'urgent' && data.outstanding_amount == 0) {
                     $(row).css('background-color', 'rgb(253 136 136)');
-                } if(data.order_nature == 'normal' && data.outstanding_amount != 0) {
+                } else if(data.order_nature == 'normal' && data.outstanding_amount != 0) {
                     $(row).css('background-color', 'rgb(191 204 181)');
                 } else if(data.order_nature == 'urgent' && data.outstanding_amount != 0) {
                     $(row).css('background-color', 'rgb(241 240 129)');
                 }
             }
-
         });
     });
-    </script>
-
+</script>
 
 @endsection

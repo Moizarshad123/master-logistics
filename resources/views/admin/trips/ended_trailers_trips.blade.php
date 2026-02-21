@@ -63,20 +63,8 @@
 <script>
 
     $(document).ready(function() {
-        var DataTable = $("#tripsTable").DataTable({
-            buttons: [{
-                extend: "csv",
-                className: "btn-sm"
-            }],
-            responsive: true,
-            processing: true,
-            serverSide: true,
-            pageLength: 50,
-            ajax: {
-                url: `{{route('admin.closeTrailersTrips')}}`,
-            },
-            dom: '<"top d-flex justify-content-between"f p>rt<"bottom"p>',
-            columns: [
+
+        var  columns = [
 
                 {
                     data: 'id',
@@ -104,17 +92,31 @@
                     data: 'trip_end_date',
                     name: 'trip_end_date'
                 }
-            ],
-            order: [[0, 'desc']],
+            ];
 
-            @if(auth()->user()->role_id == 1)
-                columns.push({
-                    data: 'action',
-                    name: 'action',
-                    orderable: false,
-                    searchable: false
-                });
-            @endif
+        @if(auth()->user()->role_id == 1)
+            columns.push({
+                data: 'action',
+                name: 'action',
+                orderable: false,
+                searchable: false
+            });
+        @endif
+        var DataTable = $("#tripsTable").DataTable({
+            buttons: [{
+                extend: "csv",
+                className: "btn-sm"
+            }],
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            pageLength: 50,
+            ajax: {
+                url: `{{route('admin.closeTrailersTrips')}}`,
+            },
+            dom: '<"top d-flex justify-content-between"f p>rt<"bottom"p>',
+            columns: columns,
+            order: [[0, 'desc']],
             createdRow: function(row, data, dataIndex) {
                 // Check if order_nature is 'urgent'
                 if (data.order_nature == 'urgent' && data.outstanding_amount == 0) {
@@ -125,7 +127,6 @@
                     $(row).css('background-color', 'rgb(241 240 129)');
                 }
             }
-
         });
         
         var delete_id;
