@@ -104,9 +104,7 @@ class TripController extends Controller
                                     data-bs-toggle="modal"
                                     data-bs-target="#endTripModal">
                                 End Trip
-                            </button>
-
-                        ';
+                            </button>';
                     })
                     ->rawColumns(['action', 'vehicle', 'driver', 'journey_count'])->make(true);
 
@@ -260,13 +258,20 @@ class TripController extends Controller
                     
                 // Add action column only for role_id == 1
                 if(auth()->user()->role_id == 1) {
+
                     $dataTable->addColumn('action', function ($data) {
                         $viewUrl    = route('admin.trips.show', $data->id);
                         $editUrl    = route('admin.trips.edit', $data->id);
-                        
+                        $deleteUrl  = route('admin.trips.destroy', $data->id);
+
                         return '
                             <a href="'.$viewUrl.'" class="btn btn-sm btn-info">View</a> |
-                            <a href="'.$editUrl.'" class="btn btn-sm btn-warning">Edit</a>';
+                            <a href="'.$editUrl.'" class="btn btn-sm btn-warning">Edit</a> | 
+                            <form action="'.$deleteUrl.'" method="POST" style="display:inline;">
+                                '.csrf_field().'
+                                '.method_field('DELETE').'
+                                <button type="submit" class="btn btn-sm btn-danger deleteExpenseType" onclick="return confirm(\'Are you sure?\')">Delete</button>
+                            </form>';
                     })->rawColumns(['action', 'vehicle', 'driver', 'journey_count']);
                 } else {
                     $dataTable->rawColumns(['vehicle', 'driver', 'journey_count']);
@@ -335,10 +340,17 @@ class TripController extends Controller
                     $dataTable->addColumn('action', function ($data) {
                         $viewUrl    = route('admin.trips.show', $data->id);
                         $editUrl    = route('admin.trips.edit', $data->id);
+                        $deleteUrl  = route('admin.trips.destroy', $data->id);
+
                         
                         return '
                             <a href="'.$viewUrl.'" class="btn btn-sm btn-info">View</a> |
-                            <a href="'.$editUrl.'" class="btn btn-sm btn-warning">Edit</a>';
+                            <a href="'.$editUrl.'" class="btn btn-sm btn-warning">Edit</a> | 
+                            <form action="'.$deleteUrl.'" method="POST" style="display:inline;">
+                                '.csrf_field().'
+                                '.method_field('DELETE').'
+                                <button type="submit" class="btn btn-sm btn-danger deleteExpenseType" onclick="return confirm(\'Are you sure?\')">Delete</button>
+                            </form>';
                     })->rawColumns(['action', 'vehicle', 'driver', 'journey_count']);
                 } else {
                     $dataTable->rawColumns(['vehicle', 'driver', 'journey_count']);

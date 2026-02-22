@@ -53,9 +53,11 @@
     @if($detail->trip_type == "Feed Sell")
         <div class="row mt-2">
             <div class="col-md-6 from-container">
+                <label for="">From</label>
                 <input type="text" class="form-control" name="trip_details[{{ $index }}][from_destination]" value="Master Agro" readonly>
             </div>
             <div class="col-md-6 to-container">
+                <label for="">To</label>
                 <select class="form-select" name="trip_details[{{ $index }}][to_destination]">
                     <option value="">Select To Station</option>
                     @foreach ($sales as $item)
@@ -67,6 +69,7 @@
     @elseif ($detail->trip_type === "Purchase")
         <div class="row mt-2">
             <div class="col-md-6 from-container">
+                <label for="">From</label>
                 <select class="form-select" name="trip_details[{{ $index }}][from_destination]">
                     <option value="">Select From Station</option>
                     @foreach ($purchases as $item)
@@ -75,12 +78,14 @@
                 </select>
             </div>
             <div class="col-md-6 to-container">
+                <label for="">To</label>
                 <input type="text" class="form-control" name="trip_details[{{ $index }}][to_destination]" value="Master Agro" readonly>
             </div>
         </div>
     @else
         <div class="row mt-2">
             <div class="col-md-6 from-container">
+                <label for="">From</label>
                 <select class="form-select" name="trip_details[{{ $index }}][from_destination]">
                     <option value="">Select From Destination</option>
                     @foreach ($destinations as $item)
@@ -89,6 +94,7 @@
                 </select>
             </div>
             <div class="col-md-6 to-container">
+                <label for="">To</label>
                 <select class="form-select" name="trip_details[{{ $index }}][to_destination]">
                     <option value="">Select To Destination</option>
                     @foreach ($destinations as $item)
@@ -98,25 +104,6 @@
             </div>
         </div>
     @endif
-
-    {{-- <div class="row mt-2">
-        <div class="col-md-6">
-            <label>From</label>
-            <select class="form-select" name="trip_details[{{ $index }}][from_destination]">
-                @foreach ($destinations as $item)
-                    <option value="{{ $item->name }}" {{ $detail->from_destination == $item->name ? "selected" : ""}}>{{ $item->name }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div class="col-md-6">
-            <label>To</label>
-            <select class="form-select" name="trip_details[{{ $index }}][to_destination]">
-                @foreach ($destinations as $item)
-                    <option value="{{ $item->name }}" {{ $detail->to_destination == $item->name ? "selected" : ""}}>{{ $item->name }}</option>
-                @endforeach
-            </select>
-        </div>
-    </div> --}}
     
     <div class="row mt-2">
         <div class="col-md-3">
@@ -151,7 +138,7 @@
     <div class="row mt-2">
         <div class="col-md-3">
             <label>Total Bags</label>
-            <input type="number" name="trip_details[{{ $index }}][total_bags]" value="{{ old("trip_details.$index.total_bags", $detail->total_bags ?? '') }}" class="form-control">
+            <input type="number" name="trip_details[{{ $index }}][total_bags]" value="{{ old("trip_details.$index.total_bags", $detail->total_bags ?? '') }}" class="form-control total-bags">
         </div>
         <div class="col-md-3">
             <label>No Of Labour</label>
@@ -181,11 +168,11 @@
         
         <div class="col-md-4">
             <label>Rent</label>
-            <input type="number" name="trip_details[{{ $index }}][rent]" value="{{ old("trip_details.$index.rent", $detail->rent ?? '') }}" class="form-control">
+            <input type="number" name="trip_details[{{ $index }}][rent]" value="{{ old("trip_details.$index.rent", $detail->rent ?? '') }}" class="form-control rent">
         </div>
         <div class="col-md-4">
             <label>Weight (In Ton)</label>
-            <input type="number" step="0.01" name="trip_details[{{ $index }}][weight]" value="{{ old("trip_details.$index.weight", $detail->weight ?? '') }}" class="form-control">
+            <input type="number" step="0.01" name="trip_details[{{ $index }}][weight]" value="{{ old("trip_details.$index.weight", $detail->weight ?? '') }}" class="form-control weight">
         </div>
         <div class="col-md-4">
             <label>Comments</label>

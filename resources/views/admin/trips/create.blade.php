@@ -3,7 +3,6 @@
 
 @section('css')
 <!-- In head -->
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 @endsection
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
@@ -109,7 +108,6 @@
 @endsection
 
 @section('js')
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
     $(document).ready(function() {
@@ -133,40 +131,6 @@
                                     <option value="{{ $expense->name }}">{{ $expense->name }}</option>
                                 @endforeach
                             `;
-
-        // function calculateBalance() {
-            
-        //     let totalPayments = 0;
-        //     let totalExpenses = 0;
-        //     let totalRent = parseFloat($("#totalRent").val()) || 0;
-            
-
-        //     // Sum all payment amounts
-        //     $("input[name='expense_amount[]']").each(function () {
-        //         const val = parseFloat($(this).val());
-        //         if (!isNaN(val)) {
-        //             totalPayments += val;
-        //         }
-        //     });
-
-        //     // Sum all expense amounts
-        //     $("input[name^='expenses'][name$='[amount]']").each(function () {
-        //         const val = parseFloat($(this).val());
-        //         if (!isNaN(val)) {
-        //             totalExpenses += val;
-        //         }
-        //     });
-
-        //     const balance = totalPayments - totalExpenses;
-        //     if (balance < 0) {
-        //         $("#balance").addClass("text-danger").removeClass("text-success");
-        //     } else {
-        //         $("#balance").addClass("text-success").removeClass("text-danger");
-        //     }
-        //     $("#balance").val(balance.toFixed(2));
-        // }
-
-        
         $(document).on("keyup", "#totalRent", function(e) {
             e.preventDefault();
             $(this).data("original-rent", parseFloat($(this).val()) || 0);
@@ -472,8 +436,6 @@
             }
         });
 
-
-
         // Listen for Trip Type change dynamically
         $(document).on('change', '.trip_type', function () {
             const row      = $(this).closest('.trip-detail');
@@ -543,13 +505,11 @@
 
         document.addEventListener('change', function(e) {
             if (e.target.matches('.form-select[name^="trip_details"][name$="[to_destination]"]')) {
-                const select = e.target;
+                const select      = e.target;
                 const saleSheetId = select.value;
-                const row = select.closest('.trip-detail');
-                const rentInput = row.querySelector('.rent'); // change this to your rent field's class
-                const baseUrl = "{{ asset('') }}";
-
-                console.log(baseUrl);
+                const row         = select.closest('.trip-detail');
+                const rentInput   = row.querySelector('.rent'); // change this to your rent field's class
+                const baseUrl     = "{{ asset('') }}";
                 
                 if (!saleSheetId) return;
                 // https://finchat.online/master-logistics/public/
@@ -607,7 +567,8 @@
         document.addEventListener('input', function(e) {
             const row = e.target.closest('.trip-detail');
             if (!row) return;
-
+            console.log("working 1");
+            
 
             const totalBagsInput        = row.querySelector('.total-bags');
             const labourRateInput       = row.querySelector('.rate');

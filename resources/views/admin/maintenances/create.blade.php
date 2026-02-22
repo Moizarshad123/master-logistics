@@ -18,7 +18,7 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label>Vehicle:</label>
-                    <select name="vehicle_id" class="form-select" required>
+                    <select name="vehicle_id" class="form-select select2" required>
                         <option value="">Select Vehicle</option>
                         @foreach($vehicles as $v)
                             <option value="{{ $v->vehicle_no }}">{{ $v->vehicle_no }}</option>
@@ -54,4 +54,15 @@
         <button class="btn btn-success">Save</button>
     </form>
 </div>
+@endsection
+@section('js')
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2({
+                placeholder: "Select an option",
+                allowClear: true,
+                width: '100%'
+            });
+        });
+    </script>
 @endsection

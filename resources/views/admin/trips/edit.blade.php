@@ -3,7 +3,6 @@
 
 @section('css')
 <!-- In head -->
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 @endsection
 
 @section('content')
@@ -175,7 +174,6 @@
 
 
 @section('js')
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     // ============================================
 // COMPLETE FIXED JAVASCRIPT FOR EDIT FILE
@@ -738,35 +736,34 @@ $(document).ready(function () {
         const balochLabourInput     = row.querySelector('.baloch-labour');
         const tripTypeInput         = row.querySelector('.trip_type');
 
-        const tripType         = tripTypeInput.value;
-        const totalBags        = parseFloat(totalBagsInput?.value) || 0;
-        const labourRate       = parseFloat(labourRateInput?.value) || 0;
-        const noOfLabour       = noOfLabourInput?.value === "" ? null : parseFloat(noOfLabourInput.value);
-        const weeklyLabour     = parseFloat(weeklyLabourInput?.value) || 0;
-        const balochLabourRate = parseFloat(balochLabourRateInput?.value) || 0;
+        // ✅ NULL CHECK
+        if (!tripTypeInput || !weeklyLabourInput) return;
 
-        const active = e.target;
+        const tripType   = tripTypeInput.value;
+        const totalBags  = parseFloat(totalBagsInput?.value) || 0;
+        const labourRate = parseFloat(labourRateInput?.value) || 0;
+        const noOfLabour = noOfLabourInput?.value === "" ? null : parseFloat(noOfLabourInput.value);
 
         if (tripType === "Feed Sell") {
             if (noOfLabour === 1) {
                 if (labourRateInput) labourRateInput.value = 2;
                 if (balochLabourRateInput) balochLabourRateInput.value = 1.5;
-                balochLabourInput.value = (totalBags * 1.5).toFixed(1);
+                if (balochLabourInput) balochLabourInput.value = (totalBags * 1.5).toFixed(1);
                 weeklyLabourInput.value = (totalBags * 2).toFixed(1);
             } 
             else if (noOfLabour === 2) {
                 if (labourRateInput) labourRateInput.value = 4;
                 if (balochLabourRateInput) balochLabourRateInput.value = 0;
-                balochLabourInput.value = 0;
+                if (balochLabourInput) balochLabourInput.value = 0;
                 weeklyLabourInput.value = (totalBags * 4).toFixed(1);
             } 
             else if (noOfLabour === 0) {
                 if (labourRateInput) labourRateInput.value = 0;
                 if (balochLabourRateInput) balochLabourRateInput.value = 3;
-                balochLabourInput.value = (totalBags * 3).toFixed(1);
+                if (balochLabourInput) balochLabourInput.value = (totalBags * 3).toFixed(1);
                 weeklyLabourInput.value = 0;
             }
-        } else if(tripType == "Purchase") {
+        } else if (tripType === "Purchase") {
             weeklyLabourInput.value = (totalBags * labourRate).toFixed(1);
         }
     });

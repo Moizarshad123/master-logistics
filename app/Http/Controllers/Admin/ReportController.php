@@ -463,7 +463,7 @@ class ReportController extends Controller
         $totalDays = $fromDate->diffInDays($toDate) + 1;
 
         // Get all expense categories dynamically from database
-        $expenseCategories = ExpenseCategory::orderBy('id')->get();
+        $expenseCategories = ExpenseCategory::where("name", '!=', 'Overheads')->orderBy('id')->get();
         
         // Create dynamic category array for initialization
         $expenseCategoryKeys = [];
@@ -820,7 +820,7 @@ class ReportController extends Controller
         $totalDays = $fromDate->diffInDays($toDate) + 1;
 
         // Get all expense categories dynamically from database
-        $expenseCategories = ExpenseCategory::orderBy('id')->get();
+        $expenseCategories = ExpenseCategory::where("name", '!=', 'Overheads')->orderBy('id')->get();
         
         // Create dynamic category array for initialization
         $expenseCategoryKeys = [];
