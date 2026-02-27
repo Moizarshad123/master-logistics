@@ -18,7 +18,7 @@ class DieselController extends Controller
     {
         try {
             if (request()->ajax()) {
-                $diesels = Diesel::with("user");
+                $diesels = Diesel::with("user", "vehicle");
                 return datatables()->eloquent($diesels->orderByDesc('id'))
                     ->addColumn('createdBy', function ($data) {
                         if($data->created_by != null) {
@@ -31,11 +31,7 @@ class DieselController extends Controller
                         return  date('d M Y', strtotime($data->date)).' - '.date('H:i A', strtotime($data->time));
                     }) 
                      ->addColumn('vehicle', function ($data) {
-                        if($data->vehicle_id != null) {
-                            return $data->vehicle->vehicle_no;
-                        } else {
-                            return "";
-                        }
+                        return $data->vehicle?->vehicle_no ?? '';
                     })   
                     
                     ->addColumn('action', function ($data) {
@@ -51,11 +47,11 @@ class DieselController extends Controller
                                 <button type="submit" class="btn btn-sm btn-danger deleteExpenseType" onclick="return confirm(\'Are you sure?\')">Delete</button>
                             </form>';
                     })
-                    ->filterColumn('vehicle', function($query, $keyword) {
-                        $query->whereHas('vehicle', function($q) use ($keyword) {
-                            $q->where('vehicle_no', 'like', "%{$keyword}%");
-                        });
-                    })
+                    // ->filterColumn('vehicle', function($query, $keyword) {
+                    //     $query->whereHas('vehicle', function($q) use ($keyword) {
+                    //         $q->where('vehicle_no', 'like', "%{$keyword}%");
+                    //     });
+                    // })
                     ->filterColumn('createdBy', function($query, $keyword) {
                         $query->whereHas('user', function($q) use ($keyword) {
                             $q->where('name', 'like', "%{$keyword}%");
