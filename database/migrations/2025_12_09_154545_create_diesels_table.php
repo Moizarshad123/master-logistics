@@ -19,6 +19,13 @@ class CreateDieselsTable extends Migration
             $table->id();
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->enum('type', ['Diesel', 'Petrol', 'Mobil oil']);
+            $table->string('source', 50)->nullable();
+            $table->integer('trip_id')->nullable();
+            $table->integer('vehicle_id')->nullable();
+
+            
+
+            
             $table->date('date');
             $table->time('time');
             $table->decimal('litres', 10, 2);

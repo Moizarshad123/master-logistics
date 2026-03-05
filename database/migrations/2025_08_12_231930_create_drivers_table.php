@@ -11,6 +11,7 @@ class CreateDriversTable extends Migration
         Schema::create('drivers', function (Blueprint $table) {
             $table->id();
             $table->string("emp_id")->nullable();
+            $table->integer("vehicle_id");
             $table->string('name');
             $table->string('phone');
             $table->double('salary')->default(0);
@@ -22,6 +23,8 @@ class CreateDriversTable extends Migration
             $table->string('driving_license_back')->nullable();
             $table->string('image')->nullable();
             $table->text('address')->nullable();
+            $table->String('status')->nullable();
+
             $table->timestamps();
         });
     }

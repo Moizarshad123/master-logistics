@@ -29,7 +29,7 @@
         </div>
     </form>
 
-    {{-- FIRST TABLE: Expenses (Vehicle No to Dynamic Categories) --}}
+    {{-- FIRST TABLE: Expenses --}}
     @foreach($report as $category => $vehicles)
         @if(strtolower($category) !== 'trailers')
             <h4>{{ $category }}</h4>
@@ -46,6 +46,8 @@
                                     <th>{{ $expCategory->name }}</th>
                                 @endif
                             @endforeach
+                            <th>Maintenance & Workshop</th>
+                            <th>Inventory</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -55,10 +57,12 @@
                                 <td>{{ $data['trips'] }}</td>
                                 <td>{{ $data['total_journeys'] }}</td>
                                 @foreach($expenseCategories as $expCategory)
-                                @if($expCategory->name != "Salaries")
-                                    <td>{{ number_format($data[$expCategory->name] ?? 0) }}</td>
+                                    @if($expCategory->name != "Salaries")
+                                        <td>{{ number_format($data[$expCategory->name] ?? 0) }}</td>
                                     @endif
                                 @endforeach
+                                <td>{{ number_format($data['Maintenance'] ?? 0) }}</td>
+                                <td>{{ number_format($data['Inventory'] ?? 0) }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -67,7 +71,7 @@
         @endif
     @endforeach
 
-    {{-- Grand Total for First Table (Expenses) --}}
+    {{-- Grand Total + Category Totals for First Table --}}
     @if(count($report) > 0)
         <div class="table-responsive">
             <table class="table table-bordered">
@@ -77,13 +81,14 @@
                         <td>{{ $grandTotal['trips'] }}</td>
                         <td>{{ $grandTotal['total_journeys'] }}</td>
                         @foreach($expenseCategories as $expCategory)
-                        @if($expCategory->name != "Salaries")
-                            <td>{{ number_format($grandTotal[$expCategory->name] ?? 0) }}</td>
-                        @endif
+                            @if($expCategory->name != "Salaries")
+                                <td>{{ number_format($grandTotal[$expCategory->name] ?? 0) }}</td>
+                            @endif
                         @endforeach
+                        <td>{{ number_format($grandTotal['Maintenance'] ?? 0) }}</td>
+                        <td>{{ number_format($grandTotal['Inventory'] ?? 0) }}</td>
                     </tr>
 
-                    {{-- Category-wise Totals for Expenses --}}
                     @foreach($categoryTotals as $category => $totals)
                         @if(strtolower($category) !== 'trailers')
                             <tr style="background:#f9f9f9;">
@@ -91,10 +96,12 @@
                                 <td>{{ $totals['trips'] }}</td>
                                 <td>{{ $totals['total_journeys'] }}</td>
                                 @foreach($expenseCategories as $expCategory)
-                                @if($expCategory->name != "Salaries")
-                                    <td>{{ number_format($totals[$expCategory->name] ?? 0) }}</td>
+                                    @if($expCategory->name != "Salaries")
+                                        <td>{{ number_format($totals[$expCategory->name] ?? 0) }}</td>
                                     @endif
                                 @endforeach
+                                <td>{{ number_format($totals['Maintenance'] ?? 0) }}</td>
+                                <td>{{ number_format($totals['Inventory'] ?? 0) }}</td>
                             </tr>
                         @endif
                     @endforeach
@@ -105,7 +112,7 @@
 
     <br><br>
 
-    {{-- SECOND TABLE: Financial Summary (Salary, Advance, Total Exp to Net Earning) --}}
+    {{-- SECOND TABLE: Financial Summary --}}
     @foreach($report as $category => $vehicles)
         @if(strtolower($category) !== 'trailers')
             <h4>{{ $category }}</h4>
@@ -117,6 +124,8 @@
                             <th>Vehicle No</th>
                             <th>Salary</th>
                             <th>Advance</th>
+                            <th>Maintenance & Workshop</th>
+                            <th>Inventory</th>
                             <th>Total Exp</th>
                             <th>Sale Rent</th>
                             <th>Gross Earning</th>
@@ -129,6 +138,8 @@
                                 <td>{{ $vehicleNo }}</td>
                                 <td>{{ number_format($data['Salary']) }}</td>
                                 <td>{{ number_format($data['Advance']) }}</td>
+                                <td>{{ number_format($data['Maintenance'] ?? 0) }}</td>
+                                <td>{{ number_format($data['Inventory'] ?? 0) }}</td>
                                 <td>{{ number_format($data['Total_Exp']) }}</td>
                                 <td>{{ number_format($data['Sale_Rent']) }}</td>
                                 <td>{{ number_format($data['Gross_Earning']) }}</td>
@@ -143,30 +154,33 @@
         @endif
     @endforeach
 
-    {{-- Grand Total for Second Table (Financial Summary) --}}
+    {{-- Grand Total + Category Totals for Second Table --}}
     @if(count($report) > 0)
         <div class="table-responsive">
             <table class="table table-bordered">
                 <tbody>
                     <tr style="font-weight:bold; background:#e0e0e0;">
-                        <td style="width: 13%">Grand Total</td>
-                        <td style="width: 9%">{{ number_format($grandTotal['Salary']) }}</td>
-                        <td style="width: 10%">{{ number_format($grandTotal['Advance']) }}</td>
-                        <td style="width: 8%">{{ number_format($grandTotal['Total_Exp']) }}</td>
-                        <td style="width: 14%">{{ number_format($grandTotal['Sale_Rent']) }}</td>
-                        <td style="width: 14%">{{ number_format($grandTotal['Gross_Earning']) }}</td>
-                        <td style="width: 13%; color: {{ $grandTotal['Net_Earning'] < 0 ? 'red' : 'green' }}">
+                        <td style="width:13%">Grand Total</td>
+                        <td style="width:9%">{{ number_format($grandTotal['Salary']) }}</td>
+                        <td style="width:10%">{{ number_format($grandTotal['Advance']) }}</td>
+                        <td style="width:10%">{{ number_format($grandTotal['Maintenance'] ?? 0) }}</td>
+                        <td>{{ number_format($grandTotal['Inventory'] ?? 0) }}</td>
+                        <td style="width:8%">{{ number_format($grandTotal['Total_Exp']) }}</td>
+                        <td style="width:12%">{{ number_format($grandTotal['Sale_Rent']) }}</td>
+                        <td style="width:12%">{{ number_format($grandTotal['Gross_Earning']) }}</td>
+                        <td style="width:12%; color: {{ $grandTotal['Net_Earning'] < 0 ? 'red' : 'green' }}">
                             {{ number_format($grandTotal['Net_Earning']) }}
                         </td>
                     </tr>
 
-                    {{-- Category-wise Totals for Financial Summary --}}
                     @foreach($categoryTotals as $category => $totals)
                         @if(strtolower($category) !== 'trailers')
                             <tr style="background:#f9f9f9;">
                                 <td>{{ $category }}</td>
                                 <td>{{ number_format($totals['Salary']) }}</td>
                                 <td>{{ number_format($totals['Advance']) }}</td>
+                                <td>{{ number_format($totals['Maintenance'] ?? 0) }}</td>
+                                <td>{{ number_format($totals['Inventory'] ?? 0) }}</td>
                                 <td>{{ number_format($totals['Total_Exp']) }}</td>
                                 <td>{{ number_format($totals['Sale_Rent']) }}</td>
                                 <td>{{ number_format($totals['Gross_Earning']) }}</td>
@@ -180,6 +194,28 @@
             </table>
         </div>
     @endif
+        @if(count($report) > 0)
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <tbody>
+                <tr style="font-weight:bold; background:#e0e0e0;">
+                    <td style="width: 13%">Inventory Total</td>
+                    <td style="width: 60%" style="float: right">
+                        {{ number_format($inventories) }}
+                    </td>
+                </tr>
+
+                <tr style="font-weight:bold; background:#e0e0e0;">
+                    <td style="width: 13%">Overheads Total</td>
+                    <td style="width: 60%" style="float: right">
+                        {{ number_format($overheads) }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    @endif
+
 
 </div>
 

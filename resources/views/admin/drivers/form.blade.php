@@ -48,6 +48,8 @@
                 <option value="resign" {{ $driver->status == "resign" ? "selected" : ""}}>Resign</option>
                 <option value="terminate" {{ $driver->status == "terminate" ? "selected" : ""}}>Terminate</option>
                 <option value="active" {{ $driver->status == "active" ? "selected" : ""}}>Active</option>
+                <option value="late" {{ $driver->status == "late" ? "selected" : ""}}>Late</option>
+
             </select>
         @else 
             <select name="status" class="form-select">
@@ -55,6 +57,8 @@
                 <option value="resign">Resign</option>
                 <option value="terminate">Terminate</option>
                 <option value="active">Active</option>
+                <option value="late">Late</option>
+
             </select>
         @endif
     </div>

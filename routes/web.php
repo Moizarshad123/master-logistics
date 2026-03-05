@@ -29,7 +29,11 @@ use App\Http\Controllers\Admin\{
     AdvanceSalaryController,
     LoanController,
     LoanInstallmentController,
-    TrailerTripController
+    TrailerTripController,
+    InventoryController,
+    IssuanceController,
+    OverheadController,
+    InventoryItemController
 };
 
 Route::match(['get', 'post'], 'login', [AdminController::class, 'login'])->name('login');
@@ -66,11 +70,17 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
     Route::resource('customer-heads', CustomerHeadController::class);
     Route::resource('maintenances', MaintenanceController::class);
     Route::resource('trailer-trips', TrailerTripController::class);
+    Route::resource('inventories', InventoryController::class);
+    Route::resource('issuances', IssuanceController::class);
+    Route::get('inventory-qty/{inventory}', [IssuanceController::class, 'getInventoryQty'])
+         ->name('inventory.qty');
 
-    
+    Route::resource('inventory-items', InventoryItemController::class)
+     ->names('inventory-items')
+     ->except(['show']);
 
+    Route::resource('overheads', OverheadController::class);
     Route::resource('advance-salaries', AdvanceSalaryController::class)->only(['index','store','destroy', 'create', 'update', 'edit']);
-
 
     Route::resource('loans', LoanController::class);
     Route::post('loan-installments/{id}/paid', [LoanInstallmentController::class, 'markPaid']);
@@ -78,7 +88,6 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
     Route::get('drivers/{id}/salary',
                 [DriverController::class, 'getSalary']
             )->name('drivers.salary');
-
 
     Route::get('salesheets/{id}', [SalesSheetController::class, 'show_sheet']);
     Route::get('purchasesheets/{id}', [PurchaseSheetController::class, 'show_sheet']);
@@ -97,7 +106,6 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
     Route::get('/payroll/pdf', [PayrollController::class, 'download'])->name("payroll.pdf");
     Route::get('/deduct-loan', [PayrollController::class, 'deductLoan'])->name("deductLoan");
 
-        
     Route::controller(TripController::class)->group(function() {
         Route::POST('end-actual-trip', 'endActualTrip')->name('endActualTrip');
         Route::POST('end-actual-trailer-trip', 'endActualTrailerTrip')->name('endActualTrailerTrip');
@@ -109,9 +117,6 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
         
     });
         
-
-    
-
     Route::controller(CustomerHeadController::class)->group(function() {
         Route::get('customer-head-report', 'customerHeadReport')->name('customerHeadReport');
     });

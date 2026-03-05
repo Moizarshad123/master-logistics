@@ -13,6 +13,11 @@
                 <label>Date</label>
                 <input type="date" name="date" class="form-control" required value="{{date('Y-m-d')}}">
             </div>
+            <div class="col-md-3">
+                 <button class="btn btn-primary">
+            Save Attendance
+        </button>
+            </div>
         </div>
 
         <table class="table table-bordered">
@@ -51,9 +56,7 @@
             </tbody>
         </table>
 
-        <button class="btn btn-primary">
-            Save Attendance
-        </button>
+       
     </form>
 </div>
 @endsection

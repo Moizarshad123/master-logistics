@@ -22,6 +22,17 @@ class CreateVehiclesTable extends Migration
             $table->string('make')->nullable();
             $table->string('model')->nullable();
             $table->string('image')->nullable();
+            $table->string('route_permit_sindh')->nullable();
+            $table->string('route_permit_sindh_expiry')->nullable();
+            $table->string('route_permit_punjab')->nullable();
+            $table->string('route_permit_punjab_expiry')->nullable();
+            $table->string('fitness_certificate')->nullable();
+            $table->string('fitness_certificate_expiry')->nullable();
+            $table->string('insurance_certificate')->nullable();
+            $table->string('insurance_certificate_expiry')->nullable();
+            $table->string('tax_token')->nullable();
+            $table->string('tax_token_expiry')->nullable();
+            $table->string('vehicle_file')->nullable();
             $table->timestamps();
         });
     }

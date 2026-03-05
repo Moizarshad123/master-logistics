@@ -11,7 +11,7 @@
         <div class="col-md-2">
             <select name="month" class="form-control">
                 @for($m=1;$m<=12;$m++)
-                    <option value="{{ $m }}" @selected($month==$m)>
+                    <option value="{{ $m }}" {{ (int)$month === $m ? 'selected' : '' }}>
                         {{ date('F', mktime(0,0,0,$m,1)) }}
                     </option>
                 @endfor
@@ -45,7 +45,8 @@
             <tr>
                 <th style="text-align: center">EMP: ID#</th>
                 <th>Driver</th>
-                <th>Total Days</th>
+                <th>Salary</th>
+                <th>Total Days In Month</th>
                 <th>Present</th>
                 <th>Absent</th>
                 <th>Leave</th>
@@ -61,6 +62,7 @@
                 <tr>
                     <td style="text-align: center">{{ $row['driver']->emp_id }}</td>
                     <td>{{ $row['driver']->name }}</td>
+                    <td>{{ $row["monthlySalary"] ?? 0}}</td>
                     <td>{{ $row['totalDays'] }}</td>
                     <td>{{ $row['present'] }}</td>
                     <td>{{ $row['absent'] }}</td>

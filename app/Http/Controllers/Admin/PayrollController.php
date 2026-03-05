@@ -16,8 +16,11 @@ class PayrollController extends Controller
 {
     public function index(Request $request)
     {
-        $month = $request->month ?? now()->month;
-        $year  = $request->year  ?? now()->year;
+        $month = (int) ($request->month ?? now()->month);
+        $year  = (int) ($request->year  ?? now()->year);
+
+        // Total days in the selected calendar month (Feb=28/29, etc.)
+        $totalDaysInMonth = Carbon::createFromDate($year, $month, 1)->daysInMonth;
 
         $drivers = Driver::with(['attendances' => function ($q) use ($month, $year) {
                                 $q->whereMonth('date', $month)
@@ -31,8 +34,6 @@ class PayrollController extends Controller
             $absent  = $driver->attendances->where('status', 'absent')->count();
             $leave   = $driver->attendances->where('status', 'leave')->count();
 
-            $totalDays = $present + $absent + $leave;
-
             $advance = AdvanceSalary::where('driver_id', $driver->id)
                                 ->where('month', $month)
                                 ->where('year', $year)
@@ -44,29 +45,33 @@ class PayrollController extends Controller
                                     ->where('month', $month)
                                     ->where('year', $year)
                                     ->where('status', 'unpaid')
-                                    ->sum('amount'); 
+                                    ->sum('amount');
 
-            $perDaySalary = $driver->salary;
-            $grossSalary  = $totalDays * $perDaySalary;   // Gross salary for all recorded days
-            $deduction    = $absent * $perDaySalary;      // Deduct for absent days only
-            $netSalary    = $grossSalary - $deduction - $advance - round($loanDeduction); 
+            $monthlySalary = $driver->salary;                              // e.g. 22000
+            $perDaySalary  = round($monthlySalary / $totalDaysInMonth, 2); // 22000 / 28 = 785.71
+
+            $grossSalary = $present * $perDaySalary;         // ✅ Sirf present days ka pay
+            $deduction   = $absent  * $perDaySalary;         // Absent days deduction (for clarity)
+            $netSalary   = $grossSalary - $advance - round($loanDeduction);
 
             $report[] = [
-                'driver'       => $driver,
-                'totalDays'    => $totalDays,
-                'present'      => $present,
-                'absent'       => $absent,
-                'leave'        => $leave,
-                'grossSalary'  => $grossSalary,
-                'deduction'    => $deduction,
-                'netSalary'    => $netSalary,
-                "advance"      => $advance,
-                "loanDeduction" => round($loanDeduction),
+                'driver'          => $driver,
+                'totalDays'       => $totalDaysInMonth,
+                'present'         => $present,
+                'absent'          => $absent,
+                'leave'           => $leave,
+                'monthlySalary'   => $monthlySalary,
+                'perDaySalary'    => round($perDaySalary),
+                'grossSalary'     => round($grossSalary),
+                'deduction'       => round($deduction),
+                'netSalary'       => round($netSalary),
+                'advance'         => $advance,
+                'loanDeduction'   => round($loanDeduction),
             ];
         }
 
         return view('admin.payroll.index', compact(
-            'report','month','year'
+            'report', 'month', 'year', 'totalDaysInMonth'
         ));
     }
 

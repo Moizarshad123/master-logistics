@@ -77,6 +77,8 @@
                     <span>Maintenance (Workshop)</span>
                 </a>
             </li>
+
+  
           
             <li>
                 <a href="javascript:;">
@@ -108,6 +110,26 @@
                     </li>
                     <li>
                         <a href="{{ route('admin.disbursementSlip') }}">Disbursement Slip</a>
+                    </li>
+                </ul>
+            </li>
+
+             <li>
+                <a href="javascript:;">
+                    <span class="nav-link-icon">
+                        <i class="bi bi-receipt"></i>
+                    </span>
+                    <span>Inventory</span>
+                </a>
+                <ul>
+                    <li>
+                        <a href="{{ route('admin.inventory-items.index') }}">Inventory Item</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.inventories.index') }}">Purchase</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.issuances.index') }}">Issuance</a>
                     </li>
                 </ul>
             </li>
@@ -151,6 +173,9 @@
                     </li>
                     <li>
                         <a href="{{ route('admin.expense-from.index')}}">Expense From</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.overheads.index')}}">Overhead Expenses</a>
                     </li>
                 </ul>
             </li>

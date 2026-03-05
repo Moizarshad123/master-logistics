@@ -17,6 +17,7 @@ class TripDetail extends Model
         "from_destination",
         "to_destination",
         "material",
+        "advance",
         "material_type",
         "total_bags",
         "weekly_labour",
