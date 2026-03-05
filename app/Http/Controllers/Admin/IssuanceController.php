@@ -5,14 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Issuance;
 use App\Models\Inventory;
+use App\Models\InventoryItem;
+
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
 
 class IssuanceController extends Controller
 {
-    /**
-     * Display listing with DataTables.
-     */
+
     public function index()
     {
         try {
@@ -60,19 +60,13 @@ class IssuanceController extends Controller
         return view('admin.issuances.index');
     }
 
-    /**
-     * Show create form.
-     */
     public function create()
     {
+        $inventories = InventoryItem::with('inventories')
+                    ->orderBy('name', 'ASC')
+                    ->get()
+                    ->filter(fn($item) => $item->remainingQty() > 0);
         $vehicles   = Vehicle::select('id', 'vehicle_no')->orderBy('vehicle_no')->get();
-
-        // item_name groupBy — har unique item_name ka ek entry, remaining_qty > 0
-        $inventories = Inventory::where('remaining_qty', '>', 0)
-                                ->select('id', 'item_name', 'remaining_qty')
-                                ->orderBy('item_name')
-                                ->get()
-                                ->groupBy('item_name');
 
         return view('admin.issuances.create', compact('vehicles', 'inventories'));
     }

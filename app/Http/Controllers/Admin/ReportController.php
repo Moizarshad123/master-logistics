@@ -1439,34 +1439,13 @@ class ReportController extends Controller
             $category  = $diesel->vehicle->new_wheeler->name;
             $vehicleNo = $diesel->vehicle->vehicle_no;
 
-            // Initialize category total agar pehle se nahi hai
+
             if (!isset($categoryTotals[$category])) {
-                $categoryTotals[$category] = array_merge([
-                    'trips'         => 0,
-                    'total_journeys' => 0,
-                ], $expenseCategoryKeys, [
-                    'Advance'       => 0,
-                    'Salary'        => 0,
-                    'Total_Exp'     => 0,
-                    'Sale_Rent'     => 0,
-                    'Gross_Earning' => 0,
-                    'Net_Earning'   => 0
-                ]);
+                $categoryTotals[$category] = $blankRow();
             }
 
-            // Agar vehicle pehle se report mein nahi hai, initialize karo
             if (!isset($report[$category][$vehicleNo])) {
-                $report[$category][$vehicleNo] = array_merge([
-                    'trips'         => 0,
-                    'total_journeys' => 0,
-                ], $expenseCategoryKeys, [
-                    'Advance'       => 0,
-                    'Salary'        => 0,
-                    'Total_Exp'     => 0,
-                    'Sale_Rent'     => 0,
-                    'Gross_Earning' => 0,
-                    'Net_Earning'   => 0
-                ]);
+                $report[$category][$vehicleNo] = $blankRow();
             }
 
             // Fueling amount add karo
@@ -1558,33 +1537,12 @@ class ReportController extends Controller
             $category = $payment->trip->vehicle->new_wheeler->name;
             $vehicleNo = $payment->trip->vehicle->vehicle_no;
 
-            // Initialize agar vehicle report mein nahi hai
             if (!isset($categoryTotals[$category])) {
-                $categoryTotals[$category] = array_merge([
-                    'trips'         => 0,
-                    'total_journeys' => 0,
-                ], $expenseCategoryKeys, [
-                    'Advance'       => 0,
-                    'Salary'        => 0,
-                    'Total_Exp'     => 0,
-                    'Sale_Rent'     => 0,
-                    'Gross_Earning' => 0,
-                    'Net_Earning'   => 0
-                ]);
+                $categoryTotals[$category] = $blankRow();
             }
 
             if (!isset($report[$category][$vehicleNo])) {
-                $report[$category][$vehicleNo] = array_merge([
-                    'trips'         => 0,
-                    'total_journeys' => 0,
-                ], $expenseCategoryKeys, [
-                    'Advance'       => 0,
-                    'Salary'        => 0,
-                    'Total_Exp'     => 0,
-                    'Sale_Rent'     => 0,
-                    'Gross_Earning' => 0,
-                    'Net_Earning'   => 0
-                ]);
+                $report[$category][$vehicleNo] = $blankRow();
             }
 
             $paymentAmount = (float) ($payment->amount ?? 0);

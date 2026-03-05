@@ -41,18 +41,14 @@
                     <div class="col-md-6 mb-3">
                         <label>Item Name <span class="text-danger">*</span></label>
                         <select name="inventory_id" id="inventorySelect"
-                                class="form-control @error('inventory_id') is-invalid @enderror" required>
+                            class="form-control @error('inventory_id') is-invalid @enderror" required>
                             <option value="">-- Select Item --</option>
-                            @foreach($inventories as $itemName => $items)
-                                <optgroup label="{{ $itemName }}">
-                                    @foreach($items as $inv)
-                                        <option value="{{ $inv->id }}"
-                                                data-remaining="{{ $inv->remaining_qty }}"
-                                            {{ old('inventory_id') == $inv->id ? 'selected' : '' }}>
-                                            {{ $inv->item_name }} (Available: {{ $inv->remaining_qty }})
-                                        </option>
-                                    @endforeach
-                                </optgroup>
+                            @foreach($inventories as $item)
+                                <option value="{{ $item->id }}"
+                                        data-remaining="{{ $item->remainingQty() }}"
+                                        {{ old('inventory_id') == $item->id ? 'selected' : '' }}>
+                                    {{ $item->name }} (Available: {{ $item->remainingQty() }})
+                                </option>
                             @endforeach
                         </select>
                         @error('inventory_id') <div class="invalid-feedback">{{ $message }}</div> @enderror

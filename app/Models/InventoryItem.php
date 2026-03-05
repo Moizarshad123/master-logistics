@@ -18,4 +18,12 @@ class InventoryItem extends Model
     protected $casts = [
         'price' => 'decimal:2',
     ];
+
+    public function inventories() {
+        return $this->hasMany(Inventory::class, 'item_id');
+    }
+
+    public function remainingQty() {
+        return $this->inventories()->sum('remaining_qty');
+    }
 }
