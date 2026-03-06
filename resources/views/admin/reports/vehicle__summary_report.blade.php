@@ -20,10 +20,14 @@
                     value="{{ request('to_date') }}">
             </div>
 
-            <div class="col-md-3 d-flex align-items-end">
+            <div class="col-md-6 d-flex align-items-end">
                 <button class="btn btn-primary">Filter</button>
                 <a href="{{ route('admin.vehicleSummaryReport') }}" class="btn btn-secondary ms-2">
                     Reset
+                </a>
+                <a href="{{ route('admin.vehicleSummaryReport.pdf', request()->all()) }}"
+                class="btn btn-warning ms-2">
+                    Download PDF
                 </a>
             </div>
         </div>
@@ -46,6 +50,7 @@
                                     <th>{{ $expCategory->name }}</th>
                                 @endif
                             @endforeach
+                            <th>Advance</th>
                             <th>Maintenance & Workshop</th>
                             <th>Inventory</th>
                         </tr>
@@ -61,6 +66,7 @@
                                         <td>{{ number_format($data[$expCategory->name] ?? 0) }}</td>
                                     @endif
                                 @endforeach
+                                <td>{{ number_format($data['Advance'] ?? 0) }}</td>
                                 <td>{{ number_format($data['Maintenance'] ?? 0) }}</td>
                                 <td>{{ number_format($data['Inventory'] ?? 0) }}</td>
                             </tr>
@@ -85,6 +91,7 @@
                                 <td>{{ number_format($grandTotal[$expCategory->name] ?? 0) }}</td>
                             @endif
                         @endforeach
+                        <td>{{ number_format($grandTotal['Advance'] ?? 0) }}</td>
                         <td>{{ number_format($grandTotal['Maintenance'] ?? 0) }}</td>
                         <td>{{ number_format($grandTotal['Inventory'] ?? 0) }}</td>
                     </tr>
@@ -100,6 +107,7 @@
                                         <td>{{ number_format($totals[$expCategory->name] ?? 0) }}</td>
                                     @endif
                                 @endforeach
+                                <td>{{ number_format($totals['Advance'] ?? 0) }}</td>
                                 <td>{{ number_format($totals['Maintenance'] ?? 0) }}</td>
                                 <td>{{ number_format($totals['Inventory'] ?? 0) }}</td>
                             </tr>
@@ -112,7 +120,7 @@
 
     <br><br>
 
-    {{-- SECOND TABLE: Financial Summary --}}
+    {{-- SECOND TABLE: Financial Summary (Advance removed) --}}
     @foreach($report as $category => $vehicles)
         @if(strtolower($category) !== 'trailers')
             <h4>{{ $category }}</h4>
@@ -123,7 +131,6 @@
                         <tr>
                             <th>Vehicle No</th>
                             <th>Salary</th>
-                            <th>Advance</th>
                             <th>Maintenance & Workshop</th>
                             <th>Inventory</th>
                             <th>Total Exp</th>
@@ -137,7 +144,6 @@
                             <tr>
                                 <td>{{ $vehicleNo }}</td>
                                 <td>{{ number_format($data['Salary']) }}</td>
-                                <td>{{ number_format($data['Advance']) }}</td>
                                 <td>{{ number_format($data['Maintenance'] ?? 0) }}</td>
                                 <td>{{ number_format($data['Inventory'] ?? 0) }}</td>
                                 <td>{{ number_format($data['Total_Exp']) }}</td>
@@ -162,7 +168,6 @@
                     <tr style="font-weight:bold; background:#e0e0e0;">
                         <td style="width:13%">Grand Total</td>
                         <td style="width:9%">{{ number_format($grandTotal['Salary']) }}</td>
-                        <td style="width:10%">{{ number_format($grandTotal['Advance']) }}</td>
                         <td style="width:10%">{{ number_format($grandTotal['Maintenance'] ?? 0) }}</td>
                         <td>{{ number_format($grandTotal['Inventory'] ?? 0) }}</td>
                         <td style="width:8%">{{ number_format($grandTotal['Total_Exp']) }}</td>
@@ -178,7 +183,6 @@
                             <tr style="background:#f9f9f9;">
                                 <td>{{ $category }}</td>
                                 <td>{{ number_format($totals['Salary']) }}</td>
-                                <td>{{ number_format($totals['Advance']) }}</td>
                                 <td>{{ number_format($totals['Maintenance'] ?? 0) }}</td>
                                 <td>{{ number_format($totals['Inventory'] ?? 0) }}</td>
                                 <td>{{ number_format($totals['Total_Exp']) }}</td>
@@ -194,28 +198,6 @@
             </table>
         </div>
     @endif
-        @if(count($report) > 0)
-    <div class="table-responsive">
-        <table class="table table-bordered">
-            <tbody>
-                <tr style="font-weight:bold; background:#e0e0e0;">
-                    <td style="width: 13%">Inventory Total</td>
-                    <td style="width: 60%" style="float: right">
-                        {{ number_format($inventories) }}
-                    </td>
-                </tr>
-
-                <tr style="font-weight:bold; background:#e0e0e0;">
-                    <td style="width: 13%">Overheads Total</td>
-                    <td style="width: 60%" style="float: right">
-                        {{ number_format($overheads) }}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    @endif
-
 
 </div>
 

@@ -11,9 +11,12 @@ class Inventory extends Model
 
     protected $fillable = [
         'item_id',
-        'price',
-        'purchase_date',
         'qty',
+        'unit_price',
+        'total_price',
+        'purchase_date',
+        'vendor',
+        'invoice_no',
         'remaining_qty'
     ];
 

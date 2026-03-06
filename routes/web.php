@@ -132,6 +132,18 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
         Route::get('baloch-labour-report', 'baloch_labour_report')->name("balochLabourReport");
         Route::get('view-baloch-labour-report', 'view_baloch_labour_report')->name("viewBalochLabourReport");
         Route::get('view-trip-vehicle-report/{id}', 'viewTripVehicleReport')->name("viewTripVehicleReport");
+
+        Route::get('vehicle-summary-report/pdf', 'vehicleSummaryPdf')
+        ->name('vehicleSummaryReport.pdf');
+
+        Route::get('trailer-vehicle-summary-report/pdf', 'trailerVehicleSummaryPdf')
+        ->name('trailerVehicleSummaryReport.pdf');
+
+        
+
+        Route::get('vehicle-summary-report/excel', 'vehicleSummaryExcel')
+            ->name('vehicleSummaryReport.excel');
+
     });
 
     // Route::get('/endtrip/{vehicle}/expenses', [VehicleController::class, 'expenses'])->name('vehicles.expenses');

@@ -4,9 +4,6 @@
 
 @section('title', 'Issuances')
 
-@section('css')
-@endsection
-
 @section('content')
 
     <div class="mb-4">
@@ -30,6 +27,7 @@
                     <th>Issued Qty</th>
                     <th>Remaining Qty</th>
                     <th>Issue Date</th>
+                    <th>Remarks</th>
                     <th style="text-align:center">Action</th>
                 </tr>
             </thead>
@@ -52,13 +50,14 @@
             },
             dom: '<"top d-flex justify-content-between"f p>rt<"bottom"p>',
             columns: [
-                { data: 'DT_RowIndex',    name: 'DT_RowIndex', orderable: false, searchable: false },
-                { data: 'vehicle_no',     name: 'vehicle_no',  searchable: false },
-                { data: 'item_name',      name: 'item_name',   searchable: false },
-                { data: 'qty',            name: 'qty' },
-                { data: 'remaining_qty',  name: 'remaining_qty', searchable: false },
-                { data: 'issue_date',     name: 'issue_date' },
-                { data: 'action',         name: 'action', orderable: false, searchable: false },
+                { data: 'DT_RowIndex',   name: 'DT_RowIndex',   orderable: false, searchable: false },
+                { data: 'vehicle_no',    name: 'vehicle_no',    searchable: false },
+                { data: 'item_name',     name: 'item_name',     searchable: false },
+                { data: 'qty',           name: 'qty' },
+                { data: 'remaining_qty', name: 'remaining_qty', searchable: false },
+                { data: 'issue_date',    name: 'issue_date' },
+                { data: 'remarks',       name: 'remarks',       orderable: false },
+                { data: 'action',        name: 'action',        orderable: false, searchable: false },
             ],
             order: [[0, 'desc']],
         });

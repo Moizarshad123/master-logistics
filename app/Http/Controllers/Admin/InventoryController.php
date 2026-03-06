@@ -23,21 +23,19 @@ class InventoryController extends Controller
                     ->addColumn('item_name', function ($row) {
                         return $row->item?->name;
                     })
-                    
-                    ->editColumn('price', function ($row) {
-                        return 'Rs. ' . number_format($row->price, 2);
+                    ->editColumn('unit_price', function ($row) {
+                        return 'Rs. ' . number_format($row->unit_price, 2);
                     })
-                    ->addColumn('unit_price', function ($row) {
-                        return 'Rs. ' . number_format($row->item?->price, 2);
+                    ->editColumn('total_price', function ($row) {
+                        return 'Rs. ' . number_format($row->total_price, 2);
                     })
                     ->editColumn('purchase_date', function ($row) {
                         return isset($row->purchase_date)
-                            ? date('d-M-Y', strtotime($row->purchase_date))
+                            ? $row->purchase_date->format('d-M-Y')
                             : '';
                     })
                     ->addColumn('action', function ($row) {
                         $editUrl   = route('admin.inventories.edit', $row->id);
-                        $showUrl   = route('admin.inventories.show', $row->id);
                         $deleteUrl = route('admin.inventories.destroy', $row->id);
                         $csrf      = csrf_token();
 
@@ -50,7 +48,7 @@ class InventoryController extends Controller
                                 <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                             </form>';
                     })
-                    ->rawColumns(['action', 'item_name', 'unit_price'])
+                    ->rawColumns(['action', 'item_name'])
                     ->make(true);
             }
         } catch (\Exception $ex) {
@@ -75,12 +73,17 @@ class InventoryController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'item_id'       => 'required|int',
-            'price'         => 'required|numeric|min:0',
+            'item_id'       => 'required|integer',
+            'unit_price'    => 'required|numeric|min:0',
+            'total_price'   => 'required|numeric|min:0',
             'purchase_date' => 'required|date',
-            'qty'           => 'required|integer|min:0',
+            'qty'           => 'required|integer|min:1',
+            'vendor'        => 'nullable|string|max:255',
+            'invoice_no'    => 'nullable|string|max:255',
         ]);
+
         $validated['remaining_qty'] = $validated['qty'];
+
         Inventory::create($validated);
 
         return redirect()->route('admin.inventories.index')
@@ -100,7 +103,8 @@ class InventoryController extends Controller
      */
     public function edit(Inventory $inventory)
     {
-        return view('admin.inventories.edit', compact('inventory'));
+        $items = InventoryItem::orderBy("name", 'ASC')->get();
+        return view('admin.inventories.edit', compact('inventory', 'items'));
     }
 
     /**
@@ -109,10 +113,13 @@ class InventoryController extends Controller
     public function update(Request $request, Inventory $inventory)
     {
         $validated = $request->validate([
-            'item_id'       => 'required|int',
-            'price'         => 'required|numeric|min:0',
+            'item_id'       => 'required|integer',
+            'unit_price'    => 'required|numeric|min:0',
+            'total_price'   => 'required|numeric|min:0',
             'purchase_date' => 'required|date',
             'qty'           => 'required|integer|min:0',
+            'vendor'        => 'nullable|string|max:255',
+            'invoice_no'    => 'nullable|string|max:255',
         ]);
 
         $inventory->update($validated);

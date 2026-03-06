@@ -11,9 +11,10 @@ class Issuance extends Model
 
     protected $fillable = [
         'vehicle_id',
-        'inventory_id',
+        'item_id',
         'qty',
         'issue_date',
+        'remarks'
     ];
 
     protected $casts = [
@@ -27,6 +28,6 @@ class Issuance extends Model
 
     public function inventory()
     {
-        return $this->belongsTo(Inventory::class);
+        return $this->belongsTo(Inventory::class, 'item_id');
     }
 }

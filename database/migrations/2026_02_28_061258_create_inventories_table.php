@@ -16,8 +16,12 @@ class CreateInventoriesTable extends Migration
         Schema::create('inventories', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('item_id');
-            $table->date('purchase_date');
             $table->integer('qty')->default(0);
+            $table->double('unit_price')->default(0);
+            $table->double('total_price')->default(0);
+            $table->date('purchase_date');
+            $table->String('vendor', 100)->nullable();
+            $table->String('invoice_no', 50)->nullable();
             $table->integer('remaining_qty')->default(0);
             $table->timestamps();
         });

@@ -17,6 +17,17 @@
 
     <div class="card shadow">
         <div class="card-body">
+
+            @if($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <form action="{{ route('admin.issuances.store') }}" method="POST">
                 @csrf
 
@@ -25,7 +36,8 @@
                     {{-- Vehicle Dropdown --}}
                     <div class="col-md-6 mb-3">
                         <label>Vehicle <span class="text-danger">*</span></label>
-                        <select name="vehicle_id" id="vehicle" class="form-control @error('vehicle_id') is-invalid @enderror" required>
+                        <select name="vehicle_id" id="vehicle"
+                                class="form-control @error('vehicle_id') is-invalid @enderror" required>
                             <option value="">-- Select Vehicle --</option>
                             @foreach($vehicles as $vehicle)
                                 <option value="{{ $vehicle->id }}"
@@ -37,28 +49,26 @@
                         @error('vehicle_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div>
 
-                    {{-- Item Dropdown — grouped by item_name --}}
+                    {{-- Inventory Item Dropdown --}}
                     <div class="col-md-6 mb-3">
                         <label>Item Name <span class="text-danger">*</span></label>
-                        <select name="inventory_id" id="inventorySelect"
-                            class="form-control @error('inventory_id') is-invalid @enderror" required>
+                        <select name="item_id" id="inventorySelect"
+                                class="form-control @error('item_id') is-invalid @enderror" required>
                             <option value="">-- Select Item --</option>
-                            @foreach($inventories as $item)
-                                <option value="{{ $item->id }}"
-                                        data-remaining="{{ $item->remainingQty() }}"
-                                        {{ old('inventory_id') == $item->id ? 'selected' : '' }}>
-                                    {{ $item->name }} (Available: {{ $item->remainingQty() }})
+                            @foreach($inventories as $inv)
+                                <option value="{{ $inv->id }}"
+                                        data-remaining="{{ $inv->remaining_qty }}"
+                                        {{ old('item_id') == $inv->id ? 'selected' : '' }}>
+                                    {{ $inv->item?->name }} (Available: {{ $inv->remaining_qty }})
                                 </option>
                             @endforeach
                         </select>
-                        @error('inventory_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
-
-                        {{-- Live available qty badge --}}
+                        @error('item_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         <small id="availableQtyBadge" class="text-muted mt-1 d-block"></small>
                     </div>
 
                     {{-- Qty --}}
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
                         <label>Qty to Issue <span class="text-danger">*</span></label>
                         <input type="number" name="qty" id="qtyInput"
                                class="form-control @error('qty') is-invalid @enderror"
@@ -68,12 +78,21 @@
                     </div>
 
                     {{-- Issue Date --}}
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
                         <label>Issue Date <span class="text-danger">*</span></label>
                         <input type="date" name="issue_date"
                                class="form-control @error('issue_date') is-invalid @enderror"
                                value="{{ old('issue_date', date('Y-m-d')) }}" required>
                         @error('issue_date') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    </div>
+
+                    {{-- Remarks --}}
+                    <div class="col-md-4 mb-3">
+                        <label>Remarks</label>
+                        <input type="text" name="remarks"
+                               class="form-control @error('remarks') is-invalid @enderror"
+                               value="{{ old('remarks') }}" placeholder="Optional remarks">
+                        @error('remarks') <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div>
 
                 </div>
@@ -93,18 +112,17 @@
     $(document).ready(function () {
 
         $('#vehicle').select2({
-            placeholder: "Select Expenses",
+            placeholder: "Select Vehicle",
             allowClear: true
         });
 
-
         $('#inventorySelect').select2({
-            placeholder: "Select Expenses",
+            placeholder: "Select Item",
             allowClear: true
-        });        
+        });
+
         var maxQty = 0;
 
-        // Jab item change ho
         $('#inventorySelect').on('change', function () {
             var selected = $(this).find('option:selected');
             maxQty = parseInt(selected.data('remaining')) || 0;
@@ -120,7 +138,6 @@
             checkQty();
         });
 
-        // Jab qty type ho
         $('#qtyInput').on('input', function () {
             checkQty();
         });

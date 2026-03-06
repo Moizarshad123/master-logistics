@@ -16,9 +16,6 @@ class InventoryItemController extends Controller
 
                 return datatables()->eloquent($inventoryItems)
                     ->addIndexColumn()
-                    ->editColumn('price', function ($row) {
-                        return 'Rs. ' . number_format($row->price, 2);
-                    })
                     ->addColumn('action', function ($row) {
                         $editUrl   = route('admin.inventory-items.edit', $row->id);
                         $deleteUrl = route('admin.inventory-items.destroy', $row->id);
@@ -54,10 +51,10 @@ class InventoryItemController extends Controller
             'name'  => 'required|string|max:255',
             'make'  => 'nullable|string|max:255',
             'model' => 'nullable|string|max:255',
-            'price' => 'required|numeric|min:0',
+            'unit'  => 'nullable|string|max:100',
         ]);
 
-        InventoryItem::create($request->only('name', 'make', 'model', 'price'));
+        InventoryItem::create($request->only('name', 'make', 'model', 'unit'));
 
         return redirect()->route('admin.inventory-items.index')
                          ->with('success', 'Inventory Item created successfully.');
@@ -74,10 +71,10 @@ class InventoryItemController extends Controller
             'name'  => 'required|string|max:255',
             'make'  => 'nullable|string|max:255',
             'model' => 'nullable|string|max:255',
-            'price' => 'required|numeric|min:0',
+            'unit'  => 'nullable|string|max:100',
         ]);
 
-        $inventoryItem->update($request->only('name', 'make', 'model', 'price'));
+        $inventoryItem->update($request->only('name', 'make', 'model', 'unit'));
 
         return redirect()->route('admin.inventory-items.index')
                          ->with('success', 'Inventory Item updated successfully.');

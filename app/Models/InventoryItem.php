@@ -12,11 +12,7 @@ class InventoryItem extends Model
         'name',
         'make',
         'model',
-        'price',
-    ];
-
-    protected $casts = [
-        'price' => 'decimal:2',
+        'unit',
     ];
 
     public function inventories() {

@@ -4,9 +4,6 @@
 
 @section('title', 'Inventory')
 
-@section('css')
-@endsection
-
 @section('content')
 
     <div class="mb-4">
@@ -27,6 +24,8 @@
                     <th>#</th>
                     <th>Item Name</th>
                     <th>Purchase Date</th>
+                    <th>Vendor</th>
+                    <th>Invoice No</th>
                     <th>Unit Price</th>
                     <th>Qty</th>
                     <th>Total Price</th>
@@ -62,9 +61,11 @@
                 },
                 { data: 'item_name',     name: 'item_name' },
                 { data: 'purchase_date', name: 'purchase_date' },
+                { data: 'vendor',        name: 'vendor' },
+                { data: 'invoice_no',    name: 'invoice_no' },
                 { data: 'unit_price',    name: 'unit_price' },
                 { data: 'qty',           name: 'qty' },
-                { data: 'price',         name: 'price' },
+                { data: 'total_price',   name: 'total_price' },
                 {
                     data: 'action',
                     name: 'action',

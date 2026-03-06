@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Issuance;
 use App\Models\Inventory;
-use App\Models\InventoryItem;
-
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
 
@@ -17,27 +15,26 @@ class IssuanceController extends Controller
     {
         try {
             if (request()->ajax()) {
-                $issuances = Issuance::with(['vehicle', 'inventory'])->latest();
+                $issuances = Issuance::with(['vehicle', 'inventory.item'])->latest();
 
                 return datatables()->eloquent($issuances)
                     ->addIndexColumn()
                     ->editColumn('issue_date', function ($row) {
-                        return isset($row->issue_date)
-                            ? date('d-M-Y', strtotime($row->issue_date))
+                        return $row->issue_date
+                            ? $row->issue_date->format('d-M-Y')
                             : '';
                     })
                     ->addColumn('vehicle_no', function ($row) {
                         return $row->vehicle->vehicle_no ?? '—';
                     })
                     ->addColumn('item_name', function ($row) {
-                        return $row->inventory->item_name ?? '—';
+                        return $row->inventory?->item?->name ?? '—';
                     })
                     ->addColumn('remaining_qty', function ($row) {
                         return $row->inventory->remaining_qty ?? '—';
                     })
                     ->addColumn('action', function ($row) {
                         $editUrl   = route('admin.issuances.edit', $row->id);
-                        $showUrl   = route('admin.issuances.show', $row->id);
                         $deleteUrl = route('admin.issuances.destroy', $row->id);
                         $csrf      = csrf_token();
 
@@ -62,11 +59,12 @@ class IssuanceController extends Controller
 
     public function create()
     {
-        $inventories = InventoryItem::with('inventories')
-                    ->orderBy('name', 'ASC')
-                    ->get()
-                    ->filter(fn($item) => $item->remainingQty() > 0);
-        $vehicles   = Vehicle::select('id', 'vehicle_no')->orderBy('vehicle_no')->get();
+        $inventories = Inventory::with('item')
+                        ->where('remaining_qty', '>', 0)
+                        ->orderBy('id', 'ASC')
+                        ->get();
+
+        $vehicles = Vehicle::select('id', 'vehicle_no')->orderBy('vehicle_no')->get();
 
         return view('admin.issuances.create', compact('vehicles', 'inventories'));
     }
@@ -77,13 +75,14 @@ class IssuanceController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'vehicle_id'   => 'required|exists:vehicles,id',
-            'inventory_id' => 'required|exists:inventories,id',
-            'qty'          => 'required|integer|min:1',
-            'issue_date'   => 'required|date',
+            'vehicle_id' => 'required|exists:vehicles,id',
+            'item_id'    => 'required|exists:inventories,id',
+            'qty'        => 'required|integer|min:1',
+            'issue_date' => 'required|date',
+            'remarks'    => 'nullable|string|max:500',
         ]);
 
-        $inventory = Inventory::findOrFail($request->inventory_id);
+        $inventory = Inventory::findOrFail($request->item_id);
 
         // Qty check
         if ($request->qty > $inventory->remaining_qty) {
@@ -93,7 +92,7 @@ class IssuanceController extends Controller
         }
 
         // Issuance create
-        Issuance::create($request->only('vehicle_id', 'inventory_id', 'qty', 'issue_date'));
+        Issuance::create($request->only('vehicle_id', 'item_id', 'qty', 'issue_date', 'remarks'));
 
         // Inventory remaining_qty reduce
         $inventory->decrement('remaining_qty', $request->qty);
@@ -107,7 +106,7 @@ class IssuanceController extends Controller
      */
     public function show(Issuance $issuance)
     {
-        $issuance->load(['vehicle', 'inventory']);
+        $issuance->load(['vehicle', 'inventory.item']);
         return view('admin.issuances.show', compact('issuance'));
     }
 
@@ -116,11 +115,16 @@ class IssuanceController extends Controller
      */
     public function edit(Issuance $issuance)
     {
-        $vehicles    = Vehicle::select('id', 'vehicle_no')->orderBy('vehicle_no')->get();
-        $inventories = Inventory::select('id', 'item_name', 'remaining_qty')
-                                ->orderBy('item_name')
-                                ->get()
-                                ->groupBy('item_name');
+        $vehicles = Vehicle::select('id', 'vehicle_no')->orderBy('vehicle_no')->get();
+
+        // Include current issuance's inventory even if remaining_qty is 0
+        $inventories = Inventory::with('item')
+                        ->where(function ($q) use ($issuance) {
+                            $q->where('remaining_qty', '>', 0)
+                              ->orWhere('id', $issuance->item_id);
+                        })
+                        ->orderBy('id', 'ASC')
+                        ->get();
 
         return view('admin.issuances.edit', compact('issuance', 'vehicles', 'inventories'));
     }
@@ -131,21 +135,22 @@ class IssuanceController extends Controller
     public function update(Request $request, Issuance $issuance)
     {
         $request->validate([
-            'vehicle_id'   => 'required|exists:vehicles,id',
-            'inventory_id' => 'required|exists:inventories,id',
-            'qty'          => 'required|integer|min:1',
-            'issue_date'   => 'required|date',
+            'vehicle_id' => 'required|exists:vehicles,id',
+            'item_id'    => 'required|exists:inventories,id',
+            'qty'        => 'required|integer|min:1',
+            'issue_date' => 'required|date',
+            'remarks'    => 'nullable|string|max:500',
         ]);
 
-        $newInventory = Inventory::findOrFail($request->inventory_id);
-        $oldInventory = Inventory::findOrFail($issuance->inventory_id);
+        $newInventory = Inventory::findOrFail($request->item_id);
+        $oldInventory = Inventory::findOrFail($issuance->item_id);
 
-        // Agar inventory change hua ya nahi — available qty calculate
+        // Available qty calculate
         if ($newInventory->id === $oldInventory->id) {
             // Same item — old qty wapas add kar ke check
             $availableQty = $newInventory->remaining_qty + $issuance->qty;
         } else {
-            // Different item — old inventory restore, new inventory check
+            // Different item — new inventory ki remaining check
             $availableQty = $newInventory->remaining_qty;
         }
 
@@ -159,7 +164,7 @@ class IssuanceController extends Controller
         $oldInventory->increment('remaining_qty', $issuance->qty);
 
         // Update issuance
-        $issuance->update($request->only('vehicle_id', 'inventory_id', 'qty', 'issue_date'));
+        $issuance->update($request->only('vehicle_id', 'item_id', 'qty', 'issue_date', 'remarks'));
 
         // Deduct new inventory qty
         $newInventory->decrement('remaining_qty', $request->qty);
@@ -173,24 +178,10 @@ class IssuanceController extends Controller
      */
     public function destroy(Issuance $issuance)
     {
-        // Qty restore
         $issuance->inventory->increment('remaining_qty', $issuance->qty);
-
         $issuance->delete();
 
         return redirect()->route('admin.issuances.index')
                          ->with('success', 'Issuance deleted and qty restored to inventory!');
-    }
-
-    /**
-     * AJAX — get inventory info by ID (for qty check in form).
-     */
-    public function getInventoryQty($inventoryId)
-    {
-        $inventory = Inventory::findOrFail($inventoryId);
-        return response()->json([
-            'remaining_qty' => $inventory->remaining_qty,
-            'item_name'     => $inventory->item_name,
-        ]);
     }
 }

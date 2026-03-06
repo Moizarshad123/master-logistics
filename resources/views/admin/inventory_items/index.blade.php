@@ -28,7 +28,7 @@
                     <th>Name</th>
                     <th>Make</th>
                     <th>Model</th>
-                    <th>Price</th>
+                    <th>Unit</th>
                     <th style="text-align: center">Action</th>
                 </tr>
             </thead>
@@ -62,7 +62,7 @@
                 { data: 'name',  name: 'name' },
                 { data: 'make',  name: 'make' },
                 { data: 'model', name: 'model' },
-                { data: 'price', name: 'price' },
+                { data: 'unit',  name: 'unit' },
                 {
                     data: 'action',
                     name: 'action',

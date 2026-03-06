@@ -18,7 +18,7 @@ class CreateInventoryItemsTable extends Migration
             $table->string('name');
             $table->string('make')->nullable();
             $table->string('model')->nullable();
-            $table->decimal('price', 10, 2)->default(0);
+            $table->enum('unit', ['pcs', 'ltr', 'kg']);
             $table->timestamps();
         });
     }

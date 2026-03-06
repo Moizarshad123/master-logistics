@@ -36,7 +36,8 @@
                     {{-- Vehicle --}}
                     <div class="col-md-6 mb-3">
                         <label>Vehicle <span class="text-danger">*</span></label>
-                        <select name="vehicle_id" class="form-control @error('vehicle_id') is-invalid @enderror" required>
+                        <select name="vehicle_id" id="vehicle"
+                                class="form-control @error('vehicle_id') is-invalid @enderror" required>
                             <option value="">-- Select Vehicle --</option>
                             @foreach($vehicles as $vehicle)
                                 <option value="{{ $vehicle->id }}"
@@ -48,39 +49,32 @@
                         @error('vehicle_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div>
 
-                    {{-- Item — grouped --}}
+                    {{-- Inventory Item Dropdown --}}
                     <div class="col-md-6 mb-3">
                         <label>Item Name <span class="text-danger">*</span></label>
-                        <select name="inventory_id" id="inventorySelect"
-                                class="form-control @error('inventory_id') is-invalid @enderror" required>
+                        <select name="item_id" id="inventorySelect"
+                                class="form-control @error('item_id') is-invalid @enderror" required>
                             <option value="">-- Select Item --</option>
-                            @foreach($inventories as $itemName => $items)
-                                <optgroup label="{{ $itemName }}">
-                                    @foreach($items as $inv)
-                                        {{--
-                                            Edit mein: agar same item hai to available = remaining + current issued qty
-                                            Yeh backend par check hoga, front-end pe sirf display k liye
-                                        --}}
-                                        @php
-                                            $displayQty = ($inv->id == $issuance->inventory_id)
-                                                ? $inv->remaining_qty + $issuance->qty
-                                                : $inv->remaining_qty;
-                                        @endphp
-                                        <option value="{{ $inv->id }}"
-                                                data-remaining="{{ $displayQty }}"
-                                            {{ old('inventory_id', $issuance->inventory_id) == $inv->id ? 'selected' : '' }}>
-                                            {{ $inv->item_name }} (Available: {{ $displayQty }})
-                                        </option>
-                                    @endforeach
-                                </optgroup>
+                            @foreach($inventories as $inv)
+                                @php
+                                    // Agar same item hai to available = remaining + current issued qty
+                                    $displayQty = ($inv->id == $issuance->item_id)
+                                        ? $inv->remaining_qty + $issuance->qty
+                                        : $inv->remaining_qty;
+                                @endphp
+                                <option value="{{ $inv->id }}"
+                                        data-remaining="{{ $displayQty }}"
+                                    {{ old('item_id', $issuance->item_id) == $inv->id ? 'selected' : '' }}>
+                                    {{ $inv->item?->name }} (Available: {{ $displayQty }})
+                                </option>
                             @endforeach
                         </select>
-                        @error('inventory_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        @error('item_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         <small id="availableQtyBadge" class="text-muted mt-1 d-block"></small>
                     </div>
 
                     {{-- Qty --}}
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
                         <label>Qty to Issue <span class="text-danger">*</span></label>
                         <input type="number" name="qty" id="qtyInput"
                                class="form-control @error('qty') is-invalid @enderror"
@@ -90,12 +84,21 @@
                     </div>
 
                     {{-- Issue Date --}}
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
                         <label>Issue Date <span class="text-danger">*</span></label>
                         <input type="date" name="issue_date"
                                class="form-control @error('issue_date') is-invalid @enderror"
                                value="{{ old('issue_date', $issuance->issue_date->format('Y-m-d')) }}" required>
                         @error('issue_date') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    </div>
+
+                    {{-- Remarks --}}
+                    <div class="col-md-4 mb-3">
+                        <label>Remarks</label>
+                        <input type="text" name="remarks"
+                               class="form-control @error('remarks') is-invalid @enderror"
+                               value="{{ old('remarks', $issuance->remarks) }}" placeholder="Optional remarks">
+                        @error('remarks') <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div>
 
                 </div>
@@ -113,6 +116,16 @@
 @section('js')
 <script>
     $(document).ready(function () {
+
+        $('#vehicle').select2({
+            placeholder: "Select Vehicle",
+            allowClear: true
+        });
+
+        $('#inventorySelect').select2({
+            placeholder: "Select Item",
+            allowClear: true
+        });
 
         var maxQty = 0;
 

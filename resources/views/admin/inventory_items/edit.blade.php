@@ -56,11 +56,13 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Price (Rs.) <span class="text-danger">*</span></label>
-                    <input type="number" name="price" step="0.01" min="0"
-                           class="form-control @error('price') is-invalid @enderror"
-                           value="{{ old('price', $inventoryItem->price) }}" placeholder="0.00">
-                    @error('price')
+                    <label class="form-label fw-semibold">Unit</label>
+                    <select name="unit" class="form-select @error('unit') is-invalid @enderror">
+                        <option value="pcs" {{ $inventoryItem->unit == "pcs" ? "selected" : ""}}>Piece</option>
+                        <option value="ltr" {{ $inventoryItem->unit == "ltr" ? "selected" : ""}}>Litre</option>
+                        <option value="kg" {{ $inventoryItem->unit == "kg" ? "selected" : ""}}>Kg</option>
+                    </select>
+                    @error('unit')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
