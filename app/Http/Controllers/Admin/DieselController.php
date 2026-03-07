@@ -47,11 +47,11 @@ class DieselController extends Controller
                                 <button type="submit" class="btn btn-sm btn-danger deleteExpenseType" onclick="return confirm(\'Are you sure?\')">Delete</button>
                             </form>';
                     })
-                    // ->filterColumn('vehicle', function($query, $keyword) {
-                    //     $query->whereHas('vehicle', function($q) use ($keyword) {
-                    //         $q->where('vehicle_no', 'like', "%{$keyword}%");
-                    //     });
-                    // })
+                    ->filterColumn('vehicle', function($query, $keyword) {
+                        $query->whereHas('vehicle', function($q) use ($keyword) {
+                            $q->where('vehicle_no', 'like', "%{$keyword}%");
+                        });
+                    })
                     ->filterColumn('createdBy', function($query, $keyword) {
                         $query->whereHas('user', function($q) use ($keyword) {
                             $q->where('name', 'like', "%{$keyword}%");

@@ -124,6 +124,10 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
     Route::controller(ReportController::class)->group(function() {
         Route::get('vehicle-summary-report', 'vehicleSummaryReport')->name("vehicleSummaryReport");
         Route::get('trailers-vehicle-summary-report', 'trailersVehicleSummaryReport')->name("trailersVehicleSummaryReport");
+        Route::get('inventory-report', 'inventoryReport')->name("inventoryReport");
+        Route::get('overhead-report', 'overheadReport')->name("overheadReport");
+
+
 
         Route::get('trip-vehicle-report', 'tripVehicleReport')->name("tripVehicleReport");
         Route::get('profit-and-loss-report', 'profit_and_loss')->name("profitAndLossReport");
@@ -139,10 +143,12 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
         Route::get('trailer-vehicle-summary-report/pdf', 'trailerVehicleSummaryPdf')
         ->name('trailerVehicleSummaryReport.pdf');
 
-        
-
         Route::get('vehicle-summary-report/excel', 'vehicleSummaryExcel')
             ->name('vehicleSummaryReport.excel');
+        
+        Route::get('reports/inventory/pdf', 'inventoryReportPdf')->name('inventory.report.pdf');
+        Route::get('reports/overhead/pdf', 'overheadReportPdf')->name('overhead.report.pdf');
+
 
     });
 

@@ -16,7 +16,9 @@ use App\Models\{
     Maintenance,
     Issuance,
     Inventory,
-    Overhead
+    Overhead,
+    InventoryItem,
+    ExpenseType
 };
 
 use Carbon\Carbon;
@@ -1594,8 +1596,6 @@ class ReportController extends Controller
         return view('admin.reports.vehicle__summary_report', $data);
     }
 
-
-
     public function vehicleSummaryPdf(Request $request)
     {
         $data = $this->getVehicleSummaryReportData($request); // jo report aap already bana rahe ho
@@ -2489,5 +2489,210 @@ class ReportController extends Controller
             $reports = $query->groupBy('trips.vehicle_id')->paginate(50);
 
         return view('admin.reports.view_baloch_labour', compact('reports', 'start', 'end'));
+    }
+
+    // ============================================================
+    // Add these methods to your existing ReportController
+    // (or whichever controller handles reports)
+    // ============================================================
+
+    // Required imports at the top of your controller:
+    // use App\Models\Inventory;
+    // use App\Models\InventoryItem;
+    // use App\Models\Issuance;
+    // use Carbon\Carbon;
+    // use Barryvdh\DomPDF\Facade\Pdf;
+
+    // ============================================================
+    // ROUTES to add in web.php:
+    //
+    // Route::get('admin/reports/inventory',      [ReportController::class, 'inventoryReport'])
+    //      ->name('admin.inventory.report');
+    //
+    // Route::get('admin/reports/inventory/pdf',  [ReportController::class, 'inventoryReportPdf'])
+    //      ->name('admin.inventory.report.pdf');
+    // ============================================================
+
+
+    private function getInventoryReportData(Request $request)
+    {
+        // ---- Date Range ----
+        $fromDate = $request->filled('from_date')
+            ? Carbon::parse($request->from_date)->startOfDay()
+            : Carbon::today()->startOfMonth()->startOfDay();
+
+        $toDate = $request->filled('to_date')
+            ? Carbon::parse($request->to_date)->endOfDay()
+            : Carbon::today()->endOfDay();
+
+        // ---- Build Inventory query ----
+        $inventoryQuery = Inventory::with('item')
+            ->whereBetween('purchase_date', [$fromDate->toDateString(), $toDate->toDateString()]);
+
+        $inventories = $inventoryQuery->orderBy('purchase_date', 'desc')->get();
+
+        // ---- All Items (for filter dropdown) ----
+        $items = InventoryItem::orderBy('name')->get();
+
+        // ---- Stock Summary per Item ----
+        // Total purchased, total issued, remaining stock, total value
+        $stockSummaryQuery = InventoryItem::withSum(
+                                        ['inventories as total_purchased' => function ($q) use ($fromDate, $toDate) {
+                                            $q->whereBetween('purchase_date', [$fromDate->toDateString(), $toDate->toDateString()]);
+                                        }], 'qty'
+                                    )
+                                    ->withSum(
+                                        ['inventories as total_remaining' => function ($q) use ($fromDate, $toDate) {
+                                            $q->whereBetween('purchase_date', [$fromDate->toDateString(), $toDate->toDateString()]);
+                                        }], 'remaining_qty'
+                                    )
+                                    ->withSum(
+                                        ['inventories as total_value' => function ($q) use ($fromDate, $toDate) {
+                                            $q->whereBetween('purchase_date', [$fromDate->toDateString(), $toDate->toDateString()]);
+                                        }], 'total_price'
+                                    )
+                                    ->having('total_purchased', '>', 0);
+        $stockSummaryRaw = $stockSummaryQuery->get();
+
+        // ---- Total Issued (from Issuances table) ----
+        $issuanceTotals = Issuance::whereBetween('issue_date', [$fromDate->toDateString(), $toDate->toDateString()])
+                                    ->selectRaw('item_id, SUM(qty) as total_issued')
+                                    ->groupBy('item_id')
+                                    ->pluck('total_issued', 'item_id');
+
+        // Merge issued qty into stock summary
+        $stockSummary = $stockSummaryRaw->map(function ($item) use ($issuanceTotals) {
+                            $item->total_issued      = $issuanceTotals[$item->id] ?? 0;
+                            $item->remaining_stock   = ($item->total_remaining ?? 0);
+                            $item->total_purchased   = $item->total_purchased ?? 0;
+                            $item->total_value       = $item->total_value ?? 0;
+                            return $item;
+                        });
+
+        // ---- Summary totals ----
+        $summary = [
+            'total_items'          => $stockSummary->count(),
+            'total_purchased_qty'  => $inventories->sum('qty'),
+            'total_issued_qty'     => $issuanceTotals->sum(),
+            'total_amount'         => $inventories->sum('total_price'),
+        ];
+
+        return [
+            'inventories'  => $inventories,
+            'items'        => $items,
+            'stockSummary' => $stockSummary,
+            'summary'      => $summary,
+            'fromDate'     => $fromDate,
+            'toDate'       => $toDate,
+        ];
+    }
+
+    public function inventoryReport(Request $request)
+    {
+        $data = $this->getInventoryReportData($request);
+        return view('admin.reports.inventory_report', $data);
+    }
+
+    public function inventoryReportPdf(Request $request)
+    {
+        $data = $this->getInventoryReportData($request);
+        $pdf  = Pdf::loadView('admin.reports.inventory_report_pdf', $data)->setPaper('A4', 'landscape');
+        return $pdf->download('inventory_report_' . now()->format('Ymd') . '.pdf');
+    }
+
+    // ============================================================
+    // Add these methods to your ReportController
+    // ============================================================
+
+    // Required imports:
+    // use App\Models\Overhead;
+    // use App\Models\ExpenseType;
+    // use App\Models\Driver;
+    // use Carbon\Carbon;
+    // use Barryvdh\DomPDF\Facade\Pdf;
+    // use Illuminate\Support\Facades\DB;
+
+    // ============================================================
+    // ROUTES to add in web.php:
+    //
+    // Route::get('admin/reports/overhead',     [ReportController::class, 'overheadReport'])
+    //      ->name('admin.overhead.report');
+    //
+    // Route::get('admin/reports/overhead/pdf', [ReportController::class, 'overheadReportPdf'])
+    //      ->name('admin.overhead.report.pdf');
+    // ============================================================
+
+
+    private function getOverheadReportData(Request $request)
+    {
+        // ---- Date Range ----
+        $fromDate = $request->filled('from_date')
+            ? Carbon::parse($request->from_date)->startOfDay()
+            : Carbon::today()->startOfMonth()->startOfDay();
+
+        $toDate = $request->filled('to_date')
+            ? Carbon::parse($request->to_date)->endOfDay()
+            : Carbon::today()->endOfDay();
+
+        $totalDays = max(1, $fromDate->diffInDays($toDate) + 1);
+
+        // ---- Overheads query ----
+        $query = Overhead::with(['expenseType.category', 'driver'])
+            ->whereBetween('date', [$fromDate->toDateString(), $toDate->toDateString()]);
+
+        if ($request->filled('expense_type_id')) {
+            $query->where('expense_type_id', $request->expense_type_id);
+        }
+
+        $overheads = $query->orderBy('date', 'desc')->get();
+
+        // ---- Category totals ----
+        $categoryTotals = Overhead::query()
+                                ->join('expense_types', 'overheads.expense_type_id', '=', 'expense_types.id')
+                                ->join('expense_categories', 'expense_types.category_id', '=', 'expense_categories.id')
+                                ->whereBetween('overheads.date', [$fromDate->toDateString(), $toDate->toDateString()])
+                                ->when($request->filled('expense_type_id'), fn($q) => $q->where('overheads.expense_type_id', $request->expense_type_id))
+                                ->selectRaw('expense_categories.name as category_name, COUNT(*) as record_count, SUM(overheads.amount) as total_amount')
+                                ->groupBy('expense_categories.id', 'expense_categories.name')
+                                ->orderByDesc('total_amount')
+                                ->get();
+
+        // ---- Filter dropdowns ----
+        $expenseTypes = ExpenseType::with('category')->orderBy('name')->get();
+        $drivers      = Driver::orderBy('name')->get();
+
+        // ---- Summary ----
+        $summary = [
+            'total_records' => $overheads->count(),
+            'total_amount'  => $overheads->sum('amount'),
+            'unique_types'  => $overheads->pluck('expense_type_id')->unique()->count(),
+            'avg_per_day'   => $overheads->sum('amount') / $totalDays,
+        ];
+
+        return [
+            'overheads'      => $overheads,
+            'categoryTotals' => $categoryTotals,
+            'expenseTypes'   => $expenseTypes,
+            'drivers'        => $drivers,
+            'summary'        => $summary,
+            'fromDate'       => $fromDate,
+            'toDate'         => $toDate,
+        ];
+    }
+
+
+    public function overheadReport(Request $request)
+    {
+        $data = $this->getOverheadReportData($request);
+        return view('admin.reports.overhead_report', $data);
+    }
+
+
+    public function overheadReportPdf(Request $request)
+    {
+        $data = $this->getOverheadReportData($request);
+        $pdf  = Pdf::loadView('admin.reports.overhead_report_pdf', $data)
+                ->setPaper('A4', 'landscape');
+        return $pdf->download('overhead_report_' . now()->format('Ymd') . '.pdf');
     }
 }

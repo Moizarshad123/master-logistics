@@ -98,7 +98,12 @@
                     <li>
                         <a href="{{ route('admin.tripVehicleReport') }}">Trip Vehicle Report</a>
                     </li>
-
+                    <li>
+                        <a href="{{ route('admin.inventoryReport') }}">Inventory Report</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.overheadReport') }}">Overhead Report</a>
+                    </li>
                     <li>
                         <a href="{{ route('admin.profitAndLossReport') }}">Profit and Loss Report</a>
                     </li>
