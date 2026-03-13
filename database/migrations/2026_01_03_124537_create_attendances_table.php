@@ -16,11 +16,13 @@ class CreateAttendancesTable extends Migration
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
             $table->foreignId('driver_id')->constrained()->onDelete('cascade');
-            $table->date('date');
-            $table->enum('status', ['present', 'absent', 'leave']);
+            $table->string('month'); // Format: 2026-03 (Y-m)
+            $table->integer('present_days')->default(0);
+            $table->integer('absent_days')->default(0);
+            $table->integer('leave_days')->default(0);
             $table->timestamps();
 
-            $table->unique(['driver_id', 'date']);
+             $table->unique(['driver_id', 'month']);
         });
     }
 

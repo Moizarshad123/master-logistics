@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Driver;
 use App\Models\AdvanceSalary;
+use App\Models\Attendance;
+
+
 use App\Models\LoanInstallment;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -19,54 +22,62 @@ class PayrollController extends Controller
         $month = (int) ($request->month ?? now()->month);
         $year  = (int) ($request->year  ?? now()->year);
 
-        // Total days in the selected calendar month (Feb=28/29, etc.)
+        // Format: "2026-03" — new attendance table ka month column
+        $monthStr = sprintf('%04d-%02d', $year, $month);
+
         $totalDaysInMonth = Carbon::createFromDate($year, $month, 1)->daysInMonth;
 
-        $drivers = Driver::with(['attendances' => function ($q) use ($month, $year) {
-                                $q->whereMonth('date', $month)
-                                ->whereYear('date', $year);
-                            }])->where('status', 'active')->orderBy("name", 'ASC')->get();
+        $drivers = Driver::where('status', 'active')->orderBy('name', 'ASC')->get();
+
+        // Sab attendances ek query mein — keyed by driver_id
+        $attendances = Attendance::where('month', $monthStr)
+            ->get()
+            ->keyBy('driver_id');
 
         $report = [];
 
         foreach ($drivers as $driver) {
-            $present = $driver->attendances->where('status', 'present')->count();
-            $absent  = $driver->attendances->where('status', 'absent')->count();
-            $leave   = $driver->attendances->where('status', 'leave')->count();
+            $att = $attendances[$driver->id] ?? null;
+
+            $present = $att->present_days ?? 0;
+            $absent  = $att->absent_days  ?? 0;
+            $leave   = $att->leave_days   ?? 0;
 
             $advance = AdvanceSalary::where('driver_id', $driver->id)
-                                ->where('month', $month)
-                                ->where('year', $year)
-                                ->sum('amount');
+                ->where('month', $month)
+                ->where('year', $year)
+                ->sum('amount');
 
             $loanDeduction = LoanInstallment::whereHas('loan', function ($q) use ($driver) {
-                                        $q->where('driver_id', $driver->id);
-                                    })
-                                    ->where('month', $month)
-                                    ->where('year', $year)
-                                    ->where('status', 'unpaid')
-                                    ->sum('amount');
+                    $q->where('driver_id', $driver->id);
+                })
+                ->where('month', $month)
+                ->where('year', $year)
+                ->where('status', 'unpaid')
+                ->sum('amount');
 
-            $monthlySalary = $driver->salary;                              // e.g. 22000
-            $perDaySalary  = round($monthlySalary / $totalDaysInMonth, 2); // 22000 / 28 = 785.71
+            $monthlySalary = $driver->salary;
+            $perDaySalary  = $totalDaysInMonth > 0
+                ? round($monthlySalary / $totalDaysInMonth, 2)
+                : 0;
 
-            $grossSalary = $present * $perDaySalary;         // ✅ Sirf present days ka pay
-            $deduction   = $absent  * $perDaySalary;         // Absent days deduction (for clarity)
+            $grossSalary = $present * $perDaySalary;
+            $deduction   = $absent  * $perDaySalary;
             $netSalary   = $grossSalary - $advance - round($loanDeduction);
 
             $report[] = [
-                'driver'          => $driver,
-                'totalDays'       => $totalDaysInMonth,
-                'present'         => $present,
-                'absent'          => $absent,
-                'leave'           => $leave,
-                'monthlySalary'   => $monthlySalary,
-                'perDaySalary'    => round($perDaySalary),
-                'grossSalary'     => round($grossSalary),
-                'deduction'       => round($deduction),
-                'netSalary'       => round($netSalary),
-                'advance'         => $advance,
-                'loanDeduction'   => round($loanDeduction),
+                'driver'        => $driver,
+                'totalDays'     => $totalDaysInMonth,
+                'present'       => $present,
+                'absent'        => $absent,
+                'leave'         => $leave,
+                'monthlySalary' => $monthlySalary,
+                'perDaySalary'  => round($perDaySalary),
+                'grossSalary'   => round($grossSalary),
+                'deduction'     => round($deduction),
+                'netSalary'     => round($netSalary),
+                'advance'       => $advance,
+                'loanDeduction' => round($loanDeduction),
             ];
         }
 
@@ -74,7 +85,6 @@ class PayrollController extends Controller
             'report', 'month', 'year', 'totalDaysInMonth'
         ));
     }
-
     public function download(Request $request)
     {
         $month = $request->month;

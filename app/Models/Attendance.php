@@ -8,7 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Attendance extends Model
 {
     use HasFactory;
-    protected $fillable = ['driver_id', 'date', 'status'];
+
+    protected $fillable = [
+        'driver_id',
+        'month',        // "2026-03"
+        'present_days',
+        'absent_days',
+        'leave_days',
+    ];
 
     public function driver()
     {

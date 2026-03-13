@@ -1,62 +1,75 @@
 @extends('admin.layouts.app')
-@section('title', 'Daily Attendance')
+@section('title', 'Monthly Attendance')
 
 @section('content')
 <div class="container">
-    <h3>Daily Attendance</h3>
+    <h3>Monthly Attendance</h3>
 
+    {{-- Month Filter (GET) --}}
+    <form method="GET" action="{{ url('admin/attendance') }}" class="row mb-3">
+        <div class="col-md-3">
+            <label>Select Month</label>
+            <input type="month" name="month" class="form-control"
+                   value="{{ $selectedMonth }}"
+                   onchange="this.form.submit()">
+        </div>
+    </form>
+
+    {{-- Attendance Save (POST) --}}
     <form method="POST" action="{{ url('admin/attendance') }}">
         @csrf
+        <input type="hidden" name="month" value="{{ $selectedMonth }}">
 
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <label>Date</label>
-                <input type="date" name="date" class="form-control" required value="{{date('Y-m-d')}}">
-            </div>
-            <div class="col-md-3">
-                 <button class="btn btn-primary">
-            Save Attendance
-        </button>
-            </div>
-        </div>
-
-        <table class="table table-bordered">
-            <thead>
+        <table class="table table-bordered align-middle">
+            <thead class="table-light">
                 <tr>
                     <th>#</th>
                     <th>Driver</th>
-                    <th>Present</th>
-                    <th>Absent</th>
-                    <th>Leave</th>
+                    <th>Present Days</th>
+                    <th>Absent Days</th>
+                    <th>Leave Days</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($drivers as $driver)
+                @php
+                    $att = $attendances[$driver->id] ?? null;
+                @endphp
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $driver->name }}</td>
                     <td>
-                        <input type="radio"
-                               name="attendance[{{ $driver->id }}]"
-                               value="present"
-                               checked>
+                        <input type="number"
+                               name="attendance[{{ $driver->id }}][present_days]"
+                               class="form-control"
+                               min="0" max="31"
+                               value="{{ $att->present_days ?? 0 }}"
+                               style="width: 80px;">
                     </td>
                     <td>
-                        <input type="radio"
-                               name="attendance[{{ $driver->id }}]"
-                               value="absent">
+                        <input type="number"
+                               name="attendance[{{ $driver->id }}][absent_days]"
+                               class="form-control"
+                               min="0" max="31"
+                               value="{{ $att->absent_days ?? 0 }}"
+                               style="width: 80px;">
                     </td>
                     <td>
-                        <input type="radio"
-                               name="attendance[{{ $driver->id }}]"
-                               value="leave">
+                        <input type="number"
+                               name="attendance[{{ $driver->id }}][leave_days]"
+                               class="form-control"
+                               min="0" max="31"
+                               value="{{ $att->leave_days ?? 0 }}"
+                               style="width: 80px;">
                     </td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
 
-       
+        <button type="submit" class="btn btn-success">
+            Save Attendance
+        </button>
     </form>
 </div>
 @endsection
