@@ -132,8 +132,8 @@
                         <tr>
                             <th>Vehicle No</th>
                             <th>Salary</th>
-                            <th>Maintenance & Workshop</th>
-                            <th>Inventory</th>
+                            {{-- <th>Maintenance & Workshop</th> --}}
+                            {{-- <th>Inventory</th> --}}
                             <th>Total Exp</th>
                             <th>Sale Rent</th>
                             <th>Gross Earning</th>
@@ -145,8 +145,8 @@
                             <tr>
                                 <td>{{ $vehicleNo }}</td>
                                 <td>{{ number_format($data['Salary']) }}</td>
-                                <td>{{ number_format($data['Maintenance'] ?? 0) }}</td>
-                                <td>{{ number_format($data['Inventory'] ?? 0) }}</td>
+                                {{-- <td>{{ number_format($data['Maintenance'] ?? 0) }}</td> --}}
+                                {{-- <td>{{ number_format($data['Inventory'] ?? 0) }}</td> --}}
                                 <td>{{ number_format($data['Total_Exp']) }}</td>
                                 <td>{{ number_format($data['Sale_Rent']) }}</td>
                                 <td>{{ number_format($data['Gross_Earning']) }}</td>
@@ -169,8 +169,8 @@
                     <tr style="font-weight:bold; background:#e0e0e0;">
                         <td style="width: 13%">Grand Total</td>
                         <td style="width: 9%">{{ number_format($grandTotal['Salary']) }}</td>
-                        <td style="width:5%">{{ number_format($grandTotal['Maintenance'] ?? 0) }}</td>
-                        <td style="width:5%">{{ number_format($grandTotal['Inventory'] ?? 0) }}</td>
+                        {{-- <td style="width:5%">{{ number_format($grandTotal['Maintenance'] ?? 0) }}</td> --}}
+                        {{-- <td style="width:5%">{{ number_format($grandTotal['Inventory'] ?? 0) }}</td> --}}
                         <td style="width: 8%">{{ number_format($grandTotal['Total_Exp']) }}</td>
                         <td style="width: 14%">{{ number_format($grandTotal['Sale_Rent']) }}</td>
                         <td style="width: 14%">{{ number_format($grandTotal['Gross_Earning']) }}</td>
@@ -185,8 +185,8 @@
                             <tr style="background:#f9f9f9;">
                                 <td>{{ $category }}</td>
                                 <td>{{ number_format($totals['Salary']) }}</td>
-                                <td>{{ number_format($totals['Maintenance'] ?? 0) }}</td>
-                                <td>{{ number_format($totals['Inventory'] ?? 0) }}</td>
+                                {{-- <td>{{ number_format($totals['Maintenance'] ?? 0) }}</td> --}}
+                                {{-- <td>{{ number_format($totals['Inventory'] ?? 0) }}</td> --}}
                                 <td>{{ number_format($totals['Total_Exp']) }}</td>
                                 <td>{{ number_format($totals['Sale_Rent']) }}</td>
                                 <td>{{ number_format($totals['Gross_Earning']) }}</td>

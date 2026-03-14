@@ -43,6 +43,7 @@
                                name="attendance[{{ $driver->id }}][present_days]"
                                class="form-control"
                                min="0" max="31"
+                               step="0.01"
                                value="{{ $att->present_days ?? 0 }}"
                                style="width: 80px;">
                     </td>
@@ -51,6 +52,8 @@
                                name="attendance[{{ $driver->id }}][absent_days]"
                                class="form-control"
                                min="0" max="31"
+                               step="0.01"
+
                                value="{{ $att->absent_days ?? 0 }}"
                                style="width: 80px;">
                     </td>
@@ -59,6 +62,8 @@
                                name="attendance[{{ $driver->id }}][leave_days]"
                                class="form-control"
                                min="0" max="31"
+                               step="0.01"
+
                                value="{{ $att->leave_days ?? 0 }}"
                                style="width: 80px;">
                     </td>

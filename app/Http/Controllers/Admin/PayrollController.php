@@ -25,14 +25,15 @@ class PayrollController extends Controller
         // Format: "2026-03" — new attendance table ka month column
         $monthStr = sprintf('%04d-%02d', $year, $month);
 
-        $totalDaysInMonth = Carbon::createFromDate($year, $month, 1)->daysInMonth;
+        // $totalDaysInMonth = Carbon::createFromDate($year, $month, 1)->daysInMonth;
 
-        $drivers = Driver::where('status', 'active')->orderBy('name', 'ASC')->get();
+        $totalDaysInMonth = 30.4;
+        $drivers          = Driver::where('status', 'active')->orderBy('name', 'ASC')->get();
 
         // Sab attendances ek query mein — keyed by driver_id
         $attendances = Attendance::where('month', $monthStr)
-            ->get()
-            ->keyBy('driver_id');
+                                ->get()
+                                ->keyBy('driver_id');
 
         $report = [];
 
@@ -44,26 +45,28 @@ class PayrollController extends Controller
             $leave   = $att->leave_days   ?? 0;
 
             $advance = AdvanceSalary::where('driver_id', $driver->id)
-                ->where('month', $month)
-                ->where('year', $year)
-                ->sum('amount');
+                                    ->where('month', $month)
+                                    ->where('year', $year)
+                                    ->sum('amount');
 
             $loanDeduction = LoanInstallment::whereHas('loan', function ($q) use ($driver) {
-                    $q->where('driver_id', $driver->id);
-                })
-                ->where('month', $month)
-                ->where('year', $year)
-                ->where('status', 'unpaid')
-                ->sum('amount');
+                                                $q->where('driver_id', $driver->id);
+                                            })
+                                            ->where('month', $month)
+                                            ->where('year', $year)
+                                            ->where('status', 'unpaid')
+                                            ->sum('amount');
 
             $monthlySalary = $driver->salary;
-            $perDaySalary  = $totalDaysInMonth > 0
-                ? round($monthlySalary / $totalDaysInMonth, 2)
-                : 0;
-
+            $perDaySalary = round($driver->salary / $totalDaysInMonth, 2);
             $grossSalary = $present * $perDaySalary;
             $deduction   = $absent  * $perDaySalary;
-            $netSalary   = $grossSalary - $advance - round($loanDeduction);
+            $netSalary   = $grossSalary - $deduction - $advance - round($loanDeduction);
+
+            // $perDaySalary  = $totalDaysInMonth > 0 ? round($monthlySalary / $totalDaysInMonth, 2) : 0;
+            // $grossSalary = $present * $perDaySalary;
+            // $deduction   = $absent  * $perDaySalary;
+            // $netSalary   = $grossSalary - $advance - round($loanDeduction);
 
             $report[] = [
                 'driver'        => $driver,
@@ -89,53 +92,58 @@ class PayrollController extends Controller
     {
         $month = $request->month;
         $year  = $request->year;
+        $monthStr = sprintf('%04d-%02d', $year, $month);
 
-        $drivers = Driver::with(['attendances' => function ($q) use ($month, $year) {
-                            $q->whereMonth('date', $month)
-                            ->whereYear('date', $year);
-                        }])->where('status', 'active')->orderBy('name')->get();
+        $drivers = Driver::where('status', 'active')->orderBy('name', 'ASC')->get();
 
-        $report = [];
+        // Sab attendances ek query mein — keyed by driver_id
+        $attendances = Attendance::where('month', $monthStr)
+                                    ->get()
+                                    ->keyBy('driver_id');
+
+        $report           = [];
+        $totalDaysInMonth = 30.4;
 
         foreach ($drivers as $driver) {
-            $present = $driver->attendances->where('status', 'present')->count();
-            $absent  = $driver->attendances->where('status', 'absent')->count();
-            $leave   = $driver->attendances->where('status', 'leave')->count();
+            $att = $attendances[$driver->id] ?? null;
 
-            // Total recorded days (Present + Absent + Leave)
-            $totalDays = $present + $absent + $leave;
-
-            $perDaySalary = $driver->salary;
-
+            $present = $att->present_days ?? 0;
+            $absent  = $att->absent_days  ?? 0;
+            $leave   = $att->leave_days   ?? 0;
 
             $advance = AdvanceSalary::where('driver_id', $driver->id)
-                                ->where('month', $month)
-                                ->where('year', $year)
-                                ->sum('amount');
-
-            $loanDeduction = LoanInstallment::whereHas('loan', function ($q) use ($driver) {
-                                        $q->where('driver_id', $driver->id);
-                                    })
                                     ->where('month', $month)
                                     ->where('year', $year)
-                                    ->where('status', 'unpaid')
                                     ->sum('amount');
 
+            $loanDeduction = LoanInstallment::whereHas('loan', function ($q) use ($driver) {
+                                                $q->where('driver_id', $driver->id);
+                                            })
+                                            ->where('month', $month)
+                                            ->where('year', $year)
+                                            ->where('status', 'unpaid')
+                                            ->sum('amount');
 
-            // Correct calculation
-            $grossSalary  = $totalDays * $perDaySalary;   // Gross salary for all recorded days
-            $deduction    = $absent * $perDaySalary;      // Deduct for absent days only
-            $netSalary    = $grossSalary - $deduction - $advance;    // Net salary
+
+            $monthlySalary = $driver->salary;
+            $perDaySalary = round($monthlySalary / $totalDaysInMonth, 2);
+            $grossSalary  = $present * $perDaySalary;
+            $deduction   = $absent  * $perDaySalary;
+            $netSalary   = $grossSalary - $deduction - $advance - round($loanDeduction);
 
             $report[] = [
-                'driver'       => $driver,
-                'totalDays'    => $totalDays,
-                'present'      => $present,
-                'absent'       => $absent,
-                'leave'        => $leave,
-                'grossSalary'  => $grossSalary,
-                'deduction'    => $deduction,
-                'netSalary'    => $netSalary,
+                'driver'         => $driver,
+                'totalDays'      => $totalDaysInMonth,
+                'present'        => $present,
+                'absent'         => $absent,
+                'leave'          => $leave,
+                'monthlySalary'  => $monthlySalary,
+                'perDaySalary'   => round($perDaySalary),
+                'grossSalary'    => $grossSalary,
+                'deduction'      => $deduction,
+                'netSalary'      => $netSalary,
+                 'advance'       => $advance,
+                'loanDeduction'  => round($loanDeduction),
             ];
         }
 
