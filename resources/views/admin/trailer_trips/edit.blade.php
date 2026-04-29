@@ -55,7 +55,8 @@
                     </div>
                     <div class="col-md-3">
                         <label>Total Rent</label>
-                        <input type="text" name="total_rent" class="form-control" id="totalRent" value="{{ $trip->total_rent }}" readonly>
+                        <input type="text" name="total_rent" class="form-control" id="totalRent"
+                        data-original-rent="{{ $trip->total_rent }}" value="{{ $trip->total_rent }}" readonly>
                     </div>
                     <div class="col-md-3 text-end">
                         <button class="btn btn-success" id="addTripExpense">+</button>
@@ -269,14 +270,10 @@
 
 
         function calculateBalance() {
-
             let totalPayments   = 0;
-            let totalRent       = parseFloat($("#totalRent").data("original-rent")) || 0;
-            let rentExpenses    = 0;
             let advanceExpenses = 0;
-            let otherExpenses   = 0;
 
-            // Sum all payment amounts (assuming payments affect balance)
+            // Sum all payment amounts
             $("input[name='expense_amount[]']").each(function () {
                 const val = parseFloat($(this).val());
                 if (!isNaN(val)) {
@@ -284,49 +281,20 @@
                 }
             });
 
-            // Go through each expense row
+            // Sum only expenses "From Advance Amount"
             $("input[name^='expenses'][name$='[amount]']").each(function () {
                 const val = parseFloat($(this).val());
                 if (isNaN(val)) return;
 
-                // Find the corresponding 'expense_from' dropdown in the same row
                 const expenseFrom = $(this).closest('tr').find("select[name$='[expense_from]']").val();
 
-                if (expenseFrom === "From Rent Amount") {
-                    rentExpenses += val;
-                } else if(expenseFrom === "From Advance Amount") {
+                if (expenseFrom === "From Advance Amount") {
                     advanceExpenses += val;
-                } else {
-                    otherExpenses += val;
                 }
             });
 
-            // if(totalRent >= rentExpenses) {
-            //     const remainingRent = totalRent - rentExpenses;
-            //     $("#totalRent").val(remainingRent.toFixed(2));
-
-            // } else {
-            //     Swal.fire({
-            //         title: 'Error!',
-            //         text: 'Expense is more than the available rent!',
-            //         icon: 'error',
-            //         confirmButtonText: 'OK'
-            //     });
-            // }
-
-            // if(totalPayments >= advanceExpenses) {
-
-            //     const balance = totalPayments - advanceExpenses;
-            //     $("#balance").val(balance.toFixed(2));
-
-            // } else {
-            //     Swal.fire({
-            //         title: 'Error!',
-            //         text: 'Expense is more than the available advance balance!',
-            //         icon: 'error',
-            //         confirmButtonText: 'OK'
-            //     });
-            // }
+            const balance = totalPayments - advanceExpenses;
+            $("#balance").val(balance.toFixed(2));
         }
         
         calculateBalance();

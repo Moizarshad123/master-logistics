@@ -329,6 +329,8 @@
                             <option value="LTR">LTR</option>
                             <option value="Drums">Drums</option>
                             <option value="Egg cartons">Egg cartons</option>
+                            <option value="Tanker">Tanker</option>
+
 
                         </select>
                     </div>
